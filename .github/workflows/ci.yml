@@ -61,4 +61,4 @@ jobs:
       run: |
         library(packrat)
         packrat::restore()
-        testthat::test_dir("tests/testthat")
+        testthat::test_dir("tests/testthat", stop_on_failure = TRUE)
