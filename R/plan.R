@@ -329,7 +329,9 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     filter<-df$EndBin!=numOfBins # get plans that do not end in the last bin  
     pids<-df[filter,]$rowId # get ids of plans that do not end in the last bin
     dy<-plans
-    dy[pids,]$EndBin<-numOfBins
+    if(length(pids>0)) {
+      dy[pids,]$EndBin<-numOfBins
+    }
 
     rownames(dy)<-1:nrow(dy) # clean up the row names 
     plans<-dy
