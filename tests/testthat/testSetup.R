@@ -1,4 +1,7 @@
+library(tools) # for md5sum
+
 source("../../R/setup.R")
+
 test_that("VISTA 2012-18 trips pre-processing works", {
   set.seed(12345)
   wd<-getwd()

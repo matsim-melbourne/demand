@@ -1,4 +1,7 @@
+library(tools) # for md5sum
+
 source("../../R/sample.R")
+
 test_that("Sampling of the Melbourne 2016 synthetic population works", {
   set.seed(12345)
   wd<-getwd()

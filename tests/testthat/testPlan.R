@@ -1,4 +1,7 @@
+library(tools) # for md5sum
+
 source("../../R/plan.R")
+
 test_that("VISTA-like plans generation works", {
   set.seed(12345)
   wd<-getwd()
