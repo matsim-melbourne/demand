@@ -1,18 +1,20 @@
 run<-function(percent, num) {
  
   # set any global options
-  
   # see https://www.tidyverse.org/blog/2020/05/dplyr-1-0-0-last-minute-additions/
   options(dplyr.summarise.inform = FALSE)
+
+  dataDir<-'../data'
+  vista18TripsCsv<-'../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv'
   
   # create the output dir
-  outdir<-'output'
+  outdir<-'../output'
   dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
   
   # run the activity-based population synthesis steps
   sink(paste0(outdir,"/makeExamplePopulation.log"), append=FALSE, split=TRUE) # sink to both console and log file
   tryCatch({
-    source('setup.R', local=TRUE); runexample()
+    source('setup.R', local=TRUE); demand_setup(outdir, vista18TripsCsv)
     source('sample.R', local=TRUE); runexample(percent)
     source('plan.R', local=TRUE); runexample(num)
     source('match.R', local=TRUE); runexample()

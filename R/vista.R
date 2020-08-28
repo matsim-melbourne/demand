@@ -1,10 +1,3 @@
-suppressMessages(library(reshape2))
-suppressMessages(library(ggplot2))
-suppressMessages(library(plyr))
-suppressMessages(library(dplyr))
-suppressMessages(library(scales))
-suppressMessages(library(stringr))
-
 extract_and_write_activities_end_time_dist_by_start_bins<-function(in_activities_csv_gz, out_csv, binsize) {
   # example inputs:
   # in_activities_csv_gz <- "output/1.setup/vista_2012_18_extracted_activities_weekday.csv.gz"
@@ -75,7 +68,7 @@ extract_and_write_activities_time_bins<-function(in_activities_csv_gz, out_csv_g
     for(act in acts) {
       if(act=="Act.Start.Time" || act=="Act.End.Time") {
         #h<-hist(rep(as.numeric(dd[,act]),dd[,]$Count), breaks=binsize)
-        h<-as.vector(table(cut(rep(as.numeric(dd[,act]),dd[,]$Count), breaks=c(binStartMins, last(binEndMins)), include.lowest = TRUE)))
+        h<-as.vector(table(cut(rep(as.numeric(dd[,act]),dd[,]$Count), breaks=c(binStartMins, binEndMins[length(binEndMins)]), include.lowest = TRUE)))
         v<-h/sum(h)
         #if(length(h$counts)>binsize) v<- h$counts[1:binsize]
         #if(length(h$counts)<binsize) v<- c(h$counts, rep(0,binsize-length(h$counts)))
@@ -186,25 +179,6 @@ extract_and_write_activities_from<-function(in_vista_csv, out_weekday_activities
   close(gz1)
 }
 
-split_home_activity<-function(orig) { 
-  activities<-orig
-  activities$Order<-order(activities$Person) # record order, used for filtering
-  # Rename 'Home' activities to 'Home Daytime'
-  activities[activities$Activity.Group=="Home",]$Activity.Group<-"Home Daytime"
-  # Rename start of the day 'Home' activities to 'Home Morning'
-  df<-activities
-  df<-aggregate(df,by=list(df$Person),FUN=head,1) # get first activities
-  df<-df[df$Activity.Group=="Home Daytime",] # remove all but home activities
-  activities[activities$Order%in%df$Order,]$Activity.Group<-"Home Morning" # rename those activities
-  # Rename end of the day 'Home' activities to 'Home Night'
-  df<-activities
-  df<-aggregate(df,by=list(df$Person),FUN=tail,1) # get last activities
-  df<-df[df$Activity.Group=="Home Daytime",] # remove all but home activities
-  activities[activities$Order%in%df$Order,]$Activity.Group<-"Home Night" # rename those activities
-  activities$Order<-NULL # done with temporary column
-  return(activities)
-}
-
 simplify_activities_and_create_groups<-function(gzfile) {
   
   gz1 <- gzfile(gzfile,'rt')
@@ -259,84 +233,3 @@ simplify_activities_and_create_groups<-function(gzfile) {
   close(gz1)
   
 }
-
-extract_activities_by_time_of_day <- function(in_activities_csv_gz, blockSizeInMins, out_activities_by_time_of_day_csv_gz) {
-  
-  gzfile<-in_activities_csv_gz
-  gz1 <- gzfile(gzfile,'rt')
-  activities<-read.csv(gz1,header = T,sep=',',stringsAsFactors = F,strip.white = T)
-  close(gz1)
-  
-  minsOfDay<-seq(from=0,to=(24*60)-1,by=blockSizeInMins)
-  actCounts<-data.frame(row.names = minsOfDay)
-  actCounts[,unique(sort(activities$Activity.Group))]<-0
-  for(row in 1:nrow(activities)) {
-    x<-activities[row,]
-    actCounts[,x$Activity.Group]<-actCounts[,x$Activity.Group] +
-      ifelse((minsOfDay>=x$Act.Start.Time) & (minsOfDay<=x$Act.End.Time),x$Count,0)
-  }
-
-  # now rescale the distribution of values to match the population size 
-  dd<-aggregate(activities,by=list(activities$Person),FUN=head,n=1)
-  popnsize<-sum(dd$Count)
-  actCounts<-t(apply(actCounts,1, function(x, mx) {(x/sum(x))*mx}, mx=popnsize))
-  
-  gz1 <- gzfile(out_activities_by_time_of_day_csv_gz, "w")
-  write.csv(round(actCounts, digits = 0), gz1, row.names=TRUE, quote=TRUE)
-  close(gz1)
-  
-}
-
-plot_activities_by_hour_of_day <- function(in_activities_csv_gz) {
-  gzfile<-in_activities_csv_gz
-  gz1 <- gzfile(gzfile,'rt')
-  activities<-read.csv(gz1,header = T,sep=',',stringsAsFactors = F,strip.white = T)
-  close(gz1)
-  
-  activities$X<-activities$X/60 # mins to hours
-  
-  d<-melt((activities), id.vars=c("X"))
-  colnames(d)<-c("HourRange", "Activity", "Count")
-  
-  ggplot(d, aes(HourRange,Count, col=Activity, fill=Activity)) + 
-    #theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
-    geom_bar(stat="identity", color="black", size=0.1, position = "stack") +
-    scale_y_continuous(labels = comma) +
-    xlab("Hour of day") + ylab("Population") + 
-    ggtitle(NULL)
-  
-}
-
-plot_week_activities_by_hour_of_day <- function(wd_activities_csv_gz, we_activities_csv_gz) {
-  gzfile<-wd_activities_csv_gz
-  gz1 <- gzfile(gzfile,'rt')
-  wd_activities<-read.csv(gz1,header = T,sep=',',stringsAsFactors = F,strip.white = T)
-  close(gz1)
-  
-  gzfile<-we_activities_csv_gz
-  gz1 <- gzfile(gzfile,'rt')
-  we_activities<-read.csv(gz1,header = T,sep=',',stringsAsFactors = F,strip.white = T)
-  close(gz1)
-  
-  df<-wd_activities
-  df$Day<-"Weekday"
-  activities<-df
-  df<-we_activities
-  df$Day<-"Weekend"
-  activities<-rbind(activities,df)
-  
-  activities$X<-activities$X/60 # mins to hours
-  
-  d<-melt((activities), id.vars=c("X","Day"))
-  colnames(d)<-c("HourRange", "Day", "Activity", "Count")
-  
-  ggplot(d, aes(HourRange,Count, col=Activity, fill=Activity)) + 
-    geom_bar(stat="identity", color="black", size=0.1, position = "stack") +
-    facet_wrap(~Day, ncol=2) + 
-    scale_y_continuous(labels = comma) +
-    xlab("Hour of day") + ylab("Population") + 
-    theme(legend.position = "bottom") +
-    ggtitle(NULL)
-  
-}
-

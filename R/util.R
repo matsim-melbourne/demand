@@ -1,5 +1,3 @@
-suppressPackageStartupMessages(library(data.table)) 
-
 # Probabilistically selects an index from the vector of probabilities
 selectIndexFromProbabilities <-function(vv) {
   if(is.null(vv) || is.na(vv)) return(vv)

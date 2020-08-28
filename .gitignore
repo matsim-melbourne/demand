@@ -4,3 +4,4 @@ Rplots.pdf
 .DS_Store
 /output/
 packrat/lib*/
+packrat/src/
