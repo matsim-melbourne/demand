@@ -1,6 +1,7 @@
 source("../../R/setup.R")
 library(tools)
 test_that("VISTA 2012-18 trips pre-processing works", {
+  set.seed(12345)
   wd<-getwd()
   setwd('../../R')
   demand_setup('../tests/actual', '../tests/data/T_VISTA1218_V1.sample.csv')
@@ -15,7 +16,7 @@ test_that("VISTA 2012-18 trips pre-processing works", {
   )
   for (file in files) {
     expect_true(file.exists(paste0('../actual/', file)))
-    expect_true(md5sum(paste0('../actual/', file)) == md5sum(paste0('../actual/', file)))
+    expect_true(md5sum(paste0('../actual/', file)) == md5sum(paste0('../expected/', file)))
   }
 })
   

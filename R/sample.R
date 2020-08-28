@@ -1,4 +1,6 @@
-sampleMelbourne2016Population <- function(samplePercentage, outcsvgz) {
+library(data.table)
+
+sampleMelbourne2016Population <- function(dataDir, samplePercentage, outcsvgz) {
   
   source('util.R', local=TRUE)
   
@@ -73,7 +75,7 @@ sampleMelbourne2016Population <- function(samplePercentage, outcsvgz) {
   }
   
   # get all the Melbourne 2016 persons files by SA2
-  df<-data.frame(SA2=list.files(pattern = "\\persons.csv.gz$", recursive = TRUE), stringsAsFactors=FALSE)
+  df<-data.frame(SA2=list.files(path=dataDir, pattern = "\\persons.csv.gz$", recursive = TRUE, full.names = TRUE), stringsAsFactors=FALSE)
   df$samplePercent<-samplePercentage
   persons<-NULL
   echo(paste0("Selecting a ", samplePercentage, "% population sample from Melbourne's ", nrow(df), " SA2 areas (can take a while)\n"))
@@ -87,7 +89,7 @@ sampleMelbourne2016Population <- function(samplePercentage, outcsvgz) {
   
   # Fix their home location SA1 code (convert from SA1_7DIGCODE to SA1_MAINCODE_2016)
   echo(paste0('Assigning SA1_MAINCODE_2016 to persons in ', outcsvgz, ' (can take a while)\n'))
-  assignSa1Maincode(outcsvgz, outcsvgz, 'data/sa1_2016_aust.csv.gz') # overwriting outfile
+  assignSa1Maincode(outcsvgz, outcsvgz, paste0(dataDir,'/sa1_2016_aust.csv.gz')) # overwriting outfile
   echo(paste0('Updated ', outcsvgz,'\n'))
   
 }
@@ -98,5 +100,5 @@ runexample<- function(percent) {
   outdir<-'./output/2.sample'
   dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
   outfile<-paste0(outdir,'/sample.csv.gz')
-  sampleMelbourne2016Population(samplesize, outfile)
+  sampleMelbourne2016Population('../data', samplesize, outfile)
 }
