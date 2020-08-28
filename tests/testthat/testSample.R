@@ -4,7 +4,9 @@ test_that("Sampling of the Melbourne 2016 synthetic population works", {
   set.seed(12345)
   wd<-getwd()
   setwd('../../R')
-  sampleMelbourne2016Population('../tests/data/', 1, '../tests/actual/sample.csv.gz')
+  capture_output(
+    sampleMelbourne2016Population('../tests/data/', 1, '../tests/actual/sample.csv.gz')
+  )
   setwd(wd)
 
   file<-'sample.csv.gz'

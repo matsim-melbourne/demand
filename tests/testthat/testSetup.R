@@ -4,7 +4,9 @@ test_that("VISTA 2012-18 trips pre-processing works", {
   set.seed(12345)
   wd<-getwd()
   setwd('../../R')
-  demand_setup('../tests/actual', '../tests/data/T_VISTA1218_V1.sample.csv')
+  capture_output(
+    demand_setup('../tests/actual', '../tests/data/T_VISTA1218_V1.sample.csv')
+  )
   setwd(wd)
   
   files<-c(
