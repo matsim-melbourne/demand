@@ -3,3 +3,4 @@ Rplots.pdf
 .RData
 .DS_Store
 /output/
+packrat/lib*/
