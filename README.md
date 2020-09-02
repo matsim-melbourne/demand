@@ -1,15 +1,17 @@
 # MATSim population for Melbourne
+`master`![passing?](https://github.com/matsim-melbourne/demand/workflows/build/badge.svg?branch=master) `dev`![passing?](https://github.com/matsim-melbourne/demand/workflows/build/badge.svg?branch=dev) 
 
 This script generates a sample population for Melbourne based on the [ABS 2016 census](https://www.abs.gov.au/websitedbs/censushome.nsf/home/2016) and using [VISTA-like](https://transport.vic.gov.au/about/data-and-research/vista) activities and trips.
 
 ## Setup
 
 ### R
-The population generation code (in `*.R` files) is written in [R](https://www.r-project.org) and a working knowledge of R is assumed here. You may have to install some missing R packages for instance.
+The population generation code (in the `./R` directory) is written in [R](https://www.r-project.org) and a working knowledge of R is assumed here.
 
-As of 30/Jul/20, this seems to be the dependency list:
+We use [`packrat`](https://rstudio.github.io/packrat/) to manage the R package dependencies for this project. To install the required R packages locally inside this repository, do:
 ```
-install.packages("data.table", "reshape2", "ggplot2", "dplyr", "sf", "XML")
+install.packages("packrat")
+packrat::restore()
 ```
 
 ### How to get the Data
