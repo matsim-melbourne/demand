@@ -1,5 +1,5 @@
 # MATSim population for Melbourne
-`master`![passing?](https://github.com/matsim-melbourne/demand/workflows/build/badge.svg?branch=master) `dev`![passing?](https://github.com/matsim-melbourne/demand/workflows/build/badge.svg?branch=dev) 
+`master`![passing?](https://github.com/matsim-melbourne/demand/workflows/build/badge.svg?branch=master) `dev`![passing?](https://github.com/matsim-melbourne/demand/workflows/build/badge.svg?branch=dev)
 
 This script generates a sample population for Melbourne based on the [ABS 2016 census](https://www.abs.gov.au/websitedbs/censushome.nsf/home/2016) and using [VISTA-like](https://transport.vic.gov.au/about/data-and-research/vista) activities and trips.
 
@@ -13,6 +13,13 @@ We use [`packrat`](https://rstudio.github.io/packrat/) to manage the R package d
 install.packages("packrat")
 packrat::restore()
 ```
+
+Ensure that your setup is working by running some quick tests:
+```
+testthat::test_dir("tests/testthat")
+```
+
+If all tests pass, you are all set to produce a sample Melbourne population using the steps below.
 
 ### How to get the Data
 
