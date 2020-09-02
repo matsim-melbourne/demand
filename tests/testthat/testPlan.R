@@ -30,7 +30,6 @@ test_that("VISTA-like plans generation works", {
   for (file in files) {
     expect_true(file.exists(paste0('../actual/3.plan/', file)))
   }
-  files<-
   expect_true(md5sum('../actual/3.plan/plan.csv') == md5sum('../expected/3.plan/plan.csv'))
 })
   
