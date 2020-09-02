@@ -2,8 +2,6 @@ library(data.table)
 
 sampleMelbourne2016Population <- function(dataDir, samplePercentage, outcsvgz) {
   
-  source('util.R', local=TRUE)
-  
   assignSa1Maincode <- function(persons_csv_gz, out_persons_csv_gz, sa1_csv_gz) {
     # read in the SA1s file
     gz1<-gzfile(sa1_csv_gz, 'rt')

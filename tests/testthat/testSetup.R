@@ -4,15 +4,12 @@ source("../../R/setup.R")
 
 test_that("VISTA 2012-18 trips pre-processing works", {
   set.seed(12345)
-  wd<-getwd()
-  setwd('../../R')
-  outdir<-'../tests/actual/1.setup'
+  outdir<-'../actual/1.setup'
   dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
   capture_output(
-    demand_setup(outdir, '../tests/data/T_VISTA1218_V1.sample.csv')
+    demand_setup(outdir, '../data/T_VISTA1218_V1.sample.csv')
   )
-  setwd(wd)
-  
+
   files<-c(
     'vista_2012_18_extracted_activities_weekday.csv.gz',
     'vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz',

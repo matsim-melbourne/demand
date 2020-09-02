@@ -1,9 +1,6 @@
 # Function to pre-process some data; need only be run once
 demand_setup<-function(setupDir, vista18TripsCsv) {
   
-  source("util.R", local=TRUE)
-  source("vista.R", local=TRUE)
-  
   dir.create(setupDir, showWarnings=FALSE, recursive=TRUE)
   
   # Extract VISTA activities and save separately into weekday and weekend activities

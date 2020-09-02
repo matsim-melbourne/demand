@@ -1,7 +1,5 @@
 # Matches ABS census-like persons to VISTA-like plans
-match<-function(censuscsv, vistacsv, outcsv) {
-  
-  source('util.R', local=TRUE)
+matchPersons<-function(censuscsv, vistacsv, outcsv) {
   
   # Read in the persons
   gz1<-gzfile(censuscsv, 'rt')
@@ -34,5 +32,5 @@ runexample<- function() {
   outdir<-'output/4.match'
   dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
   outcsv<-paste0(outdir,'/match.csv.gz')
-  match(censuscsv, vistacsv, outcsv)
+  matchPersons(censuscsv, vistacsv, outcsv)
 }  
