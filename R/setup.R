@@ -40,3 +40,99 @@ demand_setup<-function(setupDir, vista18TripsCsv) {
   echo('Setup complete\n')
   return(TRUE)
 }
+
+locations_setup<-function(setupDir, 
+                          distanceMatrixFile, 
+                          distanceMatrixIndexFile,
+                          sa1AttributedFile,
+                          sa1CentroidsFile,
+                          addressesFile,
+                          plansFile=NULL) {
+  
+  dir.create(setupDir, showWarnings=FALSE, recursive=TRUE)
+  
+  # check if we want to keep only known SA1s from plans file (useful for testing)
+  filterSa1s <- !is.null(plansFile)
+  
+  # read in the list of SA1s we want to keep
+  sa1s <- vector()
+  if(filterSa1s) {
+    sa1s<-read.csv(plansFile)
+    sa1s<-sa1s$SA1_MAINCODE_2016
+  }
+  
+  # Extract the distance matrix index subset containing the required SA1s
+  echo(paste0("Reading ", distanceMatrixIndexFile, "\n"))
+  dmi <- read.csv(distanceMatrixIndexFile)
+  if (filterSa1s) dmi <- dmi[dmi$sa1_maincode_2016 %in% sa1s, ]
+  
+  # Extract the distance matrix index subset containing the required SA1s
+  echo(paste0("Reading ", distanceMatrixFile, "\n"))
+  dm <- readRDS(distanceMatrixFile)
+  if (filterSa1s) dm <- dm[dmi$index,dmi$index]
+  outfile<-paste0(setupDir,"/locDistanceMatrix.rds")
+  echo(paste0("Writing ", outfile, "\n"))
+  saveRDS(dm, outfile)
+  
+  df<-dmi
+  # Update the indices if needed and write them out
+  if (filterSa1s) df$index<-seq(1,length(df$index))
+  outfile<-paste0(setupDir,"/locDistanceMatrixIndex.rds")
+  echo(paste0("Writing ", outfile, "\n"))
+  saveRDS(df, outfile)
+  
+  # Reading in the attributed SA1 regions. I'm removing the geometry since it
+  # won't be used here. Joining with the distance matrix index so the regions are
+  # in the correct order.
+  echo(paste0("Reading ", sa1AttributedFile, "\n"))
+  sa1Aattributed <- inner_join(dmi,
+                               st_read(sa1AttributedFile, quiet=TRUE) %>%
+                                 st_drop_geometry(),
+                               by="sa1_maincode_2016")
+  outfile<-paste0(setupDir,"/locSa1Aattributed.rds")
+  echo(paste0("Writing ", outfile, "\n"))
+  saveRDS(sa1Aattributed, outfile)
+  
+  # Reading in the addresses. I'm removing the geometry and converting it to X,Y.
+  # These coordinates are in EPSG:28355, which is a projected coordinate system.
+  echo(paste0("Reading ", addressesFile, "\n"))
+  addresses <- st_read(addressesFile, quiet=TRUE)
+  addresses <- cbind(st_drop_geometry(addresses),
+                     st_coordinates(addresses))
+  outfile<-paste0(setupDir,"/locAddresses.rds")
+  echo(paste0("Writing ", outfile, "\n"))
+  saveRDS(addresses, outfile)
+  
+  echo(paste0("Reading ", sa1CentroidsFile, "\n"))
+  sa1Centroids <- st_read(sa1CentroidsFile, quiet=TRUE) %>%
+    st_drop_geometry()
+  outfile<-paste0(setupDir,"/locSa1Centroids.rds")
+  echo(paste0("Writing ", outfile, "\n"))
+  saveRDS(sa1Centroids, outfile)
+}
+
+
+# Below is a convenience script to create extracts of the locations data
+# for the purpose of testing. The idea is to remove all SA1s that are not
+# required by the test population. 
+# 
+# This script need only be run to update the tests, and only when the locations 
+# data has changed.
+# 
+# The process is to first run the population generation algorithm steps 1-5
+# (where Step5 uses the full locations data), and then run this script on the
+# output of Step5 (which contains the set of SA1s actually used, i.e., the ones that
+# should be retained).
+
+
+setupLocationsTestExample<-function() {
+  setupDir<-'../output'
+  distanceMatrixFile <- "../data/distanceMatrix.rds"
+  distanceMatrixIndexFile <- "../data/distanceMatrixIndex.csv"
+  sa1AttributedFile <- "../data/SA1attributed.sqlite"
+  sa1CentroidsFile <- "../data/SA1centroids.sqlite"
+  addressesFile <- "../data/addresses.sqlite"
+  plansFile <- '../tests/actual/5.locate/plan.csv'
+  locations_setup(setupDir, distanceMatrixFile, distanceMatrixIndexFile, 
+                  sa1AttributedFile, sa1CentroidsFile, addressesFile, plansFile)
+}
