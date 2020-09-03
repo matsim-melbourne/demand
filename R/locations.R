@@ -1,78 +1,43 @@
-# Set this flag to true to pre-process the locations data only
-# (need only be done once)
-if(exists("preProcessLocationsDataOnly")) {
-  source("util.R")
-  source("setup.R")
-  setupDir<-'../output/1.setup'
-  dir.create(setupDir, showWarnings=FALSE, recursive=TRUE)
-  locations_setup(setupDir, 
-                  "../data/distanceMatrix.rds", 
-                  "../data/distanceMatrixIndex.csv", 
-                  "../data/SA1attributed.sqlite", 
-                  "../data/SA1centroids.sqlite", 
-                  "../data/addresses.sqlite", 
-                  NULL)
-  return()
-}
-
 suppressPackageStartupMessages(library(sf)) # for spatial things
 suppressPackageStartupMessages(library(dplyr)) # for manipulating data
 suppressPackageStartupMessages(library(scales)) # for scaling datasets
 suppressPackageStartupMessages(library(data.table)) # for sa1_main16 indexing for faster lookups
 
-distanceMatrixFile <- "../output/1.setup/locDistanceMatrix.rds"
-if(exists("distanceMatrixFileOverride")) {
-  distanceMatrixFile <- distanceMatrixFileOverride
+loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
+                             sa1AttributedFile, sa1CentroidsFile, addressesFile) {
+  # Read in the distance matrix. This matrix is symmetric so it doesn't matter if
+  # you do lookups by column or row.
+  echo(paste0("Reading ", distanceMatrixFile, "\n"))
+  distanceMatrix <<- readRDS(file=distanceMatrixFile) # note '<<' to make it global
+  
+  # Some SA1s ended up snapping their centroid to the same node in the road
+  # network so we need to use an index.
+  echo(paste0("Reading ", distanceMatrixIndexFile, "\n"))
+  distanceMatrixIndex <<- readRDS(file=distanceMatrixIndexFile)
+  distanceMatrixIndex_dt <<- data.table(distanceMatrixIndex) # note '<<' to make it global
+  setkey(distanceMatrixIndex_dt, sa1_maincode_2016)
+  
+  # Reading in the attributed SA1 regions. I'm removing the geometry since it
+  # won't be used here. Joining with the distance matrix index so the regions are
+  # in the correct order.
+  echo(paste0("Reading ", sa1AttributedFile, "\n"))
+  SA1_attributed <<- readRDS(file=sa1AttributedFile)
+  SA1_attributed_dt <<- data.table(SA1_attributed)  # note '<<' to make it global
+  setkey(SA1_attributed_dt,sa1_maincode_2016)
+  
+  # Reading in the addresses. I'm removing the geometry and converting it to X,Y.
+  # These coordinates are in EPSG:28355, which is a projected coordinate system.
+  echo(paste0("Reading ", addressesFile, "\n"))
+  addresses <<- readRDS(file=addressesFile)
+  addresses_dt <<- data.table(addresses)  # note '<<' to make it global
+  setkey(addresses_dt, sa1_maincode_2016)
+  
+  # Need the x and y locations of the centroids
+  echo(paste0("Reading ", sa1CentroidsFile, "\n"))
+  sa1_centroids <<- readRDS(file=sa1CentroidsFile)
+  sa1_centroids_dt <<- data.table(sa1_centroids)  # note '<<' to make it global
+  setkey(sa1_centroids_dt, sa1_maincode_2016)
 }
-distanceMatrixIndexFile <- "../output/1.setup/locDistanceMatrixIndex.rds"
-if(exists("distanceMatrixIndexFileOverride")) {
-  distanceMatrixIndexFile <- distanceMatrixIndexFileOverride
-}
-sa1AttributedFile <- "../output/1.setup/locSa1Aattributed.rds"
-if(exists("sa1AttributedFileOverride")) {
-  sa1AttributedFile <- sa1AttributedFileOverride
-}
-sa1CentroidsFile <- "../output/1.setup/locSa1Centroids.rds"
-if(exists("sa1CentroidsFileOverride")) {
-  sa1CentroidsFile <- sa1CentroidsFileOverride
-}
-addressesFile <- "../output/1.setup/locAddresses.rds"
-if(exists("addressesFileOverride")) {
-  addressesFile <- addressesFileOverride
-}
-
-# Read in the distance matrix. This matrix is symmetric so it doesn't matter if
-# you do lookups by column or row.
-echo(paste0("Reading ", distanceMatrixFile, "\n"))
-distanceMatrix <- readRDS(file=distanceMatrixFile)
-
-# Some SA1s ended up snapping their centroid to the same node in the road
-# network so we need to use an index.
-echo(paste0("Reading ", distanceMatrixIndexFile, "\n"))
-distanceMatrixIndex <- readRDS(file=distanceMatrixIndexFile)
-distanceMatrixIndex_dt<-data.table(distanceMatrixIndex)
-setkey(distanceMatrixIndex_dt, sa1_maincode_2016)
-
-# Reading in the attributed SA1 regions. I'm removing the geometry since it
-# won't be used here. Joining with the distance matrix index so the regions are
-# in the correct order.
-echo(paste0("Reading ", sa1AttributedFile, "\n"))
-SA1_attributed <- readRDS(file=sa1AttributedFile)
-SA1_attributed_dt<-data.table(SA1_attributed)
-setkey(SA1_attributed_dt,sa1_maincode_2016)
-
-# Reading in the addresses. I'm removing the geometry and converting it to X,Y.
-# These coordinates are in EPSG:28355, which is a projected coordinate system.
-echo(paste0("Reading ", addressesFile, "\n"))
-addresses <- readRDS(file=addressesFile)
-addresses_dt<-data.table(addresses)
-setkey(addresses_dt, sa1_maincode_2016)
-
-# Need the x and y locations of the centroids
-echo(paste0("Reading ", sa1CentroidsFile, "\n"))
-sa1_centroids <- readRDS(file=sa1CentroidsFile)
-sa1_centroids_dt<-data.table(sa1_centroids)
-setkey(sa1_centroids_dt, sa1_maincode_2016)
 
 # This returns a dataframe with possible SA1_ids and their probabilities.
 # There are three probabilites returned:
@@ -342,4 +307,12 @@ placeToSpatial <- function(pp,fileLocation) {
 #destinationCoordinates <- getAddressCoordinates(test[2],"commercial")
 
 
-
+runexample <- function() {
+  distanceMatrixFile <- "../output/1.setup/locDistanceMatrix.rds"
+  distanceMatrixIndexFile <- "../output/1.setup/locDistanceMatrixIndex.rds"
+  sa1AttributedFile <- "../output/1.setup/locSa1Aattributed.rds"
+  sa1CentroidsFile <- "../output/1.setup/locSa1Centroids.rds"
+  addressesFile <- "../output/1.setup/locAddresses.rds"
+  loadLocationsData(distanceMatrixFile, distanceMatrixIndexFile,
+                    sa1AttributedFile, sa1CentroidsFile, addressesFile)
+}

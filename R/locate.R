@@ -4,11 +4,9 @@ assignActivityAreasAndTravelModes <-function(censuscsv, vistacsv, matchcsv, outd
   
   suppressPackageStartupMessages(library(dplyr))
   suppressPackageStartupMessages(library(stringi))
-  source('util.R', local=TRUE)
-  
+
   echo("Loading locations database\n")
-  source('locations.R')
-  
+
   # internal function to replace activity tags with location tags
   replaceActivityWithLocationTags<-function (tc) {
     # convert activity-based tags to location-based tags (from SA1_attributes.sqlite) being:
