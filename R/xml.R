@@ -3,8 +3,7 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
   options(scipen=999) # disable scientific notation for more readible filenames with small sample sizes
   
   suppressPackageStartupMessages(library(XML))
-  source('util.R', local=TRUE)
-  
+
   # Read in the plans
   gz1<-gzfile(plancsv, 'rt')
   echo(paste0('Loading VISTA-like plans from ', plancsv, '\n'))
