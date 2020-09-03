@@ -2,11 +2,6 @@ assignLocationsToActivities <- function(plancsv, outcsv, writeInterval) {
 
   options(scipen=999) # disable scientific notation for more readible filenames with small sample sizes
   
-  source('util.R', local=TRUE)
-  
-  echo("Loading locations database\n")
-  source('locations.R')
-  
   # Read in the plans
   gz1<-gzfile(plancsv, 'rt')
   echo(paste0('Loading VISTA-like plans from ', plancsv, '\n'))
