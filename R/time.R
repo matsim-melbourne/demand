@@ -3,8 +3,7 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outcsv, writeInterva
   options(scipen=999) # disable scientific notation for more readible filenames with small sample sizes
   
   suppressPackageStartupMessages(library(stringr))
-  source('util.R', local=TRUE)
-  
+
   # Converts mins to HH:MM:SS format
   toHHMMSS <- function(mins) {
     if(is.null(mins) || is.na(mins) || !is.numeric(mins)) return("??:??:??")
