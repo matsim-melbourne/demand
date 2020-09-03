@@ -16,10 +16,10 @@ jobs:
 
     steps:
 
-    # - name: Install required packages
-    #   run: |
-    #     sudo apt update
-    #     sudo apt-get install libudunits2-dev libgdal-dev
+    - name: Install required packages
+      run: |
+        sudo apt update
+        sudo apt-get install libudunits2-dev
 
     - name: Clone matsim-melbourne/demand
       uses: actions/checkout@v2
