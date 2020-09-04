@@ -151,7 +151,7 @@ extract_and_write_activities_from<-function(in_vista_csv, out_weekday_activities
   
   # Split into weekday/weekend and set the weights (ie counts here) correctly
   week<-orig[,datacols]
-  isWeekday<-!is.na(week$WDTRIPWGT)
+  isWeekday<-!(is.na(week$WDTRIPWGT) |  week$WDTRIPWGT=='')
   weekdays<-week[isWeekday,]; weekdays$Count<- weekdays$WDTRIPWGT
   weekends<-week[!isWeekday,]; weekends$Count<-weekends$WETRIPWGT
 
