@@ -404,14 +404,3 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
   padWithHomeActivity(inplansfile, outplansfile, numOfBins)
   echo(paste0("Wrote ",outplansfile,"\n"))
 }
-
-# example usage
-runexample<- function(num) {
-  N<-num # generate 10k VISTA 2012-18 like daily plans
-  csv<-paste0('./output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz')
-  endcsv<-paste0('./output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz')
-  binCols<-3:50 # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
-  outdir<-'./output/3.plan'
-  writeInterval <- 1000 # write to file every 1000 plans
-  generatePlans(N, csv, endcsv, binCols, outdir, writeInterval)
-}  

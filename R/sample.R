@@ -91,12 +91,3 @@ sampleMelbourne2016Population <- function(dataDir, samplePercentage, outcsvgz) {
   echo(paste0('Updated ', outcsvgz,'\n'))
   
 }
-
-# example usage
-runexample<- function(percent) {
-  samplesize<-percent
-  outdir<-'./output/2.sample'
-  dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
-  outfile<-paste0(outdir,'/sample.csv.gz')
-  sampleMelbourne2016Population('../data', samplesize, outfile)
-}

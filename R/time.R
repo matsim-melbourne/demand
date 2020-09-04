@@ -72,16 +72,3 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outcsv, writeInterva
   cat('\n')
   echo(paste0('Wrote ',processed,' plans to ', outcsv , '\n'))
 }
-
-
-# example usage
-runexample<- function() {
-  binSizeInMins<-30
-  plancsv<-'output/6.place/plan.csv'
-  outdir<-'output/7.time'
-  dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
-  outcsv<-paste0(outdir,'/plan.csv')
-  writeInterval <- 100 # write to file every so many plans
-  
-  assignTimesToActivities(plancsv, binSizeInMins, outcsv, writeInterval)
-}

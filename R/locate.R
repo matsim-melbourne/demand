@@ -5,8 +5,6 @@ assignActivityAreasAndTravelModes <-function(censuscsv, vistacsv, matchcsv, outd
   suppressPackageStartupMessages(library(dplyr))
   suppressPackageStartupMessages(library(stringi))
 
-  echo("Loading locations database\n")
-
   # internal function to replace activity tags with location tags
   replaceActivityWithLocationTags<-function (tc) {
     # convert activity-based tags to location-based tags (from SA1_attributes.sqlite) being:
@@ -183,21 +181,4 @@ assignActivityAreasAndTravelModes <-function(censuscsv, vistacsv, matchcsv, outd
   echo(paste0('Wrote ',(processed-ndiscarded),' plans to ', outcsv , '\n'))
   echo(paste0('Wrote ',ndiscarded,' discarded persons to ', doutfile , '\n'))
   
-}
-
-# example usage
-runexample<- function() {
-  censuscsv<-'output/2.sample/sample.csv.gz'
-  vistacsv<-'output/3.plan/plan.csv'
-  matchcsv<-'output/4.match/match.csv.gz'
-  outdir<-'output/5.locate'
-  dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
-  outcsv<-paste0(outdir,'/plan.csv')
-  writeInterval <- 100 # write to file every so many plans
-  
-  assignActivityAreasAndTravelModes(censuscsv, vistacsv, matchcsv, outdir, outcsv, writeInterval)
-  planToSpatial(read.csv("output/5.locate/plan.csv"),'output/5.locate/plan.sqlite')
-  
-  # only run if you have access to the full VISTA dataset
-  # source('locateVISTA.R', local=TRUE)
 }

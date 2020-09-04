@@ -55,16 +55,3 @@ assignLocationsToActivities <- function(plancsv, outcsv, writeInterval) {
   cat('\n')
   echo(paste0('Wrote ',processed,' plans to ', outcsv , '\n'))
 }
-
-
-# example usage
-runexample<- function() {
-  plancsv<-'output/5.locate/plan.csv'
-  outdir<-'output/6.place'
-  dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
-  outcsv<-paste0(outdir,'/plan.csv')
-  writeInterval <- 100 # write to file every so many plans
-  
-  assignLocationsToActivities(plancsv, outcsv, writeInterval)
-  placeToSpatial(read.csv("output/6.place/plan.csv"),'output/6.place/plan.sqlite')
-}

@@ -109,28 +109,3 @@ locations_setup<-function(setupDir,
   saveRDS(sa1Centroids, outfile)
 }
 
-
-# Below is a convenience script to create extracts of the locations data
-# for the purpose of testing. The idea is to remove all SA1s that are not
-# required by the test population. 
-# 
-# This script need only be run to update the tests, and only when the locations 
-# data has changed.
-# 
-# The process is to first run the population generation algorithm steps 1-5
-# (where Step5 uses the full locations data), and then run this script on the
-# output of Step5 (which contains the set of SA1s actually used, i.e., the ones that
-# should be retained).
-
-
-setupLocationsTestExample<-function() {
-  setupDir<-'../output'
-  distanceMatrixFile <- "../data/distanceMatrix.rds"
-  distanceMatrixIndexFile <- "../data/distanceMatrixIndex.csv"
-  sa1AttributedFile <- "../data/SA1attributed.sqlite"
-  sa1CentroidsFile <- "../data/SA1centroids.sqlite"
-  addressesFile <- "../data/addresses.sqlite"
-  plansFile <- '../tests/actual/5.locate/plan.csv'
-  locations_setup(setupDir, distanceMatrixFile, distanceMatrixIndexFile, 
-                  sa1AttributedFile, sa1CentroidsFile, addressesFile, plansFile)
-}

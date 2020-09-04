@@ -24,13 +24,3 @@ matchPersons<-function(censuscsv, vistacsv, outcsv) {
   close(gz1)
   echo(paste0('Wrote ', outcsv, '\n'))
 }
-
-# example usage
-runexample<- function() {
-  censuscsv<-'output/2.sample/sample.csv.gz'
-  vistacsv<-'output/3.plan/plan.csv'
-  outdir<-'output/4.match'
-  dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
-  outcsv<-paste0(outdir,'/match.csv.gz')
-  matchPersons(censuscsv, vistacsv, outcsv)
-}  
