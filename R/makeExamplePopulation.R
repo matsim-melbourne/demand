@@ -40,6 +40,7 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     if(do.steps[1]) {
       source("vista.R", local=TRUE)
       source('setup.R', local=TRUE); 
+      source('locations.R', local=TRUE);
       demand_setup('../output/1.setup', 
                    '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv')
       locations_setup(
