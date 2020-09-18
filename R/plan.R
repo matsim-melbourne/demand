@@ -111,6 +111,10 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       # pick the next time bin
       bin<-ebin
     }
+    # if we did not make a plan then just stay at home
+    if(nrow(plan)==0) {
+      plan[nrow(plan)+1,]<-list("Home", 1, binsize)
+    }
     
     # Sew up Home Morning/Night activities properly
     
