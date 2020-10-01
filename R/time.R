@@ -37,20 +37,20 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outcsv, writeInterva
     if(i<nrow(pp) && (pp[i,]$EndBin == pp[i+1,]$StartBin)) {
       # if the end bin of this activity is the same as the start bin of the next activity, 
       # then put this end time in the third quarter of the bin
-      pp[i,]$act_end_hhmmss<-toHHMMSS((pp[i,]$EndBin*(binSizeInMins-1))+(binSizeInMins*0.5)+sample(binSizeInMins*0.25, 1))
+      pp[i,]$act_end_hhmmss<-toHHMMSS(round((pp[i,]$EndBin*(binSizeInMins-1))+(binSizeInMins*0.5)+sample(binSizeInMins*0.25, 1)))
       assignedEnd<-TRUE
     } 
     if (i>1 && (pp[i,]$StartBin == pp[i-1,]$EndBin)) {
       # if the start bin of this activity is the same as the end bin of the previous activity, 
       # then put this start time in the start of the fourth quarter of the bin
-      pp[i,]$act_start_hhmmss<-toHHMMSS((pp[i,]$StartBin*(binSizeInMins-1))+(binSizeInMins*0.75)+sample(binSizeInMins*0.125, 1))
+      pp[i,]$act_start_hhmmss<-toHHMMSS(round((pp[i,]$StartBin*(binSizeInMins-1))+(binSizeInMins*0.75)+sample(binSizeInMins*0.125, 1)))
       assignedStart<-TRUE
     } 
     if (pp[i,]$StartBin == pp[i,]$EndBin) {
       if (assignedStart && assignedEnd) {
         # getting too tight; need to squeeze start/end in the start of the fourth quarter of the bin
-        tx<-(pp[i,]$StartBin*(binSizeInMins-1))+(binSizeInMins*0.75)+sample(binSizeInMins*0.125, 1)
-        ty<-(pp[i,]$StartBin*(binSizeInMins-1))+(binSizeInMins*0.75)+sample(binSizeInMins*0.125, 1)
+        tx<-round((pp[i,]$StartBin*(binSizeInMins-1))+(binSizeInMins*0.75)+sample(binSizeInMins*0.125, 1))
+        ty<-round((pp[i,]$StartBin*(binSizeInMins-1))+(binSizeInMins*0.75)+sample(binSizeInMins*0.125, 1))
         if (tx < ty) {
           pp[i,]$act_start_hhmmss<-toHHMMSS(tx)
           pp[i,]$act_end_hhmmss<-toHHMMSS(ty)
@@ -60,27 +60,27 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outcsv, writeInterva
         }
       } else if (assignedEnd) {
         # if end is already assigned (in tird quarter) then put the start in the first half
-        pp[i,]$act_start_hhmmss<-toHHMMSS((pp[i,]$StartBin*(binSizeInMins-1))+sample(binSizeInMins*0.5, 1))
+        pp[i,]$act_start_hhmmss<-toHHMMSS(round((pp[i,]$StartBin*(binSizeInMins-1))+sample(binSizeInMins*0.5, 1)))
         assignedStart<-TRUE
       } else if (assignedStart) {
         # if start is already assigned (in the fourth quarter) then put the end after it
-        pp[i,]$act_end_hhmmss<-toHHMMSS((pp[i,]$EndBin*(binSizeInMins-1))+(binSizeInMins*(0.75+0.125))+sample(binSizeInMins*0.125, 1))
+        pp[i,]$act_end_hhmmss<-toHHMMSS(round((pp[i,]$EndBin*(binSizeInMins-1))+(binSizeInMins*(0.75+0.125))+sample(binSizeInMins*0.125, 1)))
         assignedEnd<-TRUE
       } else {
         # else if the start/end bins of this activity is the same, then put start/end in each half of the bin
-        pp[i,]$act_start_hhmmss<-toHHMMSS((pp[i,]$StartBin*(binSizeInMins-1))+sample(binSizeInMins*0.5, 1))
+        pp[i,]$act_start_hhmmss<-toHHMMSS(round((pp[i,]$StartBin*(binSizeInMins-1))+sample(binSizeInMins*0.5, 1)))
         assignedStart<-TRUE
-        pp[i,]$act_end_hhmmss<-toHHMMSS((pp[i,]$EndBin*(binSizeInMins-1))+(binSizeInMins*0.5)+sample(binSizeInMins*0.5, 1))
+        pp[i,]$act_end_hhmmss<-toHHMMSS(round((pp[i,]$EndBin*(binSizeInMins-1))+(binSizeInMins*0.5)+sample(binSizeInMins*0.5, 1)))
         assignedEnd<-TRUE
       }
     } 
     if (!assignedStart) {
       # else put the start/end times anywhere in the bin
-      pp[i,]$act_start_hhmmss<-toHHMMSS((pp[i,]$StartBin*(binSizeInMins-1))+sample(binSizeInMins, 1))
+      pp[i,]$act_start_hhmmss<-toHHMMSS(round((pp[i,]$StartBin*(binSizeInMins-1))+sample(binSizeInMins, 1)))
     }
     if (!assignedEnd) {
       # else put the start/end times anywhere in the bin
-      pp[i,]$act_end_hhmmss<-toHHMMSS((pp[i,]$EndBin*(binSizeInMins-1))+sample(binSizeInMins, 1))
+      pp[i,]$act_end_hhmmss<-toHHMMSS(round((pp[i,]$EndBin*(binSizeInMins-1))+sample(binSizeInMins, 1)))
     }
     
     # add it to out list

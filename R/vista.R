@@ -219,7 +219,10 @@ simplify_activities_and_create_groups<-function(gzfile) {
     df$Activity=="Buy Something", 
     "Shop", df$Activity.Group)
   df$Activity.Group<-ifelse(
-    df$Activity=="Unknown Purpose (at start of day)" | df$Activity=="Other Purpose" | df$Activity=="Not Stated", 
+    df$Activity=="Unknown Purpose (at start of day)", 
+    "Home", df$Activity.Group)
+  df$Activity.Group<-ifelse(
+    df$Activity=="Other Purpose" | df$Activity=="Not Stated", 
     "Other", df$Activity.Group)
   df$Activity.Group<-ifelse(
     df$Activity=="Social" | df$Activity=="Recreational", 

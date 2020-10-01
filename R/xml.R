@@ -42,7 +42,7 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
     }
 
     # add this row as an activity    
-    act<-newXMLNode("activity", attrs=c(type=pp[i,]$Activity, x=pp[i,]$x, y=pp[i,]$y, start_time=pp[i,]$act_start_hhmmss, end_time=pp[i,]$act_end_hhmmss))
+    act<-newXMLNode("activity", attrs=c(type=pp[i,]$Activity, x=pp[i,]$x, y=pp[i,]$y, end_time=pp[i,]$act_end_hhmmss))
     addChildren(pplan, act)
 
     # if this row marks the end of a person's plan 
