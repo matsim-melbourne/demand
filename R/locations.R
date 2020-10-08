@@ -67,17 +67,17 @@ calculateProbabilities <- function(SA1_id,destination_category,mode) {
   modeSD <- NULL
   filteredset<-SA1_attributed_dt[.(as.numeric(SA1_id))]
   if(mode=="walk"){
-    modeMean <- filteredset$walk_mean
-    modeSD <- filteredset$walk_sd
+    modeMean <- filteredset$meanlog_walk
+    modeSD <- filteredset$sdlog_walk
   } else if(mode=="car"){
-    modeMean <- filteredset$car_mean
-    modeSD <- filteredset$car_sd
+    modeMean <- filteredset$meanlog_car
+    modeSD <- filteredset$sdlog_car
   } else if(mode=="pt"){
-    modeMean <- filteredset$pt_mean
-    modeSD <- filteredset$pt_sd
+    modeMean <- filteredset$meanlog_pt
+    modeSD <- filteredset$sdlog_pt
   } else if(mode=="bike"){
-    modeMean <- filteredset$bike_mean
-    modeSD <- filteredset$bike_sd
+    modeMean <- filteredset$meanlog_bike
+    modeSD <- filteredset$sdlog_bike
   }
   
   attractionProbability <- SA1_attributed[,match(destination_category,colnames(SA1_attributed))]
@@ -93,14 +93,18 @@ calculateProbabilities <- function(SA1_id,destination_category,mode) {
   # alternative way to compute distance probabilities for SA1s clipped to a much smaller set
   # within 2 standard deviations of the mode mean - Dhi, 21/Feb/20
   dd<-distances 
-  dd[dd<(modeMean-(2*modeSD)) | (dd>modeMean+(2*modeSD))]<- NA # discard anything >2SDs either side
+  dd[dd<qlnorm(0.05,modeMean,modeSD) | dd>qlnorm(0.95,modeMean,modeSD)]<- NA # discard anything >2SDs either side
   dd[is.na(attractionProbability)] <- NA # discard regions with no valid destination types
   if (sum(!is.na(dd)) == 0) return(NULL) # return NULL if nothing is left
   if(sum(!is.na(dd)) == 1) { # if only one possible destination
     dd[!is.na(dd)]<-1
   } else {
-    #  changed this to a z-score based method - Alan, 22/Jun/20
-    dd<-(2-abs((dd-modeMean)/modeSD))
+    #  changed this to a quantile based method since standard z-score won't work
+    #  for lognormal distributions - Alan, 08/Oct/20
+    #  0.5: very probable, 0.0: not probable
+    dd<-(0.5-abs(plnorm(dd,modeMean,modeSD)-0.5))
+    # #  changed this to a z-score based method - Alan, 22/Jun/20
+    # dd<-(2-abs((dd-modeMean)/modeSD))
     # dd<-(max(dd, na.rm=TRUE)-dd)/max(dd, na.rm=TRUE) # prob of visiting based on distance
     dd<-dd/sum(dd, na.rm=TRUE)
   }
@@ -248,7 +252,7 @@ planToSpatial <- function(pp,fileLocation) {
     inner_join(sa1_centroids, by=c("prev_sa1"="sa1_maincode_2016")) %>%
     inner_join(sa1_centroids, by=c("SA1_MAINCODE_2016"="sa1_maincode_2016")) %>%
     # turn the two SA1 centroids into line geometry
-    mutate(GEOMETRY=paste0("LINESTRING(",x.x," ",y.x,",",x.y," ",y.y,")")) %>%
+    mutate(GEOMETRY=paste0("LINESTRING(",X.x," ",Y.x,",",X.y," ",Y.y,")")) %>%
     st_as_sf(wkt = "GEOMETRY", crs = 28355) %>%
     dplyr::select(PlanId,Activity,StartBin,EndBin,AgentId,SA1_MAINCODE_2016,
                   LocationType,ArrivingMode,Distance)
@@ -267,7 +271,7 @@ placeToSpatial <- function(pp,fileLocation) {
   ppp <- pp %>%
     # Ignore the first entries for a person as they won't have a valid previous location
     # turn the two SA1 centroids into line geometry
-    mutate(GEOMETRY=paste0("LINESTRING(",lag(x)," ",lag(y),",",x," ",y,")")) %>%
+    mutate(GEOMETRY=paste0("LINESTRING(",lag(X)," ",lag(Y),",",X," ",Y,")")) %>%
     filter(!is.na(ArrivingMode)) %>%
     st_as_sf(wkt = "GEOMETRY", crs = 28355) # %>%
     # some legs end up at the same address, this would remove them

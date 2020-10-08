@@ -47,9 +47,9 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         '../output/1.setup', 
         '../data/distanceMatrix.rds', 
         '../data/distanceMatrixIndex.csv', 
-        '../data/SA1attributed.sqlite', 
-        '../data/SA1centroids.sqlite', 
-        '../data/addresses.sqlite'
+        '../data/SA1attributed.csv.gz', 
+        '../data/SA1centroids.csv.gz', 
+        '../data/addresses.csv.gz'
       )
     }
     

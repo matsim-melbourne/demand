@@ -16,7 +16,7 @@ demand_setup<-function(setupDir, vista18TripsCsv) {
   simplify_activities_and_create_groups(out_weekend_activities_csv_gz)
   echo(paste0('Updated ', out_weekend_activities_csv_gz,'\n'))
   
-  # Write out the activity probabilitities by time bins
+  # Write out the activity probabilities by time bins
   binsize<-48 # 30-min bins
   echo(paste0('Extracting VISTA weekday/end activities times into ',binsize,' bins (can take a while)\n'))
   out_weekday_activities_time_bins_csv_gz<-paste0(setupDir,'/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz')
@@ -29,7 +29,7 @@ demand_setup<-function(setupDir, vista18TripsCsv) {
   extract_and_write_activities_time_bins(in_activities_csv_gz, out_csv_gz, binsize)
   echo(paste0('Wrote ', out_weekday_activities_time_bins_csv_gz, ' and ', out_weekend_activities_time_bins_csv_gz,'\n'))
   
-  # Write out the activity end time probabilities for each staret time bin
+  # Write out the activity end time probabilities for each start time bin
   in_activities_csv_gz<-out_weekday_activities_csv_gz
   out_csv <- paste0(setupDir,'/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz')
   echo(paste0('Extracting VISTA weekday activities end times distributions for each start time bin into ',out_csv,'\n'))
@@ -84,26 +84,22 @@ locations_setup<-function(setupDir,
   # in the correct order.
   echo(paste0("Reading ", sa1AttributedFile, "\n"))
   sa1Aattributed <- inner_join(dmi,
-                               st_read(sa1AttributedFile, quiet=TRUE) %>%
-                                 st_drop_geometry(),
+                               read.csv(gzfile(sa1AttributedFile)),
                                by="sa1_maincode_2016")
   outfile<-paste0(setupDir,"/locSa1Aattributed.rds")
   echo(paste0("Writing ", outfile, "\n"))
   saveRDS(sa1Aattributed, outfile)
   
-  # Reading in the addresses. I'm removing the geometry and converting it to X,Y.
+  # Reading in the addresses.
   # These coordinates are in EPSG:28355, which is a projected coordinate system.
   echo(paste0("Reading ", addressesFile, "\n"))
-  addresses <- st_read(addressesFile, quiet=TRUE)
-  addresses <- cbind(st_drop_geometry(addresses),
-                     st_coordinates(addresses))
+  addresses <- read.csv(gzfile(addressesFile))
   outfile<-paste0(setupDir,"/locAddresses.rds")
   echo(paste0("Writing ", outfile, "\n"))
   saveRDS(addresses, outfile)
   
   echo(paste0("Reading ", sa1CentroidsFile, "\n"))
-  sa1Centroids <- st_read(sa1CentroidsFile, quiet=TRUE) %>%
-    st_drop_geometry()
+  sa1Centroids <- read.csv(gzfile(sa1CentroidsFile))
   outfile<-paste0(setupDir,"/locSa1Centroids.rds")
   echo(paste0("Writing ", outfile, "\n"))
   saveRDS(sa1Centroids, outfile)
