@@ -35,36 +35,6 @@ assignActivityAreasAndTravelModes <-function(censuscsv, vistacsv, matchcsv, outd
     return(tc)
   }
   
-  nextModeAndSa1 <- function(fromSA1, toLocType, currentMode, allowModeChange) {
-    if (is.na(currentMode) || is.null(currentMode) || allowModeChange) { # mode can change if last activity was home
-      df<-findLocation(fromSA1, toLocType)
-    } else {
-      df<-findLocationKnownMode(fromSA1, toLocType, currentMode)
-    }
-    return(df)
-  }
-  
-  # nextModeAndSa1WithReturn(20607113903, 20701115539, "education", "car", FALSE)
-  nextModeAndSa1WithReturn <- function(homeSA1, fromSA1, toLocType, currentMode, allowModeChange) {
-    df<-NULL
-    returnProb <- 0
-    for (i in 1:10){
-      if (is.na(currentMode) || is.null(currentMode) || allowModeChange) { # mode can change if last activity was home
-        df<-findLocation(fromSA1, toLocType)
-      } else {
-        df<-findLocationKnownMode(fromSA1, toLocType, currentMode)
-      }
-      if (length(df) > 1) {
-        # df[2] = potential destination SA1, df[1] = potential travel mode
-        returnProb <- getReturnProbability(homeSA1,df[2],df[1])
-      }
-      # cat(paste0("\ndf1: ",df[1]," df2: ",df[2],", returnProb: ",returnProb,"\n"))
-      if (returnProb > 1) (return(df))
-    }
-    # cat(paste0("\nno suitable regions found, using one with a return probability of ",returnProb,"\n"))
-    return(df)
-  }
-  
   # Read in the persons
   gz1<-gzfile(censuscsv, 'rt')
   echo(paste0('Loading ABS census-like persons from ', censuscsv, '\n'))
@@ -112,29 +82,40 @@ assignActivityAreasAndTravelModes <-function(censuscsv, vistacsv, matchcsv, outd
   wplans<-NULL
   # pp<-plans[1:95,] # just the first 10 plans
   pp<-plans
-  i=0
-  homeSA1=NA
+  i<-0
+  homeSA1<-NA
+  nextHome<-1
+  returnTripLength<-NA
   processed<-0; ndiscarded<-0
   # set.seed(20200406)
   while(i<nrow(pp)) {
     i<-i+1
     # cat(paste0(i,"\n"))
     startOfDay<- i==1 || (pp[i,]$PlanId != pp[i-1,]$PlanId && 
-                          pp[i,]$LocationType=="home")
+                          pp[i,]$LocationType == "home")
     endOfDay<- i==nrow(pp) || (pp[i,]$AgentId != pp[i+1,]$AgentId)
       
     if(startOfDay) {
       homeSA1<-pp[i,]$SA1_MAINCODE_2016 # used for calculating return probabilities
+
       # nothing to do since home SA1s are already assigned; just save and continue
       wplans<-rbind(wplans, pp[i,])
     } else {
-      # changed pp[i,] to pp[i-1,] since it's the 2nd entry with a mode (1st has no arriving mode)
-      allowModeChange<- !startOfDay && !endOfDay && pp[i-1,]$LocationType=="home" # allow mode change at home during the day
-      # SA1_MAINCODE_2016 and ArrivingMode should be using the previous leg's value
-      # modeAndSa1<-nextModeAndSa1(as.numeric(pp[i-1,]$SA1_MAINCODE_2016), pp[i,]$LocationType, pp[i-1,]$ArrivingMode, allowModeChange)
+      # is the previous LocationType home?
+      allowModeChange<-!startOfDay && !endOfDay && pp[i-1,]$LocationType=="home" # allow mode change at home during the day
+      mode<-pp[i-1,]$ArrivingMode
+      if(allowModeChange) {
+        mode<-chooseMode(pp[i-1,]$SA1_MAINCODE_2016,pp[i,]$ArrivingMode) # choose a new mode
+        nextHome<-which(pp$LocationType[(i):nrow(pp)]=="home")%>%first()+i-1 # find next home
+        returnTripLength<-getReturnTripLength(pp[i-1,]$SA1_MAINCODE_2016,mode)
+      }
+      allowedSA1<-returnTripLength
+      allowedSA1[allowedSA1>nextHome-i] <- NA
+      allowedSA1[!is.na(allowedSA1)] <- 1
       
-      # incorporating return propability into destination selection
-      modeAndSa1<-nextModeAndSa1WithReturn(homeSA1,as.numeric(pp[i-1,]$SA1_MAINCODE_2016), pp[i,]$LocationType, pp[i-1,]$ArrivingMode, allowModeChange)
+
+      modeAndSa1<-findLocationKnownMode(as.numeric(pp[i-1,]$SA1_MAINCODE_2016), pp[i,]$LocationType, mode, allowedSA1)
+      
       if(!is.null(modeAndSa1)) {
         # assign the mode and SA1
         pp[i,]$ArrivingMode<-modeAndSa1[1]

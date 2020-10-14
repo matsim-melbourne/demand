@@ -49,7 +49,7 @@ loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
 #                  currently weighted 4x higher since distance probability is a
 #                  lot more spread out.
 # calculateProbabilities(20604112202,"commercial","car")
-calculateProbabilities <- function(SA1_id,destination_category,mode) {
+calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1) {
   # SA1_id=20604112202
   # destination_category="commercial"
   # mode="car"
@@ -81,46 +81,34 @@ calculateProbabilities <- function(SA1_id,destination_category,mode) {
   }
   
   attractionProbability <- SA1_attributed[,match(destination_category,colnames(SA1_attributed))]
-  # unneeded now since probabilities are already rescaled
-  # attractionProbDensity <- SA1_attributed[,match(destination_category,colnames(SA1_attributed))] %>%
-  #   rescale(to=c(0,1))
-  # attractionProbability <- attractionProbDensity/sum(attractionProbDensity, na.rm=TRUE) #normalising here so the sum of the probabilities equals 1
-
-  #distProbDensity <- dnorm(distances,mean=modeMean,sd=modeSD)
-  #distProbDensity[is.na(attractionProbDensity)] <- NA # We aren't considering regions with no valid destination types
-  #distProbability <- distProbDensity/sum(distProbDensity, na.rm=TRUE) # normalising here so the sum of the probabilities equals 1
-
   # alternative way to compute distance probabilities for SA1s clipped to a much smaller set
   # within 2 standard deviations of the mode mean - Dhi, 21/Feb/20
-  dd<-distances 
+  dd <- distances 
+  dd[dd<400] <- 400
   dd[dd<qlnorm(0.05,modeMean,modeSD) | dd>qlnorm(0.95,modeMean,modeSD)]<- NA # discard anything >2SDs either side
   dd[is.na(attractionProbability)] <- NA # discard regions with no valid destination types
-  if (sum(!is.na(dd)) == 0) return(NULL) # return NULL if nothing is left
+  dd[is.na(allowedSA1)] <- NA # discard regions too far away from home
+  if(sum(!is.na(dd)) == 0) return(NULL) # return NULL if nothing is left
   if(sum(!is.na(dd)) == 1) { # if only one possible destination
     dd[!is.na(dd)]<-1
   } else {
-    #  changed this to a quantile based method since standard z-score won't work
-    #  for lognormal distributions - Alan, 08/Oct/20
-    #  0.5: very probable, 0.0: not probable
-    dd<-(0.5-abs(plnorm(dd,modeMean,modeSD)-0.5))
-    # #  changed this to a z-score based method - Alan, 22/Jun/20
-    # dd<-(2-abs((dd-modeMean)/modeSD))
-    # dd<-(max(dd, na.rm=TRUE)-dd)/max(dd, na.rm=TRUE) # prob of visiting based on distance
-    dd<-dd/sum(dd, na.rm=TRUE)
+    dd<-plnorm(dd+0.5,modeMean,modeSD)-plnorm(dd-0.5,modeMean,modeSD)
+    # #  changed this to a probability based method since standard z-score won't work
+    # #  for lognormal distributions - Alan, 08/Oct/20
+    dd<-dd/sum(dd, na.rm=TRUE) # normalise
   }
-  distProbability<-dd
-
-  # distComparison <- data.frame(sa1=SA1_attributed$sa1_main16,
-  #                              distances,
-  #                              dd,
-  #                              dhi = (max(dd, na.rm = TRUE) - dd) / max(dd, na.rm = TRUE),
-  #                              z_score = 2 - abs((dd - modeMean) / modeSD),
-  #                              norm = dnorm(dd, mean = modeMean, sd = modeSD)
-  # )
-  # distComparison <- distComparison %>%
-  #   mutate(dhi = dhi / sum(distComparison$dhi,na.rm=TRUE),
-  #          z_score = z_score / sum(distComparison$z_score,na.rm=TRUE),
-  #          norm = norm / sum(distComparison$norm,na.rm=TRUE))
+  distProbability <- dd
+  # There are a lot less short distances than longer distances, we need to take
+  # this into account for the distributions to look right
+  distProportion <- data.frame(distance=distances) %>%
+    mutate(interval=findInterval(distance,seq(0,max(distances),500))) %>%
+    group_by(interval) %>%
+    mutate(proportion=1/n()) %>%
+    ungroup() %>%
+    pull(proportion)
+  
+  distProbability <- distProbability * distProportion
+  distProbability <- distProbability/sum(distProbability, na.rm=TRUE)
   
   # I've set distance probability to 4x more important than destination 
   # attraction. This is arbitrary.
@@ -134,6 +122,28 @@ calculateProbabilities <- function(SA1_id,destination_category,mode) {
                               filter(!is.na(combinedProb))
   return(probabilityDF)
 }
+
+getReturnTripLength <- function(SA1_id,mode) {
+  # SA1_id=20604112202
+  # mode="car"
+  
+  index <- distanceMatrixIndex_dt[.(as.numeric(SA1_id))] %>%
+    pull(index)
+  distances <-data.frame(index=1:nrow(distanceMatrix),
+                         distance=distanceMatrix[index,]) %>% # look down columns
+    inner_join(distanceMatrixIndex, by=c("index"="index")) %>%
+    pull(distance)
+  distances[distances<1] <- 1 # don't want to divide by 0
+  
+  filteredset<-SA1_attributed_dt %>% # get mean and sd for current mode
+    dplyr::select(Mean=paste0("meanlog_",mode),SD=paste0("sdlog_",mode))
+  
+  distance95 <- qlnorm(0.95,filteredset$Mean,filteredset$SD)
+  numberJumpsBack <- ceiling(distances/distance95) #how many jumps to get back to home SA1
+  # View(data.frame(distance=distances,distance95=distance95,numberJumpsBack=numberJumpsBack))
+  return(numberJumpsBack)
+}
+
 
 # This will be made more detailed later, and actually take destination category
 # into account.
@@ -157,9 +167,9 @@ chooseMode <- function(SA1_id,destination_category) {
 
 # Assuming the transport mode is restricted, this will find a destination SA1
 # findLocationKnownMode(20604112202,"commercial","car")
-findLocationKnownMode <- function(SA1_id,destination_category,mode) {
+findLocationKnownMode <- function(SA1_id,destination_category,mode,allowedSA1) {
   #cat(paste0("\nSA1_id=[",SA1_id,"] destination_category=[",destination_category,"] mode=[",mode,"]\n"))
-  probabilityDF <- calculateProbabilities(SA1_id,destination_category,mode)
+  probabilityDF <- calculateProbabilities(SA1_id,destination_category,mode,allowedSA1)
   #cat(str(probabilityDF))
   if(is.null(probabilityDF)) return(NULL)
   if(length(probabilityDF$sa1_maincode_2016)==1) {
@@ -173,8 +183,8 @@ findLocationKnownMode <- function(SA1_id,destination_category,mode) {
 
 # Find a destination SA1 given a source SA1 and destination category
 # findLocation(20604112202,"commercial")
-findLocation <- function(SA1_id,destination_category) {
-  return(findLocationKnownMode(SA1_id,destination_category,chooseMode(SA1_id,destination_category)))
+findLocation <- function(SA1_id,destination_category,canReachHome) {
+  return(findLocationKnownMode(SA1_id,destination_category,chooseMode(SA1_id,destination_category),canReachHome))
 }
 
 
