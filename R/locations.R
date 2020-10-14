@@ -40,7 +40,7 @@ loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
 }
 
 # This returns a dataframe with possible SA1_ids and their probabilities.
-# There are three probabilites returned:
+# There are three probabilities returned:
 # 1: distProb. The probability of choosing a destination based on distance.
 # 2: attractProb. The probability of choosing a destination based on that
 #                 destination's attractiveness.

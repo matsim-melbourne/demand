@@ -55,23 +55,6 @@ plotHistograms <- function(dist_vista,dist_demand,mode,binwidth=100) {
   return(g)
 }
 
-plotHistograms(vistaTrips,vpTrips,"walk",binwidth=400)+xlim(0,5000)
-ggsave("../output/5.locate/analysis-walk.pdf",width=8,height=5)
-
-plotHistograms(vistaTrips,vpTrips,"bike",binwidth=1000)+xlim(0,20000)
-ggsave("../output/5.locate/analysis-bike.pdf",width=8,height=5)
-
-plotHistograms(vistaTrips,vpTrips,"pt",binwidth=2000)+xlim(0,60000)
-ggsave("../output/5.locate/analysis-pt.pdf",width=8,height=5)
-
-plotHistograms(vistaTrips,vpTrips,"car",binwidth=2000)+xlim(0,60000)
-ggsave("../output/5.locate/analysis-car.pdf",width=8,height=5)
-
-
-
-tmp <- tmpFilter(vistaTrips,"car")
-plotSkew(tmp$distance,tmp$weight,binwidth=1000)+xlim(0,60000)
-ggsave("car.pdf",width=8,height=5)
 
 
 # Just need the non-spatial data from the Meshblocks
@@ -120,6 +103,23 @@ vpTrips <- read.csv("../output/5.locate/plan.csv") %>%
   inner_join(sa1_maincode_2016,by="sa1_maincode_2016") %>%
   dplyr::select(sa1_maincode_2016,sa2_maincode_2016,sa3_code_2016,ArrivingMode,Distance)
   
+
+
+plotHistograms(vistaTrips,vpTrips,"walk",binwidth=400)+xlim(0,5000)
+ggsave("../output/5.locate/analysis-walk.pdf",width=8,height=5)
+
+plotHistograms(vistaTrips,vpTrips,"bike",binwidth=1000)+xlim(0,20000)
+ggsave("../output/5.locate/analysis-bike.pdf",width=8,height=5)
+
+plotHistograms(vistaTrips,vpTrips,"pt",binwidth=2000)+xlim(0,60000)
+ggsave("../output/5.locate/analysis-pt.pdf",width=8,height=5)
+
+plotHistograms(vistaTrips,vpTrips,"car",binwidth=2000)+xlim(0,60000)
+ggsave("../output/5.locate/analysis-car.pdf",width=8,height=5)
+
+
+
+
 
 
 # Summarise at SA1 level
@@ -205,7 +205,7 @@ distanceMatrixAggregated <- data.frame(Distance=as.vector(distanceMatrix)) %>%
 
 ggplot(distanceMatrixAggregated,
        aes(x=distance,y=count)) +
-  geom_col(width=binwidth,position=position_nudge(x=0),fill="gray5") + # light blue
+  geom_col(width=binwidth,position=position_nudge(x=0),fill="gray5") +
   labs(x = "Distance traveled", y="count") +
   xlim(0,60000)
 ggsave("../output/5.locate/sa1_distanceDistribution.pdf",width=8,height=5)

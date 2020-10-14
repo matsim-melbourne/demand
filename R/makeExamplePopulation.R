@@ -87,21 +87,28 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     if(do.steps[5]) {
       source("locations.R")
       loadLocationsData(
-        '../output/1.setup/locDistanceMatrix.rds', 
+        '../output/1.setup/locDistanceMatrix.rds',
         '../output/1.setup/locDistanceMatrixIndex.rds',
-        '../output/1.setup/locSa1Aattributed.rds', 
-        '../output/1.setup/locSa1Centroids.rds', 
+        '../output/1.setup/locSa1Aattributed.rds',
+        '../output/1.setup/locSa1Centroids.rds',
         '../output/1.setup/locAddresses.rds'
       )
-      source('locate.R', local=TRUE); 
-      assignActivityAreasAndTravelModes(
+      source('locate.R'); 
+      assignActivityAreasAndTravelModesParallel(
         '../output/2.sample/sample.csv.gz', 
         '../output/3.plan/plan.csv', 
         '../output/4.match/match.csv.gz', 
         '../output/5.locate', 
-        '../output/5.locate/plan.csv', 
-        100 # write to file every so many plans
+        '../output/5.locate/plan.csv'
       )
+      # assignActivityAreasAndTravelModes(
+      #   '../output/2.sample/sample.csv.gz', 
+      #   '../output/3.plan/plan.csv', 
+      #   '../output/4.match/match.csv.gz', 
+      #   '../output/5.locate', 
+      #   '../output/5.locate/plan.csv', 
+      #   100 # write to file every so many plans
+      # )
       planToSpatial(
         read.csv("../output/5.locate/plan.csv"),
         '../output/5.locate/plan.sqlite'
