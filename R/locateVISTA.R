@@ -5,7 +5,7 @@ suppressPackageStartupMessages(library(ggplot2)) # for plotting data
 suppressPackageStartupMessages(library(fitdistrplus)) # for log normal distributions
 
 plotHistograms <- function(dist_vista,dist_demand,mode,binwidth=100) {
-  # binwidth=100
+  # binwidth=400
   # mode="walk"
   dist_vista=vistaTrips%>%filter(ArrivingMode==mode) %>%
     mutate(Distance=ifelse(Distance<1,1,Distance))
@@ -17,22 +17,20 @@ plotHistograms <- function(dist_vista,dist_demand,mode,binwidth=100) {
     mutate(distance=findInterval(Distance,seq(0,maxDist,binwidth))) %>%
     mutate(distance=distance*binwidth-(binwidth*0.75)) %>%
     group_by(distance) %>%
-    summarise(count=sum(weight,na.rm=F))
+    summarise(count=sum(weight,na.rm=T)) %>%
+    mutate(proportion=count/sum(count,na.rm=T))
 
   dist_demand_aggregated <- dist_demand %>%
     mutate(distance=findInterval(Distance,seq(0,maxDist,binwidth))) %>%
     mutate(distance=distance*binwidth-(binwidth*0.25)) %>%
     group_by(distance) %>%
-    summarise(count=n())
+    summarise(count=n()) %>%
+    mutate(proportion=count/sum(count,na.rm=T))
   
-  demandScale= max(dist_vista_aggregated$count) / max(dist_demand_aggregated$count)
-  
-  dist_demand_aggregated <- dist_demand_aggregated %>%
-    mutate(count=count*demandScale)
-  
+
   fit_lnorm1 <- fitdist(dist_vista$Distance,weights=as.integer(dist_vista$weight), distr="lnorm")
   fit_coef1 <- fit_lnorm1$estimate
-  cat(paste0("VISTA: mean=",fit_coef1[1],", sd=",fit_coef1[2],"\n"))
+  cat(paste0(" VISTA: mean=",fit_coef1[1],", sd=",fit_coef1[2],"\n"))
   
   fit_lnorm2 <- fitdist(dist_demand$Distance, distr="lnorm")
   fit_coef2 <- fit_lnorm2$estimate
@@ -41,17 +39,18 @@ plotHistograms <- function(dist_vista,dist_demand,mode,binwidth=100) {
   
   
   g <- ggplot(dist_vista_aggregated,
-              aes(x=distance,y=count)) +
+              aes(x=distance,y=proportion)) +
     geom_col(width=binwidth*0.5,position=position_nudge(x=0),fill="#1f78b4") + # light blue
     geom_col(data=dist_demand_aggregated,width=binwidth*0.5,
              position=position_nudge(x=0),fill="#33a02c") + # light green
     stat_function(fun=function(x) dlnorm(x, meanlog=fit_coef1[1],
-                                         sdlog=fit_coef1[2]) * sum(dist_vista_aggregated$count) * binwidth,
+                                         sdlog=fit_coef1[2]) * binwidth,
                   color="#a6cee3", size=1, xlim=c(0,maxDist)) + # dark blue
     stat_function(fun=function(x) dlnorm(x, meanlog=fit_coef2[1],
-                                         sdlog=fit_coef2[2]) * sum(dist_vista_aggregated$count) * binwidth,
+                                         sdlog=fit_coef2[2]) * binwidth,
                   color="#b2df8a", size=1, xlim=c(0,maxDist)) + # dark green
-    labs(x = "Distance traveled", y="count")
+    labs(x = "Distance traveled", y="Proportion") +
+    scale_y_continuous(labels = scales::percent)
   return(g)
 }
 

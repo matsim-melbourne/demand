@@ -136,7 +136,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       group_by(Activity, group_weight = cumsum(c(1, diff(rank(Activity)) != 0)), Activity) %>%
       summarise(StartBin=min(StartBin), EndBin=max(EndBin)) %>%
       arrange(group_weight) %>%
-      select(-group_weight)
+      dplyr::select(-group_weight)
     
     return(as.data.frame(plan))
   }

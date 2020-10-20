@@ -74,6 +74,9 @@ assignActivityAreasAndTravelModes <-function(censuscsv, vistacsv, matchcsv, outd
     apply(plans[plans$SA1_MAINCODE_2016!="",], 1, function(x) {
     persons[persons$AgentId==x["AgentId"],]$SA1_MAINCODE_2016
   })
+  
+  plans<-plans %>%
+    mutate(SA1_MAINCODE_2016=as.numeric(SA1_MAINCODE_2016))
 
   echo('Assigning activities\' SA1s and travel modes (can take a while)\n')
   write.table(plans[FALSE,], file=outcsv, append=FALSE, row.names=FALSE, sep = ',')
@@ -165,7 +168,6 @@ assignActivityAreasAndTravelModes <-function(censuscsv, vistacsv, matchcsv, outd
   
 }
 
-
 calculatePlanSubset <- function(planGroup,plans,outcsv,doutfile) {
   setDTthreads(1) # only one thread for data.table since we'll be operating in parallel
   
@@ -236,116 +238,5 @@ calculatePlanSubset <- function(planGroup,plans,outcsv,doutfile) {
   write.table(discarded, file=doutfile, append=TRUE, row.names=FALSE, col.names=FALSE, sep = ',')
   return(data.frame(plan_group=planGroup,plans=processed,discarded=nrow(discarded)))
 }
-assignActivityAreasAndTravelModesParallel <-function(censuscsv, vistacsv, matchcsv, outdir, outcsv) {
-  
-  options(scipen=999) # disable scientific notation for more readable filenames with small sample sizes
-  
-  suppressPackageStartupMessages(library(dplyr))
-  suppressPackageStartupMessages(library(stringi))
-  suppressPackageStartupMessages(library(doParallel))
-  
-  # internal function to replace activity tags with location tags
-  replaceActivityWithLocationTags<-function (tc) {
-    # convert activity-based tags to location-based tags (from SA1_attributes.sqlite) being:
-    # Home* -> home
-    # Work -> work
-    # Study -> education
-    # Shop -> commercial
-    # Personal -> commercial
-    # Social/Recreational -> commercial,park
-    # Pickup/Dropoff/Deliver -> work,education,commercial,park (but not home)
-    # Other -> work,education,commercial,park (but not home)
-    tc<-replace(tc, tc=="Home", "home")
-    tc<-replace(tc, tc=="Home Morning", "home")
-    tc<-replace(tc, tc=="Home Daytime", "home")
-    tc<-replace(tc, tc=="Home Night", "home")
-    tc<-replace(tc, tc=="Work", "work")
-    tc<-replace(tc, tc=="Study", "education")
-    tc<-replace(tc, tc=="Shop", "commercial")
-    tc<-replace(tc, tc=="Personal", "commercial")
-    # KISS: replace 'With Someone' with Other for now
-    tc<-replace(tc, tc=="With Someone", "Other")
-    # KISS: assuming Social/Recreational is equally likely to occur in commercial or park locations ; improve later on
-    tc<-as.vector(sapply(tc, function(x) replace(x, x=="Social/Recreational", sample(c("commercial","park"), 1))))
-    # KISS: assuming Pickup/Dropoff/Deliver is equally likely to occur in any location; improve later on
-    tc<-as.vector(sapply(tc, function(x) replace(x, x=="Pickup/Dropoff/Deliver", sample(c("work","education","commercial","park"), 1))))
-    # KISS: assuming Other is equally likely to occur in any location; improve later on; improve later on
-    tc<-as.vector(sapply(tc, function(x) replace(x, x=="Other", sample(c("work","education","commercial","park"), 1))))
-    return(tc)
-  }
-  
-  # Read in the persons
-  gz1<-gzfile(censuscsv, 'rt')
-  echo(paste0('Loading ABS census-like persons from ', censuscsv, '\n'))
-  persons<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)
-  close(gz1)
-  
-  
-  # Read in the plans
-  gz1<-gzfile(vistacsv, 'rt')
-  echo(paste0('Loading VISTA-like plans from ', vistacsv, '\n'))
-  origplans<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)
-  close(gz1)
-  
-  # Read in the matches
-  gz1<-gzfile(matchcsv, 'rt')
-  echo(paste0('Loading matched plans to persons from ', matchcsv, '\n'))
-  matches<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)
-  close(gz1)
-  
-  # set.seed(20200406) # for when we want to have the same LocationType each time
-  plans<-origplans %>%
-    # Remove all plans that are not matched
-    filter(PlanId %in% matches$PlanId) %>% 
-    # Assign matched PersonId (very fast since we assume row number equals Id number)
-    mutate(AgentId = matches[as.numeric(PlanId),]$AgentId) %>%
-    # Tag home SA1 with PersonId
-    mutate(SA1_MAINCODE_2016 = ifelse(grepl("Home", Activity), AgentId, "")) %>%
-    # Add location type tag
-    mutate(LocationType=replaceActivityWithLocationTags(Activity)) %>%
-    # Add a column for mode taken from last activity to this
-    mutate(ArrivingMode=NA) %>%
-    mutate(Distance=NA)
-  
-  echo('Assigning home SA1 locations\n')
-  plans[plans$SA1_MAINCODE_2016!="",]$SA1_MAINCODE_2016<-
-    apply(plans[plans$SA1_MAINCODE_2016!="",], 1, function(x) {
-      persons[persons$AgentId==x["AgentId"],]$SA1_MAINCODE_2016
-    })
-  
-  echo('Assigning activities\' SA1s and travel modes (can take a while)\n')
-  write.table(plans[FALSE,], file=outcsv, append=FALSE, row.names=FALSE, sep = ',')
-  discarded<-persons[FALSE,]
-  doutfile<-paste0(outdir, '/persons.discarded.csv')
-  write.table(discarded, file=doutfile, append=FALSE, row.names=FALSE, sep = ',')
-  
-  # processing 100 plans before saving.
-  planGroups <- 1:ceiling(max(plans$PlanId,na.rm=T)/100)
-  
-  
-  
-  
-  number_cores <- max(1,floor(as.integer(detectCores())*0.9))
-  cl <- makeCluster(number_cores)
-  echo(paste0("About to start processing density in parallel, using ",number_cores," cores\n"))
-  echo(paste0("Now processing the ",length(planGroups)," plan groups\n"))
-  
-  registerDoParallel(cl)
-  start_time = Sys.time()
-  results <- foreach(planGroup=planGroups,
-                     .combine=rbind,
-                     .verbose=FALSE,
-                     .packages=c("sf","dplyr","scales","data.table")
-  ) %dopar%
-    calculatePlanSubset(planGroup,plans,outcsv,doutfile)
-  end_time = Sys.time()
-  end_time - start_time
-  stopCluster(cl)
-  
-  echo(paste0("Processing done, here are the results:\n"))
-  results
-  
-  
-  
-}
+
 

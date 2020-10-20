@@ -49,11 +49,13 @@ loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
 #                  currently weighted 4x higher since distance probability is a
 #                  lot more spread out.
 # calculateProbabilities(20604112202,"commercial","car")
-calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1) {
+calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=NULL) {
   # SA1_id=20604112202
   # destination_category="commercial"
   # mode="car"
   
+  # if you don't include allowedSA1, then we assume all regions are allowed
+  if(is.null(allowedSA1)) allowedSA1<-rep(1,nrow(distanceMatrix))
   #index <- distanceMatrixIndex %>%
   #  filter(sa1_main16 == SA1_id) %>%
   index <- distanceMatrixIndex_dt[.(as.numeric(SA1_id))] %>%
