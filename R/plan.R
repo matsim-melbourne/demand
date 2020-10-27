@@ -207,13 +207,13 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       stat <- "Act.Duration.Mins.Mean"
       e<-as.numeric(bins[bins$Activity.Group==act & bins$Activity.Stat==stat,binCols])
       e<-ceiling(e/binSizeInMins)
-      e<-e/sum(e)
+      # e<-e/sum(e)
       a<-as.numeric(newbins[newbins$Activity.Group==act & newbins$Activity.Stat==stat,binCols])
       b<-as.numeric(newbins[newbins$Activity.Group==act & newbins$Activity.Stat=="Act.Duration.Mins.Sigma",binCols])
       c<-ceiling(a/b)
       c[is.nan(c)] <- 0
       a<-c
-      a<-a/sum(a)
+      # a<-a/sum(a)
       shift<-(rowid-1)*binsize
       rr[shift+(1:binsize),"Activity"]<-rep(act,binsize)
       rr[shift+(1:binsize),"Stat"]<-rep(stat,binsize)
@@ -323,7 +323,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       scale_fill_manual(values=c('#009B95', '#FF7100')) + 
       facet_wrap(~Activity, scales="free", ncol=2) +
       theme(plot.title = element_text(hjust = 0.5)) +
-      xlab("30-min time bins") + ylab("Proportion of time") +
+      xlab("30-min time bins") + ylab("Average Duration (# of bins)") +
       ggtitle(paste0('Activity Duration by time of day'))
     ggsave(outfile, gg, width=210, height=297, units = "mm")
     
