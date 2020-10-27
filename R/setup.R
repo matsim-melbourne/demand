@@ -1,5 +1,8 @@
 # Function to pre-process some data; need only be run once
 demand_setup<-function(setupDir, vista18TripsCsv) {
+  # example parameter values
+  # setupDir <- '../output/1.setup'
+  # vista18TripsCsv <- '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv'
   
   # Extract VISTA activities and save separately into weekday and weekend activities
   vista_csv <- vista18TripsCsv
