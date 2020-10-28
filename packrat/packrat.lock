@@ -82,6 +82,12 @@ Source: CRAN
 Version: 0.6.25
 Hash: ec0a673866797c8c1fc1daa359fb4cad
 
+Package: doParallel
+Source: CRAN
+Version: 1.0.16
+Hash: 0bfafffe940c8fc4bc4f785018b17dde
+Requires: foreach, iterators
+
 Package: dplyr
 Source: CRAN
 Version: 1.0.2
@@ -115,6 +121,12 @@ Source: CRAN
 Version: 2.0.3
 Hash: 29a358c21cb8de2e424cbec6b6be6553
 
+Package: foreach
+Source: CRAN
+Version: 1.5.1
+Hash: 6dda99e5cba20abf021b0e6cfb3472df
+Requires: iterators
+
 Package: generics
 Source: CRAN
 Version: 0.0.2
@@ -141,6 +153,11 @@ Source: CRAN
 Version: 0.2.2
 Hash: 2264002205b89ba462ceb55c6edad2ea
 Requires: testthat
+
+Package: iterators
+Source: CRAN
+Version: 1.0.13
+Hash: 750adbdf6750e2dbcf2066c443d64892
 
 Package: labeling
 Source: CRAN
