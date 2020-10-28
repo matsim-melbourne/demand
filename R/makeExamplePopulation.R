@@ -65,7 +65,9 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
 
     # Step 3: generate the VISTA-like trip chains
     if(do.steps[3]) {
+      source('sample.R', local=TRUE); 
       source('plan.R', local=TRUE);
+      numPlans<-ceiling((samplePercent/100)* countMelbourne2016Population('../data')) + 100 # generate a few extra
       generatePlans(
         numPlans, 
         '../output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz', 
@@ -154,7 +156,6 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
 
 runexample<-function() {
   samplePercent<- 0.1 # use 0.1% sample of the census-like synthetic population (<5k persons)
-  numPlans <- 5000 # generate 5000 VISTA-like plans (so we have enough plans to match to persons)
   do.steps <- c(T,T,T,T,T,T,T,T) # which algorithm steps to run
   makeExamplePopulation(samplePercent, numPlans, do.steps) 
 }

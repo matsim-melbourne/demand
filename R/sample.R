@@ -91,3 +91,13 @@ sampleMelbourne2016Population <- function(dataDir, samplePercentage, outcsvgz) {
   echo(paste0('Updated ', outcsvgz,'\n'))
   
 }
+
+countMelbourne2016Population <- function(dataDir) {
+  # get all the Melbourne 2016 persons files by SA2
+  df<-data.frame(SA2=list.files(path=dataDir, pattern = "\\persons.csv.gz$", recursive = TRUE, full.names = TRUE), stringsAsFactors=FALSE)
+  persons<-0
+  for(row in 1:nrow(df)) {
+    persons<- persons + as.numeric(system(paste0('gunzip -c \"', df$SA2[row], '\" | wc -l'), intern=TRUE))
+  }
+ return(persons) 
+}
