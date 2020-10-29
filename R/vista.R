@@ -77,7 +77,8 @@ extract_and_write_activities_time_bins<-function(in_activities_csv_gz, out_csv_g
       } else if (act=="Act.Duration") {
         vm<-NULL; vu<-NULL
         for(j in 1:binsize) {
-          d<-dd[dd$Act.Start.Time>=binStartMins[j],act]
+          filter <- dd$Act.Start.Time>=binStartMins[j] & dd$Act.Start.Time<binEndMins[j]
+          d<-dd[filter,act]
           if (length(d)==0) {
             m<-0
             u<-0

@@ -1,11 +1,12 @@
 generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
   # example inputs:
-  # N<-10000 # generate 10k VISTA 2012-18 like daily plans
-  # csv<-paste0('./setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz')
-  # binCols<-3:50 # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
-  # outdir<-"."
-  # writeInterval <- 1000 # write to file every 1000 plans
-
+  # N<-500
+  # csv<-'../output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz'
+  # endcsv<-'../output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz'
+  # binCols <-3:50 # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
+  # outdir <-'../output/3.plan' 
+  # writeInterval<-20 # write to file every so many plans
+  
   suppressPackageStartupMessages(library(dplyr))
 
   getActivityGroups <- function(bins) {
@@ -150,6 +151,12 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       ecol<-binIndexOffset+plan[j,]$EndBin
       newbins[srow, scol]<-newbins[srow, scol] + 1
       newbins[erow, ecol]<-newbins[erow, ecol] + 1
+      drow<-newbins$Activity.Group==plan[j,]$Activity & newbins$Activity.Stat=="Act.Duration.Mins.Mean"
+      dcol<-scol
+      newbins[drow, dcol]<-newbins[drow, dcol] + (ecol-scol) # save duration as number of bins
+      drow<-newbins$Activity.Group==plan[j,]$Activity & newbins$Activity.Stat=="Act.Duration.Mins.Sigma"
+      dcol<-scol
+      newbins[drow, dcol]<-newbins[drow, dcol] + 1 # save count so we can calculate the mean later
     }
     return(newbins)
   }
@@ -191,6 +198,28 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       qq[shift+(1:binsize),"Bin"]<-1:binsize
       qq[shift+(1:binsize),"Expected"]<-e
       qq[shift+(1:binsize),"Actual"]<-a
+      rowid<-rowid+1
+    }
+    rr<-data.frame(matrix(0, nrow = binsize*length(groups)*length(stats), ncol = 5))
+    colnames(rr)<-c("Activity", "Stat", "Bin", "Expected", "Actual")
+    rowid<-1
+    for (act in groups) {
+      stat <- "Act.Duration.Mins.Mean"
+      e<-as.numeric(bins[bins$Activity.Group==act & bins$Activity.Stat==stat,binCols])
+      e<-ceiling(e/binSizeInMins)
+      # e<-e/sum(e)
+      a<-as.numeric(newbins[newbins$Activity.Group==act & newbins$Activity.Stat==stat,binCols])
+      b<-as.numeric(newbins[newbins$Activity.Group==act & newbins$Activity.Stat=="Act.Duration.Mins.Sigma",binCols])
+      c<-ceiling(a/b)
+      c[is.nan(c)] <- 0
+      a<-c
+      # a<-a/sum(a)
+      shift<-(rowid-1)*binsize
+      rr[shift+(1:binsize),"Activity"]<-rep(act,binsize)
+      rr[shift+(1:binsize),"Stat"]<-rep(stat,binsize)
+      rr[shift+(1:binsize),"Bin"]<-1:binsize
+      rr[shift+(1:binsize),"Expected"]<-e
+      rr[shift+(1:binsize),"Actual"]<-a
       rowid<-rowid+1
     }
     
@@ -283,6 +312,19 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       xlab("30-min time bins") + ylab("Proportion of population") +
       ggtitle(paste0('Activity Start/End Time Probabilities in ',binSizeInMins,'-Min Bins')) +
       facet_wrap(~Stat, scales="free", ncol=1)
+    ggsave(outfile, gg, width=210, height=297, units = "mm")
+    
+    outfile<-paste0(outdir,"/analysis-durations-by-activity.pdf")
+    echo(paste0("Writing ", outfile, "\n"))
+    dd<-melt(rr[rr$Stat=="Act.Duration.Mins.Mean",], id.vars = c("Activity", "Stat", "Bin"))
+    gg<-ggplot(dd, aes(x=Bin, y=value, col=variable, fill=variable)) + 
+      geom_bar(stat="identity", width=1, position = "dodge") + 
+      scale_color_manual(values=c('#009B95', '#FF7100')) + 
+      scale_fill_manual(values=c('#009B95', '#FF7100')) + 
+      facet_wrap(~Activity, scales="free", ncol=2) +
+      theme(plot.title = element_text(hjust = 0.5)) +
+      xlab("30-min time bins") + ylab("Average Duration (# of bins)") +
+      ggtitle(paste0('Activity Duration by time of day'))
     ggsave(outfile, gg, width=210, height=297, units = "mm")
     
   }
