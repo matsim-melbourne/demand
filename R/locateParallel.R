@@ -1,5 +1,12 @@
-
-calculatePlanSubset <- function(planGroup,plans) {
+locatePlans <- function(censuscsv, vistacsv, matchcsv, outdir, outcsv) {
+  # example inputs
+  # censuscsv<-'./output/2.sample/sample.csv.gz'
+  # vistacsv<-'./output/3.plan/plan.csv'
+  # matchcsv<-'./output/4.match/match.csv.gz'
+  # outdir<-'./output/5.locate'
+  # outcsv<-'./output/5.locate/plan.csv'
+  
+calculatePlanSubset <- function(outdir,planGroup,plans) {
   setDTthreads(1) # only one thread for data.table since we'll be operating in parallel
   
   discarded<-persons[FALSE,]
@@ -65,9 +72,9 @@ calculatePlanSubset <- function(planGroup,plans) {
       processed<-processed+1
     }
   }
-  write.table(wplans, file=paste0('./output/5.locate/plan/',planGroup,'.csv'),
+  write.table(wplans, file=paste0(outdir,'/plan/',planGroup,'.csv'),
               append=FALSE, row.names=FALSE, col.names=FALSE, sep = ',')
-  write.table(discarded, file=paste0('./output/5.locate/discarded/',planGroup,'.csv'),
+  write.table(discarded, file=paste0(outdir,'/discarded/',planGroup,'.csv'),
               append=FALSE, row.names=FALSE, col.names=FALSE, sep = ',')
   return(data.frame(plan_group=planGroup,plans=processed,discarded=nrow(discarded)))
 }
@@ -156,8 +163,8 @@ echo('Assigning activities\' SA1s and travel modes (can take a while)\n')
 # processing 1000 plans before saving.
 planGroups <- 1:ceiling(max(plans$PlanId,na.rm=T)/1000)
 
-dir.create('./output/5.locate/plan', showWarnings = FALSE, recursive=TRUE)
-dir.create('./output/5.locate/discarded', showWarnings = FALSE, recursive=TRUE)
+dir.create(paste0(outdir,'/plan'), showWarnings = FALSE, recursive=TRUE)
+dir.create(paste0(outdir,'/discarded'), showWarnings = FALSE, recursive=TRUE)
 
 number_cores <- max(1,floor(as.integer(detectCores())*0.8))
 cl <- makeCluster(number_cores)
@@ -167,11 +174,16 @@ echo(paste0("Now processing the ",length(planGroups)," plan groups\n"))
 registerDoParallel(cl)
 start_time = Sys.time()
 results <- foreach(planGroup=planGroups,
+                   outdir=outdir,
                    .combine=rbind,
                    .verbose=FALSE,
-                   .packages=c("doParallel", "sf","dplyr","scales","data.table")
+                   .packages=c("doParallel", "sf","dplyr","scales","data.table"),
+                   .export = c("calcDistance", "calculateProbabilities", "chooseMode", 
+                               "findLocationKnownMode", "getReturnTripLength", 
+                               "SA1_attributed", "SA1_attributed_dt", 
+                               "distanceMatrix", "distanceMatrixIndex", "distanceMatrixIndex_dt")
 ) %dopar% 
-  calculatePlanSubset(planGroup,plans)
+  calculatePlanSubset(outdir,planGroup,plans)
 end_time = Sys.time()
 end_time - start_time
 stopCluster(cl)
@@ -181,7 +193,7 @@ stopCluster(cl)
 
 echo(paste0("Combining plans into single file:\n"))
 
-planFiles<-list.files('./output/5.locate/plan',pattern="*.csv",full.names=T)
+planFiles<-list.files(paste0(outdir,'/plan'),pattern="*.csv",full.names=T)
 plansCombined<-lapply(planFiles,read.csv,header=F) %>%
   bind_rows()
 colnames(plansCombined)<-c("PlanId","Activity","StartBin","EndBin","AgentId",
@@ -189,7 +201,7 @@ colnames(plansCombined)<-c("PlanId","Activity","StartBin","EndBin","AgentId",
                            "Distance")
 write.table(plansCombined, file=outcsv, append=FALSE, row.names=FALSE, sep = ',')
 
-discardedFiles<-list.files('./output/5.locate/discarded',pattern="*.csv",full.names=T)
+discardedFiles<-list.files(paste0(outdir,'/discarded'),pattern="*.csv",full.names=T)
 
 # some files will be empty, so need a more complex function
 discardedCombined<-lapply(discardedFiles, function(x) {
@@ -201,4 +213,4 @@ colnames(discardedCombined)<-c("AgentId","SA1_MAINCODE_2016")
 doutfile<-paste0(outdir, '/persons.discarded.csv')
 write.table(discardedCombined, file=doutfile, append=FALSE, row.names=FALSE, sep = ',')
 
-
+}
