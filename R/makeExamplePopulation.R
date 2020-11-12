@@ -95,22 +95,20 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         '../output/1.setup/locSa1Centroids.rds',
         '../output/1.setup/locAddresses.rds'
       )
-      source('locate.R'); 
-      # assignActivityAreasAndTravelModesParallel(
-      #   '../output/2.sample/sample.csv.gz', 
-      #   '../output/3.plan/plan.csv', 
-      #   '../output/4.match/match.csv.gz', 
-      #   '../output/5.locate', 
-      #   '../output/5.locate/plan.csv'
-      # )
-      assignActivityAreasAndTravelModes(
-        '../output/2.sample/sample.csv.gz',
-        '../output/3.plan/plan.csv',
-        '../output/4.match/match.csv.gz',
-        '../output/5.locate',
-        '../output/5.locate/plan.csv',
-        100 # write to file every so many plans
-      )
+      
+      # locateParallel uses doParallel which must be run from the project root 
+      # to ensure packrat libraries are sourcecorrectly by the workers.
+      # See https://stackoverflow.com/a/36901524.
+      wd<-getwd()
+      setwd("..")
+      censuscsv<<-'./output/2.sample/sample.csv.gz'
+      vistacsv<<-'./output/3.plan/plan.csv'
+      matchcsv<<-'./output/4.match/match.csv.gz'
+      outdir<<-'./output/5.locate'
+      outcsv<<-'./output/5.locate/plan.csv'
+      source('R/locateParallel.R')
+      setwd(wd) 
+      
       planToSpatial(
         read.csv("../output/5.locate/plan.csv"),
         '../output/5.locate/plan.sqlite'

@@ -65,9 +65,9 @@ calculatePlanSubset <- function(planGroup,plans) {
       processed<-processed+1
     }
   }
-  write.table(wplans, file=paste0('../output/5.locate/plan/',planGroup,'.csv'),
+  write.table(wplans, file=paste0('./output/5.locate/plan/',planGroup,'.csv'),
               append=FALSE, row.names=FALSE, col.names=FALSE, sep = ',')
-  write.table(discarded, file=paste0('../output/5.locate/discarded/',planGroup,'.csv'),
+  write.table(discarded, file=paste0('./output/5.locate/discarded/',planGroup,'.csv'),
               append=FALSE, row.names=FALSE, col.names=FALSE, sep = ',')
   return(data.frame(plan_group=planGroup,plans=processed,discarded=nrow(discarded)))
 }
@@ -156,9 +156,8 @@ echo('Assigning activities\' SA1s and travel modes (can take a while)\n')
 # processing 1000 plans before saving.
 planGroups <- 1:ceiling(max(plans$PlanId,na.rm=T)/1000)
 
-dir.create('../output/5.locate/plan', showWarnings = FALSE, recursive=TRUE)
-dir.create('../output/5.locate/discarded', showWarnings = FALSE, recursive=TRUE)
-
+dir.create('./output/5.locate/plan', showWarnings = FALSE, recursive=TRUE)
+dir.create('./output/5.locate/discarded', showWarnings = FALSE, recursive=TRUE)
 
 number_cores <- max(1,floor(as.integer(detectCores())*0.8))
 cl <- makeCluster(number_cores)
@@ -170,19 +169,19 @@ start_time = Sys.time()
 results <- foreach(planGroup=planGroups,
                    .combine=rbind,
                    .verbose=FALSE,
-                   .packages=c("sf","dplyr","scales","data.table")
-) %dopar%
+                   .packages=c("doParallel", "sf","dplyr","scales","data.table")
+) %dopar% 
   calculatePlanSubset(planGroup,plans)
 end_time = Sys.time()
 end_time - start_time
 stopCluster(cl)
 
-echo(paste0("Processing done, here are the results:\n"))
-results
+#echo(paste0("Processing done, here are the results:\n"))
+#results
 
 echo(paste0("Combining plans into single file:\n"))
 
-planFiles<-list.files('../output/5.locate/plan',pattern="*.csv",full.names=T)
+planFiles<-list.files('./output/5.locate/plan',pattern="*.csv",full.names=T)
 plansCombined<-lapply(planFiles,read.csv,header=F) %>%
   bind_rows()
 colnames(plansCombined)<-c("PlanId","Activity","StartBin","EndBin","AgentId",
@@ -190,7 +189,7 @@ colnames(plansCombined)<-c("PlanId","Activity","StartBin","EndBin","AgentId",
                            "Distance")
 write.table(plansCombined, file=outcsv, append=FALSE, row.names=FALSE, sep = ',')
 
-discardedFiles<-list.files('../output/5.locate/discarded',pattern="*.csv",full.names=T)
+discardedFiles<-list.files('./output/5.locate/discarded',pattern="*.csv",full.names=T)
 
 # some files will be empty, so need a more complex function
 discardedCombined<-lapply(discardedFiles, function(x) {

@@ -289,7 +289,7 @@ placeToSpatial <- function(pp,fileLocation) {
     # some legs end up at the same address, this would remove them
     # filter(st_is_valid(.))
   # Write the spatial dataframe to file
-  st_write(ppp,fileLocation,delete_layer=TRUE,layer="lines")
+  st_write(ppp,fileLocation,delete_layer=TRUE,layer="lines",quiet=TRUE)
   
   ppp2 <- pp %>%
     # Ignore the first entries for a person as they won't have a valid previous location
@@ -297,7 +297,7 @@ placeToSpatial <- function(pp,fileLocation) {
     mutate(GEOMETRY=paste0("POINT(",x," ",y,")")) %>%
     filter(!is.na(ArrivingMode)) %>%
     st_as_sf(wkt = "GEOMETRY", crs = 28355)
-  st_write(ppp2,fileLocation,delete_layer=TRUE,layer="points")
+  st_write(ppp2,fileLocation,delete_layer=TRUE,layer="points",quiet=TRUE)
 }
 
 # EXAMPLES
