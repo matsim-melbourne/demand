@@ -4,24 +4,21 @@ This directory contains all the data files required for generating the MATSim de
 
 Due to its size this data is stored outside this Git repository.
 
-1. To download the data go to [this Cloudstor location](https://cloudstor.aarnet.edu.au/plus/s/xFhjoeRqwx21aGr?path=%2Fdemand), select the `data` folder, and download it as shown in the image below.
+1. To download the data go to [this Cloudstor location](https://cloudstor.aarnet.edu.au/plus/s/vILZLoFiqKU58Sp), select the `data` folder, and download it as shown in the image below.
   ![How to download](./download.png)
 
-1. Once downloaded, extract the archive into this directory so that you have the following new files in this directory.
-  ![Downloaded files](./downloaded.png)
-
-1. Unzip the `<file>.zip` files into subdirectories named `<files.zip>.dir`. (There is a convenience script `./prepare.sh` that will do that, if Bash is an option for you.)
+1. Once downloaded, extract the archive into this directory and unzip the `<file>.zip` files into subdirectories named `<files.zip>.dir`. 
 
 When you are all done, the current directory should contain the following new files and sub-directories.
 ```
-addresses.sqlite
+addresses.csv.gz
 distanceMatrix.rds
 distanceMatrixIndex.csv
 melbourne-2016-population.zip
 melbourne-2016-population.zip.dir/
 sa1_2016_aust.csv.gz
-SA1attributed.sqlite
-SA1centroids.sqlite
+SA1attributed.csv.gz
+SA1centroids.csv.gz
 VISTA_12_18_CSV.zip
 VISTA_12_18_CSV.zip.dir/
 ```
