@@ -88,6 +88,12 @@ Version: 1.0.16
 Hash: 0bfafffe940c8fc4bc4f785018b17dde
 Requires: foreach, iterators
 
+Package: doRNG
+Source: CRAN
+Version: 1.8.2
+Hash: 302c18f6698a09ab20986c1fa7c77d99
+Requires: foreach, iterators, rngtools
+
 Package: dplyr
 Source: CRAN
 Version: 1.0.2
@@ -253,6 +259,12 @@ Package: rlang
 Source: CRAN
 Version: 0.4.7
 Hash: 99d4f4d35ed6991498e7f6c5df8c8ca8
+
+Package: rngtools
+Source: CRAN
+Version: 1.5
+Hash: 87e9937481e98986df369c01e7f3ea12
+Requires: digest
 
 Package: rprojroot
 Source: CRAN
