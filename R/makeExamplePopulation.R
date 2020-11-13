@@ -131,10 +131,10 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         '../output/6.place/plan.csv', 
         100 # write to file every so many plans
       )
-      placeToSpatial(
-        read.csv("../output/6.place/plan.csv"),
-        '../output/6.place/plan.sqlite'
-      )
+      #placeToSpatial(
+      #  read.csv("../output/6.place/plan.csv"),
+      #  '../output/6.place/plan.sqlite'
+      #)
     }
     if(do.steps[7]) {
       source('time.R', local=TRUE)
