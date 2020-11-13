@@ -1,4 +1,4 @@
-locatePlans <- function(censuscsv, vistacsv, matchcsv, outdir, outcsv) {
+locatePlans <- function(censuscsv, vistacsv, matchcsv, outdir, outcsv, rseed = NULL) {
   # example inputs
   # censuscsv<-'./output/2.sample/sample.csv.gz'
   # vistacsv<-'./output/3.plan/plan.csv'
@@ -86,6 +86,7 @@ options(scipen=999) # disable scientific notation for more readable filenames wi
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(stringi))
 suppressPackageStartupMessages(library(doParallel))
+suppressPackageStartupMessages(library(doRNG))
 
 # internal function to replace activity tags with location tags
 replaceActivityWithLocationTags<-function (tc) {
@@ -172,6 +173,9 @@ echo(paste0("About to start processing density in parallel, using ",number_cores
 echo(paste0("Now processing the ",length(planGroups)," plan groups\n"))
 
 registerDoParallel(cl)
+if (!is.null(rseed)) {
+  registerDoRNG(seed = rseed)
+}
 start_time = Sys.time()
 results <- foreach(planGroup=planGroups,
                    outdir=outdir,
