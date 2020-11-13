@@ -7,27 +7,27 @@
     <leg mode="car"/>
     <activity type="Personal" x="310524" y="5809694" end_time="11:24:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="320366" y="5813709" end_time="11:56:00"/>
+    <activity type="Shop" x="318972" y="5819022" end_time="11:56:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="321151" y="5813417" end_time="13:49:00"/>
+    <activity type="Personal" x="320146" y="5812372" end_time="13:49:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305271" y="5806722" end_time="14:48:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="305281" y="5818746" end_time="14:54:00"/>
+    <activity type="Personal" x="315157" y="5807753" end_time="14:54:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="320759" y="5811966" end_time="17:17:00"/>
+    <activity type="Shop" x="317372" y="5810584" end_time="17:17:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="320258" y="5811073" end_time="17:20:00"/>
+    <activity type="Personal" x="321301" y="5811054" end_time="17:20:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="323520" y="5808282" end_time="17:40:00"/>
+    <activity type="Shop" x="319957" y="5812363" end_time="17:40:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="313296" y="5809990" end_time="17:50:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="318728" y="5811254" end_time="17:50:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="307300" y="5814292" end_time="18:39:00"/>
+    <activity type="Social/Recreational" x="315278" y="5810404" end_time="18:39:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="303818" y="5815828" end_time="18:48:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="317372" y="5810584" end_time="18:48:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="320054" y="5811995" end_time="22:06:00"/>
+    <activity type="Social/Recreational" x="310342" y="5806864" end_time="22:06:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305271" y="5806722" end_time="23:27:00"/>
   </plan>
@@ -36,9 +36,9 @@
   <plan selected="yes">
     <activity type="Home" x="304240" y="5806378" end_time="05:37:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="320034" y="5812328" end_time="05:44:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="317437" y="5811709" end_time="05:44:00"/>
     <leg mode="car"/>
-    <activity type="Work" x="306301" y="5816124" end_time="12:51:00"/>
+    <activity type="Work" x="317263" y="5810968" end_time="12:51:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304240" y="5806378" end_time="23:25:00"/>
   </plan>
@@ -46,13 +46,13 @@
 <person id="2">
   <plan selected="yes">
     <activity type="Home" x="304722" y="5804096" end_time="06:10:00"/>
-    <leg mode="car"/>
-    <activity type="Social/Recreational" x="314991" y="5813051" end_time="20:34:00"/>
-    <leg mode="car"/>
-    <activity type="Shop" x="320091" y="5812110" end_time="20:44:00"/>
-    <leg mode="car"/>
-    <activity type="Personal" x="315582" y="5813401" end_time="21:58:00"/>
-    <leg mode="car"/>
+    <leg mode="walk"/>
+    <activity type="Social/Recreational" x="304742" y="5804330" end_time="20:34:00"/>
+    <leg mode="walk"/>
+    <activity type="Shop" x="304429" y="5806120" end_time="20:44:00"/>
+    <leg mode="walk"/>
+    <activity type="Personal" x="304429" y="5806120" end_time="21:58:00"/>
+    <leg mode="walk"/>
     <activity type="Home" x="304722" y="5804096" end_time="23:31:00"/>
   </plan>
 </person>
@@ -60,24 +60,24 @@
   <plan selected="yes">
     <activity type="Home" x="303068" y="5806228" end_time="08:06:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="320034" y="5812328" end_time="08:10:00"/>
+    <activity type="Other" x="298971" y="5808607" end_time="08:10:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="305511" y="5804711" end_time="08:10:00"/>
+    <activity type="Social/Recreational" x="310342" y="5806864" end_time="08:10:00"/>
     <leg mode="car"/>
-    <activity type="Work" x="314565" y="5807343" end_time="16:47:00"/>
+    <activity type="Work" x="320759" y="5811966" end_time="16:47:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="304429" y="5806120" end_time="16:52:00"/>
+    <activity type="Personal" x="314968" y="5807770" end_time="16:52:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="321962" y="5814108" end_time="16:52:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="314532" y="5807302" end_time="16:52:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="321856" y="5810420" end_time="16:52:00"/>
+    <activity type="Personal" x="320802" y="5813249" end_time="16:52:00"/>
     <leg mode="car"/>
     <activity type="Home" x="303068" y="5806228" end_time="19:42:00"/>
-    <leg mode="walk"/>
-    <activity type="Social/Recreational" x="303101" y="5806417" end_time="20:06:00"/>
-    <leg mode="walk"/>
-    <activity type="Other" x="304747" y="5806413" end_time="21:06:00"/>
-    <leg mode="walk"/>
+    <leg mode="car"/>
+    <activity type="Social/Recreational" x="318972" y="5819022" end_time="20:06:00"/>
+    <leg mode="car"/>
+    <activity type="Other" x="309476" y="5816002" end_time="21:06:00"/>
+    <leg mode="car"/>
     <activity type="Home" x="303068" y="5806228" end_time="23:37:00"/>
   </plan>
 </person>
@@ -85,7 +85,7 @@
   <plan selected="yes">
     <activity type="Home" x="305350" y="5805256" end_time="16:50:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="307596" y="5814878" end_time="20:48:00"/>
+    <activity type="Other" x="297810" y="5803957" end_time="20:48:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305350" y="5805256" end_time="23:28:00"/>
   </plan>
@@ -94,19 +94,19 @@
   <plan selected="yes">
     <activity type="Home" x="304834" y="5805026" end_time="08:29:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="320159" y="5813134" end_time="08:38:00"/>
+    <activity type="Shop" x="300422" y="5807154" end_time="08:38:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="305559" y="5806551" end_time="09:02:00"/>
+    <activity type="Social/Recreational" x="300969" y="5805095" end_time="09:02:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="297808" y="5803931" end_time="15:49:00"/>
+    <activity type="Study" x="310028" y="5806903" end_time="15:49:00"/>
     <leg mode="car"/>
     <activity type="Shop" x="310493" y="5809565" end_time="17:20:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="312492" y="5809171" end_time="18:10:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="313188" y="5811059" end_time="18:10:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="301066" y="5804524" end_time="19:24:00"/>
+    <activity type="Personal" x="323420" y="5808406" end_time="19:24:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="310524" y="5809694" end_time="23:30:00"/>
+    <activity type="Shop" x="321746" y="5810584" end_time="23:30:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304834" y="5805026" end_time="23:41:00"/>
   </plan>
@@ -114,12 +114,12 @@
 <person id="6">
   <plan selected="yes">
     <activity type="Home" x="304992" y="5804707" end_time="07:05:00"/>
-    <leg mode="bike"/>
-    <activity type="Shop" x="300844" y="5804730" end_time="07:36:00"/>
-    <leg mode="bike"/>
+    <leg mode="car"/>
+    <activity type="Shop" x="299042" y="5808410" end_time="07:36:00"/>
+    <leg mode="car"/>
     <activity type="Home" x="304992" y="5804707" end_time="08:35:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="310564" y="5810028" end_time="15:48:00"/>
+    <activity type="Study" x="296142" y="5804895" end_time="15:48:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304992" y="5804707" end_time="23:40:00"/>
   </plan>
@@ -128,9 +128,9 @@
   <plan selected="yes">
     <activity type="Home" x="305348" y="5806220" end_time="08:03:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="316801" y="5810302" end_time="08:08:00"/>
+    <activity type="Other" x="300969" y="5805095" end_time="08:08:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="310564" y="5810028" end_time="16:41:00"/>
+    <activity type="Study" x="310028" y="5806903" end_time="16:41:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305348" y="5806220" end_time="23:36:00"/>
   </plan>
@@ -138,13 +138,13 @@
 <person id="8">
   <plan selected="yes">
     <activity type="Home" x="305264" y="5806634" end_time="08:31:00"/>
-    <leg mode="car"/>
-    <activity type="Study" x="296155" y="5804649" end_time="15:50:00"/>
-    <leg mode="car"/>
-    <activity type="Social/Recreational" x="299042" y="5808410" end_time="18:13:00"/>
-    <leg mode="car"/>
-    <activity type="Other" x="310493" y="5809565" end_time="20:10:00"/>
-    <leg mode="car"/>
+    <leg mode="pt"/>
+    <activity type="Study" x="299787" y="5808690" end_time="15:50:00"/>
+    <leg mode="pt"/>
+    <activity type="Social/Recreational" x="304429" y="5806120" end_time="18:13:00"/>
+    <leg mode="pt"/>
+    <activity type="Other" x="319558" y="5812170" end_time="20:10:00"/>
+    <leg mode="pt"/>
     <activity type="Home" x="305264" y="5806634" end_time="23:20:00"/>
   </plan>
 </person>
@@ -152,15 +152,15 @@
   <plan selected="yes">
     <activity type="Home" x="305474" y="5806632" end_time="09:02:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="295571" y="5804288" end_time="09:30:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="310163" y="5807514" end_time="09:30:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="293479" y="5803554" end_time="16:15:00"/>
+    <activity type="Social/Recreational" x="305559" y="5806551" end_time="16:15:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="302536" y="5803402" end_time="16:22:00"/>
+    <activity type="Personal" x="315052" y="5814435" end_time="16:22:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="320034" y="5812328" end_time="16:28:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="299960" y="5806925" end_time="16:28:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="299787" y="5808690" end_time="20:06:00"/>
+    <activity type="Other" x="292756" y="5803387" end_time="20:06:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305474" y="5806632" end_time="23:30:00"/>
   </plan>
@@ -169,11 +169,11 @@
   <plan selected="yes">
     <activity type="Home" x="305741" y="5805012" end_time="08:29:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="295696" y="5804355" end_time="15:46:00"/>
+    <activity type="Study" x="312492" y="5809171" end_time="15:46:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="321949" y="5813995" end_time="16:55:00"/>
+    <activity type="Shop" x="315541" y="5813547" end_time="16:55:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="319677" y="5817266" end_time="22:05:00"/>
+    <activity type="Social/Recreational" x="316072" y="5814852" end_time="22:05:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305741" y="5805012" end_time="23:27:00"/>
   </plan>
@@ -181,13 +181,13 @@
 <person id="11">
   <plan selected="yes">
     <activity type="Home" x="304806" y="5805912" end_time="08:06:00"/>
-    <leg mode="pt"/>
-    <activity type="Other" x="317437" y="5811709" end_time="08:08:00"/>
-    <leg mode="pt"/>
-    <activity type="Study" x="307596" y="5814878" end_time="16:49:00"/>
-    <leg mode="pt"/>
-    <activity type="Work" x="313296" y="5809990" end_time="20:10:00"/>
-    <leg mode="pt"/>
+    <leg mode="car"/>
+    <activity type="Other" x="303116" y="5806592" end_time="08:08:00"/>
+    <leg mode="car"/>
+    <activity type="Study" x="310028" y="5806903" end_time="16:49:00"/>
+    <leg mode="car"/>
+    <activity type="Work" x="295856" y="5805276" end_time="20:10:00"/>
+    <leg mode="car"/>
     <activity type="Home" x="304806" y="5805912" end_time="23:17:00"/>
   </plan>
 </person>
@@ -195,9 +195,9 @@
   <plan selected="yes">
     <activity type="Home" x="303932" y="5806170" end_time="08:34:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="294068" y="5805333" end_time="15:36:00"/>
+    <activity type="Study" x="314994" y="5813628" end_time="15:36:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="315022" y="5814420" end_time="16:48:00"/>
+    <activity type="Shop" x="303818" y="5815828" end_time="16:48:00"/>
     <leg mode="car"/>
     <activity type="Home" x="303932" y="5806170" end_time="23:40:00"/>
   </plan>
@@ -206,17 +206,17 @@
   <plan selected="yes">
     <activity type="Home" x="305178" y="5805600" end_time="09:03:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="310690" y="5811852" end_time="09:06:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="303989" y="5807800" end_time="09:06:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="321706" y="5813976" end_time="15:34:00"/>
+    <activity type="Study" x="319874" y="5817646" end_time="15:34:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="321301" y="5811054" end_time="17:15:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="321962" y="5814108" end_time="17:15:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="320019" y="5812582" end_time="17:20:00"/>
+    <activity type="Social/Recreational" x="317851" y="5816576" end_time="17:20:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="302536" y="5803402" end_time="18:15:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="317437" y="5811709" end_time="18:15:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="295856" y="5805276" end_time="19:08:00"/>
+    <activity type="Shop" x="319713" y="5812199" end_time="19:08:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305178" y="5805600" end_time="23:39:00"/>
   </plan>
@@ -230,17 +230,17 @@
   <plan selected="yes">
     <activity type="Home" x="305028" y="5804044" end_time="07:32:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="302536" y="5803402" end_time="07:58:00"/>
+    <activity type="Shop" x="297173" y="5802920" end_time="07:58:00"/>
     <leg mode="car"/>
-    <activity type="Work" x="310690" y="5811852" end_time="10:02:00"/>
+    <activity type="Work" x="295696" y="5804355" end_time="10:02:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="319466" y="5811917" end_time="11:54:00"/>
+    <activity type="Personal" x="301006" y="5804714" end_time="11:54:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="320159" y="5813134" end_time="12:25:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="296103" y="5803048" end_time="12:25:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="316232" y="5810622" end_time="17:10:00"/>
+    <activity type="Social/Recreational" x="293247" y="5803458" end_time="17:10:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="297774" y="5804282" end_time="21:03:00"/>
+    <activity type="Other" x="296155" y="5804649" end_time="21:03:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305028" y="5804044" end_time="23:20:00"/>
   </plan>
@@ -249,12 +249,12 @@
   <plan selected="yes">
     <activity type="Home" x="305229" y="5805933" end_time="08:35:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="293479" y="5803554" end_time="08:38:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="295571" y="5804288" end_time="08:38:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305229" y="5805933" end_time="15:21:00"/>
-    <leg mode="car"/>
-    <activity type="Personal" x="315157" y="5807753" end_time="17:12:00"/>
-    <leg mode="car"/>
+    <leg mode="walk"/>
+    <activity type="Personal" x="303116" y="5806592" end_time="17:12:00"/>
+    <leg mode="walk"/>
     <activity type="Home" x="305229" y="5805933" end_time="23:39:00"/>
   </plan>
 </person>
@@ -262,11 +262,11 @@
   <plan selected="yes">
     <activity type="Home" x="305392" y="5804622" end_time="06:07:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="302536" y="5803402" end_time="06:12:00"/>
+    <activity type="Shop" x="315089" y="5814398" end_time="06:12:00"/>
     <leg mode="car"/>
-    <activity type="Work" x="315527" y="5807371" end_time="16:15:00"/>
+    <activity type="Work" x="317695" y="5816825" end_time="16:15:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="323653" y="5808052" end_time="21:36:00"/>
+    <activity type="Study" x="314994" y="5813628" end_time="21:36:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305392" y="5804622" end_time="23:26:00"/>
   </plan>
@@ -275,11 +275,11 @@
   <plan selected="yes">
     <activity type="Home" x="304750" y="5804726" end_time="00:49:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="310493" y="5809565" end_time="14:20:00"/>
+    <activity type="Social/Recreational" x="319450" y="5812103" end_time="14:20:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="320674" y="5813577" end_time="17:35:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="315002" y="5813573" end_time="17:35:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="315638" y="5813655" end_time="20:06:00"/>
+    <activity type="Other" x="321122" y="5813491" end_time="20:06:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304750" y="5804726" end_time="23:39:00"/>
   </plan>
@@ -287,14 +287,14 @@
 <person id="19">
   <plan selected="yes">
     <activity type="Home" x="304081" y="5805612" end_time="08:00:00"/>
-    <leg mode="pt"/>
-    <activity type="Other" x="320206" y="5812193" end_time="08:08:00"/>
-    <leg mode="pt"/>
-    <activity type="Pickup/Dropoff/Deliver" x="318965" y="5818972" end_time="08:10:00"/>
-    <leg mode="pt"/>
+    <leg mode="car"/>
+    <activity type="Other" x="300844" y="5804730" end_time="08:08:00"/>
+    <leg mode="car"/>
+    <activity type="Pickup/Dropoff/Deliver" x="295696" y="5804355" end_time="08:10:00"/>
+    <leg mode="car"/>
     <activity type="Home" x="304081" y="5805612" end_time="09:04:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="320366" y="5813709" end_time="11:00:00"/>
+    <activity type="Personal" x="310493" y="5809565" end_time="11:00:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304081" y="5805612" end_time="23:19:00"/>
   </plan>
@@ -303,7 +303,7 @@
   <plan selected="yes">
     <activity type="Home" x="304170" y="5805448" end_time="08:58:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="315199" y="5814189" end_time="21:04:00"/>
+    <activity type="Social/Recreational" x="317437" y="5811709" end_time="21:04:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304170" y="5805448" end_time="23:20:00"/>
   </plan>
@@ -311,33 +311,33 @@
 <person id="21">
   <plan selected="yes">
     <activity type="Home" x="304543" y="5806346" end_time="08:59:00"/>
-    <leg mode="car"/>
-    <activity type="Study" x="313188" y="5811059" end_time="16:31:00"/>
-    <leg mode="car"/>
-    <activity type="Shop" x="320514" y="5813138" end_time="17:42:00"/>
-    <leg mode="car"/>
+    <leg mode="pt"/>
+    <activity type="Study" x="297774" y="5804282" end_time="16:31:00"/>
+    <leg mode="pt"/>
+    <activity type="Shop" x="305281" y="5818746" end_time="17:42:00"/>
+    <leg mode="pt"/>
     <activity type="Home" x="304543" y="5806346" end_time="23:39:00"/>
   </plan>
 </person>
 <person id="22">
   <plan selected="yes">
     <activity type="Home" x="304505" y="5804839" end_time="09:00:00"/>
-    <leg mode="walk"/>
-    <activity type="Social/Recreational" x="304429" y="5806120" end_time="19:13:00"/>
-    <leg mode="walk"/>
+    <leg mode="car"/>
+    <activity type="Social/Recreational" x="319622" y="5812157" end_time="19:13:00"/>
+    <leg mode="car"/>
     <activity type="Home" x="304505" y="5804839" end_time="23:39:00"/>
   </plan>
 </person>
 <person id="23">
   <plan selected="yes">
     <activity type="Home" x="305421" y="5805336" end_time="09:00:00"/>
-    <leg mode="pt"/>
-    <activity type="Pickup/Dropoff/Deliver" x="320830" y="5810979" end_time="09:33:00"/>
-    <leg mode="pt"/>
-    <activity type="Personal" x="320964" y="5812006" end_time="10:26:00"/>
-    <leg mode="pt"/>
-    <activity type="Pickup/Dropoff/Deliver" x="320830" y="5810979" end_time="10:50:00"/>
-    <leg mode="pt"/>
+    <leg mode="car"/>
+    <activity type="Pickup/Dropoff/Deliver" x="302536" y="5803402" end_time="09:33:00"/>
+    <leg mode="car"/>
+    <activity type="Personal" x="298954" y="5808312" end_time="10:26:00"/>
+    <leg mode="car"/>
+    <activity type="Pickup/Dropoff/Deliver" x="302536" y="5803402" end_time="10:50:00"/>
+    <leg mode="car"/>
     <activity type="Home" x="305421" y="5805336" end_time="23:28:00"/>
   </plan>
 </person>
@@ -345,11 +345,11 @@
   <plan selected="yes">
     <activity type="Home" x="304747" y="5806413" end_time="06:10:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="310564" y="5810028" end_time="06:37:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="321619" y="5814022" end_time="06:37:00"/>
     <leg mode="car"/>
-    <activity type="Work" x="320159" y="5813134" end_time="17:34:00"/>
+    <activity type="Work" x="310690" y="5811852" end_time="17:34:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="320964" y="5812006" end_time="21:03:00"/>
+    <activity type="Other" x="300422" y="5807154" end_time="21:03:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304747" y="5806413" end_time="23:34:00"/>
   </plan>
@@ -358,7 +358,7 @@
   <plan selected="yes">
     <activity type="Home" x="304937" y="5806300" end_time="08:32:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="303199" y="5817228" end_time="15:47:00"/>
+    <activity type="Study" x="310028" y="5806903" end_time="15:47:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304937" y="5806300" end_time="23:38:00"/>
   </plan>
@@ -367,9 +367,9 @@
   <plan selected="yes">
     <activity type="Home" x="304064" y="5805025" end_time="09:03:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="312007" y="5808984" end_time="15:48:00"/>
+    <activity type="Study" x="310028" y="5806903" end_time="15:48:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="305832" y="5816076" end_time="15:54:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="319056" y="5810907" end_time="15:54:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304064" y="5805025" end_time="23:31:00"/>
   </plan>
@@ -378,7 +378,7 @@
   <plan selected="yes">
     <activity type="Home" x="305017" y="5803960" end_time="08:58:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="304747" y="5806413" end_time="21:07:00"/>
+    <activity type="Study" x="299960" y="5806925" end_time="21:07:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305017" y="5803960" end_time="23:22:00"/>
   </plan>
@@ -387,13 +387,13 @@
   <plan selected="yes">
     <activity type="Home" x="305715" y="5805631" end_time="08:29:00"/>
     <leg mode="car"/>
-    <activity type="Work" x="309144" y="5816246" end_time="14:47:00"/>
+    <activity type="Work" x="317282" y="5811285" end_time="14:47:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="307596" y="5814878" end_time="17:53:00"/>
+    <activity type="Study" x="307509" y="5814091" end_time="17:53:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="321856" y="5810420" end_time="19:48:00"/>
+    <activity type="Personal" x="319052" y="5818963" end_time="19:48:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="296278" y="5803564" end_time="21:05:00"/>
+    <activity type="Other" x="307596" y="5814878" end_time="21:05:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305715" y="5805631" end_time="23:34:00"/>
   </plan>
@@ -401,22 +401,22 @@
 <person id="29">
   <plan selected="yes">
     <activity type="Home" x="305432" y="5805465" end_time="09:04:00"/>
-    <leg mode="car"/>
-    <activity type="Study" x="307509" y="5814091" end_time="20:34:00"/>
-    <leg mode="car"/>
+    <leg mode="walk"/>
+    <activity type="Study" x="304747" y="5806413" end_time="20:34:00"/>
+    <leg mode="walk"/>
     <activity type="Home" x="305432" y="5805465" end_time="23:37:00"/>
   </plan>
 </person>
 <person id="30">
   <plan selected="yes">
     <activity type="Home" x="304966" y="5806658" end_time="09:02:00"/>
-    <leg mode="car"/>
-    <activity type="Study" x="309556" y="5816197" end_time="15:48:00"/>
-    <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="319984" y="5812182" end_time="16:53:00"/>
-    <leg mode="car"/>
-    <activity type="Work" x="305179" y="5818603" end_time="20:36:00"/>
-    <leg mode="car"/>
+    <leg mode="walk"/>
+    <activity type="Study" x="305249" y="5804449" end_time="15:48:00"/>
+    <leg mode="walk"/>
+    <activity type="Pickup/Dropoff/Deliver" x="304429" y="5806120" end_time="16:53:00"/>
+    <leg mode="walk"/>
+    <activity type="Work" x="304429" y="5806120" end_time="20:36:00"/>
+    <leg mode="walk"/>
     <activity type="Home" x="304966" y="5806658" end_time="23:18:00"/>
   </plan>
 </person>
@@ -424,9 +424,9 @@
   <plan selected="yes">
     <activity type="Home" x="305350" y="5805256" end_time="14:48:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="315527" y="5807371" end_time="15:52:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="317460" y="5810734" end_time="15:52:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="321301" y="5811054" end_time="17:25:00"/>
+    <activity type="Personal" x="319957" y="5812363" end_time="17:25:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305350" y="5805256" end_time="23:13:00"/>
   </plan>
@@ -434,13 +434,13 @@
 <person id="32">
   <plan selected="yes">
     <activity type="Home" x="304250" y="5805202" end_time="08:01:00"/>
-    <leg mode="walk"/>
-    <activity type="Other" x="304429" y="5806120" end_time="08:10:00"/>
-    <leg mode="walk"/>
-    <activity type="Work" x="302766" y="5805098" end_time="17:02:00"/>
-    <leg mode="walk"/>
-    <activity type="Other" x="304381" y="5804400" end_time="20:05:00"/>
-    <leg mode="walk"/>
+    <leg mode="car"/>
+    <activity type="Other" x="300218" y="5807098" end_time="08:10:00"/>
+    <leg mode="car"/>
+    <activity type="Work" x="321301" y="5811054" end_time="17:02:00"/>
+    <leg mode="car"/>
+    <activity type="Other" x="319056" y="5810907" end_time="20:05:00"/>
+    <leg mode="car"/>
     <activity type="Home" x="304250" y="5805202" end_time="23:29:00"/>
   </plan>
 </person>
@@ -448,11 +448,11 @@
   <plan selected="yes">
     <activity type="Home" x="305149" y="5804350" end_time="08:35:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="300145" y="5807201" end_time="08:58:00"/>
+    <activity type="Social/Recreational" x="315278" y="5810404" end_time="08:58:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="304747" y="5806413" end_time="15:44:00"/>
+    <activity type="Study" x="299914" y="5808666" end_time="15:44:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="320159" y="5813134" end_time="16:42:00"/>
+    <activity type="Shop" x="300844" y="5804730" end_time="16:42:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305149" y="5804350" end_time="23:24:00"/>
   </plan>
@@ -461,11 +461,11 @@
   <plan selected="yes">
     <activity type="Home" x="303701" y="5805798" end_time="15:16:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="319852" y="5817486" end_time="15:22:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="297826" y="5803740" end_time="15:22:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="300809" y="5804933" end_time="15:24:00"/>
+    <activity type="Shop" x="317695" y="5816825" end_time="15:24:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="314991" y="5813051" end_time="15:47:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="305832" y="5816076" end_time="15:47:00"/>
     <leg mode="car"/>
     <activity type="Home" x="303701" y="5805798" end_time="23:20:00"/>
   </plan>
@@ -474,9 +474,9 @@
   <plan selected="yes">
     <activity type="Home" x="304665" y="5805408" end_time="09:01:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="292756" y="5803387" end_time="17:52:00"/>
+    <activity type="Study" x="306301" y="5816124" end_time="17:52:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="310342" y="5806864" end_time="19:12:00"/>
+    <activity type="Social/Recreational" x="305211" y="5817796" end_time="19:12:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304665" y="5805408" end_time="23:24:00"/>
   </plan>
@@ -485,25 +485,25 @@
   <plan selected="yes">
     <activity type="Home" x="304498" y="5805807" end_time="00:45:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="307300" y="5814292" end_time="11:27:00"/>
+    <activity type="Social/Recreational" x="304380" y="5807470" end_time="11:27:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="321301" y="5811054" end_time="11:41:00"/>
+    <activity type="Personal" x="303116" y="5806519" end_time="11:41:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="315218" y="5813708" end_time="13:23:00"/>
+    <activity type="Shop" x="316949" y="5810350" end_time="13:23:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="320091" y="5812110" end_time="13:26:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="321301" y="5811054" end_time="13:26:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="320802" y="5813249" end_time="13:50:00"/>
+    <activity type="Shop" x="323502" y="5808392" end_time="13:50:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="321962" y="5814108" end_time="14:20:00"/>
+    <activity type="Personal" x="298954" y="5808312" end_time="14:20:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="320510" y="5813250" end_time="14:48:00"/>
+    <activity type="Shop" x="319450" y="5812103" end_time="14:48:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="297810" y="5803957" end_time="16:02:00"/>
+    <activity type="Study" x="310690" y="5811852" end_time="16:02:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="300422" y="5807154" end_time="17:15:00"/>
+    <activity type="Social/Recreational" x="319052" y="5818963" end_time="17:15:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="315084" y="5807756" end_time="17:46:00"/>
+    <activity type="Personal" x="314565" y="5807343" end_time="17:46:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304498" y="5805807" end_time="23:36:00"/>
   </plan>
@@ -516,13 +516,13 @@
     <leg mode="walk"/>
     <activity type="Shop" x="304429" y="5806120" end_time="08:33:00"/>
     <leg mode="walk"/>
-    <activity type="Study" x="302786" y="5805248" end_time="08:36:00"/>
+    <activity type="Study" x="303989" y="5807800" end_time="08:36:00"/>
     <leg mode="walk"/>
-    <activity type="Work" x="304429" y="5806120" end_time="17:18:00"/>
+    <activity type="Work" x="303989" y="5807800" end_time="17:18:00"/>
     <leg mode="walk"/>
     <activity type="Shop" x="303116" y="5806519" end_time="19:40:00"/>
     <leg mode="walk"/>
-    <activity type="Other" x="304380" y="5807470" end_time="21:08:00"/>
+    <activity type="Other" x="305533" y="5805589" end_time="21:08:00"/>
     <leg mode="walk"/>
     <activity type="Home" x="304751" y="5805240" end_time="23:17:00"/>
   </plan>
@@ -530,30 +530,30 @@
 <person id="38">
   <plan selected="yes">
     <activity type="Home" x="304229" y="5806224" end_time="08:04:00"/>
-    <leg mode="car"/>
-    <activity type="Other" x="305211" y="5817796" end_time="08:10:00"/>
-    <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="303199" y="5817228" end_time="08:08:00"/>
-    <leg mode="car"/>
-    <activity type="Other" x="306301" y="5816124" end_time="08:08:00"/>
-    <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="315002" y="5813573" end_time="08:10:00"/>
-    <leg mode="car"/>
-    <activity type="Other" x="292756" y="5803387" end_time="08:08:00"/>
-    <leg mode="car"/>
-    <activity type="Work" x="303199" y="5817228" end_time="17:17:00"/>
-    <leg mode="car"/>
+    <leg mode="walk"/>
+    <activity type="Other" x="304742" y="5804330" end_time="08:10:00"/>
+    <leg mode="walk"/>
+    <activity type="Pickup/Dropoff/Deliver" x="305249" y="5804449" end_time="08:08:00"/>
+    <leg mode="walk"/>
+    <activity type="Other" x="305249" y="5804449" end_time="08:08:00"/>
+    <leg mode="walk"/>
+    <activity type="Pickup/Dropoff/Deliver" x="305249" y="5804449" end_time="08:10:00"/>
+    <leg mode="walk"/>
+    <activity type="Other" x="305249" y="5804449" end_time="08:08:00"/>
+    <leg mode="walk"/>
+    <activity type="Work" x="305249" y="5804449" end_time="17:17:00"/>
+    <leg mode="walk"/>
     <activity type="Home" x="304229" y="5806224" end_time="23:36:00"/>
   </plan>
 </person>
 <person id="39">
   <plan selected="yes">
     <activity type="Home" x="304047" y="5806391" end_time="11:33:00"/>
-    <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="313188" y="5811059" end_time="12:22:00"/>
-    <leg mode="car"/>
-    <activity type="Social/Recreational" x="317695" y="5816825" end_time="23:31:00"/>
-    <leg mode="car"/>
+    <leg mode="walk"/>
+    <activity type="Pickup/Dropoff/Deliver" x="304747" y="5806413" end_time="12:22:00"/>
+    <leg mode="walk"/>
+    <activity type="Social/Recreational" x="304429" y="5806120" end_time="23:31:00"/>
+    <leg mode="walk"/>
     <activity type="Home" x="304047" y="5806391" end_time="23:39:00"/>
   </plan>
 </person>
@@ -561,11 +561,11 @@
   <plan selected="yes">
     <activity type="Home" x="303944" y="5804907" end_time="07:02:00"/>
     <leg mode="car"/>
-    <activity type="Shop" x="320682" y="5813775" end_time="07:12:00"/>
+    <activity type="Shop" x="297173" y="5802920" end_time="07:12:00"/>
     <leg mode="car"/>
-    <activity type="Work" x="321962" y="5814108" end_time="16:17:00"/>
+    <activity type="Work" x="294014" y="5805446" end_time="16:17:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="295696" y="5804355" end_time="21:32:00"/>
+    <activity type="Study" x="297840" y="5804312" end_time="21:32:00"/>
     <leg mode="car"/>
     <activity type="Home" x="303944" y="5804907" end_time="23:30:00"/>
   </plan>
@@ -574,11 +574,11 @@
   <plan selected="yes">
     <activity type="Home" x="304745" y="5805159" end_time="08:58:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="315218" y="5813708" end_time="10:56:00"/>
+    <activity type="Personal" x="298850" y="5808409" end_time="10:56:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="303199" y="5817228" end_time="17:25:00"/>
+    <activity type="Study" x="299960" y="5806925" end_time="17:25:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="320159" y="5813134" end_time="19:42:00"/>
+    <activity type="Personal" x="301122" y="5804501" end_time="19:42:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304745" y="5805159" end_time="23:38:00"/>
   </plan>
@@ -587,15 +587,15 @@
   <plan selected="yes">
     <activity type="Home" x="305392" y="5804622" end_time="09:01:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="292756" y="5803387" end_time="15:49:00"/>
+    <activity type="Study" x="305249" y="5804449" end_time="15:49:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="319677" y="5817266" end_time="16:13:00"/>
+    <activity type="Social/Recreational" x="300103" y="5807273" end_time="16:13:00"/>
     <leg mode="car"/>
-    <activity type="Pickup/Dropoff/Deliver" x="305559" y="5806551" end_time="16:22:00"/>
+    <activity type="Pickup/Dropoff/Deliver" x="305760" y="5818694" end_time="16:22:00"/>
     <leg mode="car"/>
-    <activity type="Personal" x="302983" y="5806527" end_time="17:37:00"/>
+    <activity type="Personal" x="315160" y="5813808" end_time="17:37:00"/>
     <leg mode="car"/>
-    <activity type="Social/Recreational" x="293247" y="5803458" end_time="21:03:00"/>
+    <activity type="Social/Recreational" x="307300" y="5814292" end_time="21:03:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305392" y="5804622" end_time="23:36:00"/>
   </plan>
@@ -603,11 +603,11 @@
 <person id="43">
   <plan selected="yes">
     <activity type="Home" x="303821" y="5806005" end_time="09:30:00"/>
-    <leg mode="walk"/>
-    <activity type="Shop" x="302983" y="5806527" end_time="10:01:00"/>
-    <leg mode="walk"/>
-    <activity type="Work" x="302786" y="5805248" end_time="16:47:00"/>
-    <leg mode="walk"/>
+    <leg mode="pt"/>
+    <activity type="Shop" x="315040" y="5814394" end_time="10:01:00"/>
+    <leg mode="pt"/>
+    <activity type="Work" x="320759" y="5811966" end_time="16:47:00"/>
+    <leg mode="pt"/>
     <activity type="Home" x="303821" y="5806005" end_time="23:24:00"/>
   </plan>
 </person>
@@ -615,11 +615,11 @@
   <plan selected="yes">
     <activity type="Home" x="305479" y="5805862" end_time="08:35:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="310564" y="5810028" end_time="15:44:00"/>
+    <activity type="Study" x="292756" y="5803387" end_time="15:44:00"/>
     <leg mode="car"/>
-    <activity type="Work" x="301066" y="5804524" end_time="18:15:00"/>
+    <activity type="Work" x="317883" y="5816528" end_time="18:15:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="303116" y="5806592" end_time="23:03:00"/>
+    <activity type="Other" x="320159" y="5813134" end_time="23:03:00"/>
     <leg mode="car"/>
     <activity type="Home" x="305479" y="5805862" end_time="23:21:00"/>
   </plan>
@@ -627,24 +627,24 @@
 <person id="45">
   <plan selected="yes">
     <activity type="Home" x="303690" y="5806316" end_time="08:58:00"/>
-    <leg mode="bike"/>
-    <activity type="Study" x="296072" y="5803445" end_time="15:45:00"/>
-    <leg mode="bike"/>
-    <activity type="Social/Recreational" x="302536" y="5803402" end_time="17:41:00"/>
-    <leg mode="bike"/>
-    <activity type="Work" x="297173" y="5802920" end_time="20:38:00"/>
-    <leg mode="bike"/>
+    <leg mode="car"/>
+    <activity type="Study" x="310028" y="5806903" end_time="15:45:00"/>
+    <leg mode="car"/>
+    <activity type="Social/Recreational" x="310493" y="5809565" end_time="17:41:00"/>
+    <leg mode="car"/>
+    <activity type="Work" x="313296" y="5809990" end_time="20:38:00"/>
+    <leg mode="car"/>
     <activity type="Home" x="303690" y="5806316" end_time="23:28:00"/>
   </plan>
 </person>
 <person id="46">
   <plan selected="yes">
     <activity type="Home" x="304166" y="5805031" end_time="09:02:00"/>
-    <leg mode="pt"/>
-    <activity type="Study" x="307509" y="5814091" end_time="15:46:00"/>
-    <leg mode="pt"/>
-    <activity type="Personal" x="320540" y="5813692" end_time="17:54:00"/>
-    <leg mode="pt"/>
+    <leg mode="car"/>
+    <activity type="Study" x="320674" y="5813577" end_time="15:46:00"/>
+    <leg mode="car"/>
+    <activity type="Personal" x="317695" y="5816825" end_time="17:54:00"/>
+    <leg mode="car"/>
     <activity type="Home" x="304166" y="5805031" end_time="23:32:00"/>
   </plan>
 </person>
@@ -652,9 +652,9 @@
   <plan selected="yes">
     <activity type="Home" x="304838" y="5806313" end_time="08:59:00"/>
     <leg mode="car"/>
-    <activity type="Study" x="299960" y="5806925" end_time="16:42:00"/>
+    <activity type="Study" x="297894" y="5803063" end_time="16:42:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="294014" y="5805446" end_time="21:08:00"/>
+    <activity type="Other" x="292756" y="5803387" end_time="21:08:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304838" y="5806313" end_time="23:39:00"/>
   </plan>
@@ -663,9 +663,9 @@
   <plan selected="yes">
     <activity type="Home" x="304941" y="5804210" end_time="09:04:00"/>
     <leg mode="car"/>
-    <activity type="Work" x="302786" y="5805248" end_time="17:09:00"/>
+    <activity type="Work" x="302536" y="5803402" end_time="17:09:00"/>
     <leg mode="car"/>
-    <activity type="Other" x="300068" y="5806990" end_time="20:07:00"/>
+    <activity type="Other" x="317794" y="5816662" end_time="20:07:00"/>
     <leg mode="car"/>
     <activity type="Home" x="304941" y="5804210" end_time="23:40:00"/>
   </plan>
@@ -673,9 +673,9 @@
 <person id="49">
   <plan selected="yes">
     <activity type="Home" x="305442" y="5805594" end_time="08:33:00"/>
-    <leg mode="car"/>
-    <activity type="Study" x="312492" y="5809171" end_time="15:49:00"/>
-    <leg mode="car"/>
+    <leg mode="walk"/>
+    <activity type="Study" x="302786" y="5805248" end_time="15:49:00"/>
+    <leg mode="walk"/>
     <activity type="Home" x="305442" y="5805594" end_time="23:30:00"/>
   </plan>
 </person>
