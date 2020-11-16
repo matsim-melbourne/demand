@@ -283,7 +283,7 @@ placeToSpatial <- function(pp,fileLocation) {
   ppp <- pp %>%
     # Ignore the first entries for a person as they won't have a valid previous location
     # turn the two SA1 centroids into line geometry
-    mutate(GEOMETRY=paste0("LINESTRING(",lag(X)," ",lag(Y),",",X," ",Y,")")) %>%
+    mutate(GEOMETRY=paste0("LINESTRING(",lag(x)," ",lag(y),",",x," ",y,")")) %>%
     filter(!is.na(ArrivingMode)) %>%
     st_as_sf(wkt = "GEOMETRY", crs = 28355) # %>%
     # some legs end up at the same address, this would remove them
