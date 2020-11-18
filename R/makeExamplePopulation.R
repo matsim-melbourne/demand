@@ -21,7 +21,13 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
 
   tryCatch({
   
-    # Step 0: create the output dirs
+    # Step 0: check input data and create the output dirs
+    source("checksum.R", local=TRUE)
+    if(!checksum()) {
+      cat("Input data files did not match expectation so will stop here.\n")
+      do.steps <- c(F,F,F,F,F,F,F,F) 
+    }
+    
     outdirs <- c(
       '../output/1.setup',
       '../output/2.sample',
