@@ -28,7 +28,7 @@ Download the required data files for generating the population and place them in
 
 Here is an example of how to build a small sample population (0.1%) for Melbourne with census-like persons and VISTA-like activities and trips, for weekdays:
 ```
-Rscript --vanilla -e 'setwd("R"); source("makeExamplePopulation.R"); runexample()'
+Rscript -e 'setwd("R"); source("makeExamplePopulation.R"); runexample()'
 ```
 
 The script is quite verbose and takes a few minutes to run. If all went well you should get the MATSim population in `./output/8.xml/plan.xml`.

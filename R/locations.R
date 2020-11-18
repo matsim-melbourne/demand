@@ -227,7 +227,7 @@ getAddressCoordinates <- function(SA1_id,destination_category) {
     dplyr::mutate(id=row_number())
   if(nrow(potentialAddresses)==0) {
     # if no suitable destinations are found, default to the centroid of the SA1 region
-    return(sa1_centroids_dt[.(SA1_id), .(x,y)]%>%unlist())
+    return(sa1_centroids_dt[.(SA1_id), .(X,Y)]%>%unlist())
   }
   # return(NULL);
   address_id <- sample(potentialAddresses$id, size=1,
