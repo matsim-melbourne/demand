@@ -14,13 +14,10 @@ test_that("Assigning coordinates to activities works", {
     assignLocationsToActivities(plancsv, outcsv, writeInterval)
   )
   
-  # FIXME: As of 13/Nov/20, placeToSpatial fails with the following error
-  #    Problem with `mutate()` input `GEOMETRY`.
-  #    x object 'X' not found
-  #capture_output(
-  #  placeToSpatial(read.csv("../actual/6.place/plan.csv"),'../actual/6.place/plan.sqlite')
-  #)
-  #expect_true(file.exists('../actual/6.place/plan.sqlite'))
+  capture_output(
+    placeToSpatial(read.csv("../actual/6.place/plan.csv"),'../actual/6.place/plan.sqlite')
+  )
+  expect_true(file.exists('../actual/6.place/plan.sqlite'))
   
   expect_true(file.exists('../actual/6.place/plan.csv'))
   expect_true(md5sum('../actual/6.place/plan.csv') == md5sum('../expected/6.place/plan.csv'))
