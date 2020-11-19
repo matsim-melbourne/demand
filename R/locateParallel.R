@@ -178,7 +178,6 @@ if (!is.null(rseed)) {
 }
 start_time = Sys.time()
 results <- foreach(planGroup=planGroups,
-                   outdir=outdir,
                    .combine=rbind,
                    .verbose=FALSE,
                    .packages=c("doParallel", "sf","dplyr","scales","data.table"),
