@@ -1,19 +1,32 @@
 assignTimesToActivities <- function(plancsv, binSizeInMins, outcsv, writeInterval) {
-
+  # example inputs:
+  #  plancsv <- '../output/6.place/plan.csv'
+  #  binSizeInMins <- 30
+  #  outcsv <- '../output/7.time/plan.csv'
+  #  writeInterval <- 100
+  
   options(scipen=999) # disable scientific notation for more readible filenames with small sample sizes
   
   suppressPackageStartupMessages(library(stringr))
-
-  # Converts mins to HH:MM:SS format
-  toHHMMSS <- function(mins) {
-    if(is.null(mins) || is.na(mins) || !is.numeric(mins)) return("??:??:??")
-    h<-mins %/% 60
-    m<-mins - (h*60)
-    s<-0
+  suppressPackageStartupMessages(library(dplyr))
+  suppressPackageStartupMessages(library(tidyr))
+  
+  # Converts vector of secs to HH:MM:SS format
+  toHHMMSS <- function(v) {
+    if(is.null(v) || is.na(v) || !is.numeric(v)) return("??:??:??")
+    h <- v %/% (60*60)
+    m <- (v - (h*60*60)) %/% 60
+    s <- v %% 60
+    x <- c(rbind(h,m,s))
+    hh <- paste0(str_pad(h,2,pad="0"),":")
+    mm <- paste0(str_pad(m,2,pad="0"),":")
+    ss <- str_pad(s,2,pad="0")
     hhmmss<-paste0(str_pad(h,2,pad="0"),":",
                    str_pad(m,2,pad="0"),":",
                    str_pad(s,2,pad="0"))
-    return(hhmmss)
+    z <- data.frame(t(rbind(hh,mm,ss)))
+    zz <- as.vector(t(z %>% unite("zz", c("hh", "mm", "ss"), sep="")))
+    return(zz)
   }
   
   
@@ -28,70 +41,29 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outcsv, writeInterva
   pp$act_start_hhmmss<-""; pp$act_end_hhmmss<-""
   wplans<-pp[FALSE,]
   write.table(wplans, file=outcsv, append=FALSE, row.names=FALSE, sep = ',')
+  
+  times<-data.frame(PlanId=c(rbind(pp$PlanId,pp$PlanId)), Secs=60*(binSizeInMins*c(rbind(pp$StartBin,pp$EndBin))-binSizeInMins))
+  ids<-unique(pp$PlanId)
+  
   processed<-0
-  i=0
-  while(i<nrow(pp)) {
-    i<-i+1
-    assignedStart<-FALSE
-    assignedEnd<-FALSE
-    if(i<nrow(pp) && (pp[i,]$EndBin == pp[i+1,]$StartBin)) {
-      # if the end bin of this activity is the same as the start bin of the next activity, 
-      # then put this end time in the third quarter of the bin
-      pp[i,]$act_end_hhmmss<-toHHMMSS(round((pp[i,]$EndBin*(binSizeInMins-1))+(binSizeInMins*0.5)+sample(binSizeInMins*0.25, 1)))
-      assignedEnd<-TRUE
-    } 
-    if (i>1 && (pp[i,]$StartBin == pp[i-1,]$EndBin)) {
-      # if the start bin of this activity is the same as the end bin of the previous activity, 
-      # then put this start time in the start of the fourth quarter of the bin
-      pp[i,]$act_start_hhmmss<-toHHMMSS(round((pp[i,]$StartBin*(binSizeInMins-1))+(binSizeInMins*0.75)+sample(binSizeInMins*0.125, 1)))
-      assignedStart<-TRUE
-    } 
-    if (pp[i,]$StartBin == pp[i,]$EndBin) {
-      if (assignedStart && assignedEnd) {
-        # getting too tight; need to squeeze start/end in the start of the fourth quarter of the bin
-        tx<-round((pp[i,]$StartBin*(binSizeInMins-1))+(binSizeInMins*0.75)+sample(binSizeInMins*0.125, 1))
-        ty<-round((pp[i,]$StartBin*(binSizeInMins-1))+(binSizeInMins*0.75)+sample(binSizeInMins*0.125, 1))
-        if (tx < ty) {
-          pp[i,]$act_start_hhmmss<-toHHMMSS(tx)
-          pp[i,]$act_end_hhmmss<-toHHMMSS(ty)
-        } else {
-          pp[i,]$act_start_hhmmss<-toHHMMSS(ty)
-          pp[i,]$act_end_hhmmss<-toHHMMSS(tx)
-        }
-      } else if (assignedEnd) {
-        # if end is already assigned (in tird quarter) then put the start in the first half
-        pp[i,]$act_start_hhmmss<-toHHMMSS(round((pp[i,]$StartBin*(binSizeInMins-1))+sample(binSizeInMins*0.5, 1)))
-        assignedStart<-TRUE
-      } else if (assignedStart) {
-        # if start is already assigned (in the fourth quarter) then put the end after it
-        pp[i,]$act_end_hhmmss<-toHHMMSS(round((pp[i,]$EndBin*(binSizeInMins-1))+(binSizeInMins*(0.75+0.125))+sample(binSizeInMins*0.125, 1)))
-        assignedEnd<-TRUE
-      } else {
-        # else if the start/end bins of this activity is the same, then put start/end in each half of the bin
-        pp[i,]$act_start_hhmmss<-toHHMMSS(round((pp[i,]$StartBin*(binSizeInMins-1))+sample(binSizeInMins*0.5, 1)))
-        assignedStart<-TRUE
-        pp[i,]$act_end_hhmmss<-toHHMMSS(round((pp[i,]$EndBin*(binSizeInMins-1))+(binSizeInMins*0.5)+sample(binSizeInMins*0.5, 1)))
-        assignedEnd<-TRUE
-      }
-    } 
-    if (!assignedStart) {
-      # else put the start/end times anywhere in the bin
-      pp[i,]$act_start_hhmmss<-toHHMMSS(round((pp[i,]$StartBin*(binSizeInMins-1))+sample(binSizeInMins, 1)))
-    }
-    if (!assignedEnd) {
-      # else put the start/end times anywhere in the bin
-      pp[i,]$act_end_hhmmss<-toHHMMSS(round((pp[i,]$EndBin*(binSizeInMins-1))+sample(binSizeInMins, 1)))
-    }
-    
-    # add it to out list
-    wplans<-rbind(wplans, pp[i,])
+  for (id in ids) {
+    secs <- times[times$PlanId==id,]$Secs # get the start/end times aligned to bin starts
+    offsets <- sample(1:60*binSizeInMins, length(secs)) # generate unique offsets of 30mins length max
+    secs<-secs + offsets
+    secs <- sort(secs) 
+    secs <- toHHMMSS(secs)
+    odd <-1:length(secs)%%2 != 0
+    starts <- secs[odd]
+    ends <- secs[!odd]
+    pp[pp$PlanId==id,]$act_start_hhmmss <- starts
+    pp[pp$PlanId==id,]$act_end_hhmmss <- ends
     # record progress for each person
-    if(i==nrow(pp) || pp[i,]$AgentId != pp[i+1,]$AgentId) {
-      processed<-processed+1
-      printProgress(processed, '.')
-    }
+    processed<-processed+1
+    printProgress(processed, '.')
+    # add it to out list
+    wplans<-rbind(wplans, pp[pp$PlanId==id,])
     # write it out at regular intervals
-    if (processed%%writeInterval==0 || i==nrow(pp)) {
+    if (processed%%writeInterval==0 || id==length(ids)) {
       write.table(wplans, file=outcsv, append=TRUE, row.names=FALSE, col.names=FALSE, sep = ',')
       wplans<-wplans[FALSE,] # remove all rows
     }
