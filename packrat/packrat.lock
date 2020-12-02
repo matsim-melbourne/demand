@@ -61,6 +61,11 @@ Source: CRAN
 Version: 1.4-1
 Hash: 60a56e9998b8b58ee378db3dc91b27a5
 
+Package: cpp11
+Source: CRAN
+Version: 0.2.4
+Hash: 5374c8908db1d918b1c7fc6f2ec065da
+
 Package: crayon
 Source: CRAN
 Version: 1.3.4
@@ -314,6 +319,13 @@ Version: 3.0.3
 Hash: 0f09f15d866589a54943e022b5498859
 Requires: cli, crayon, ellipsis, fansi, lifecycle, magrittr, pillar,
     pkgconfig, rlang, vctrs
+
+Package: tidyr
+Source: CRAN
+Version: 1.1.2
+Hash: e5e645a4f251c64929ed4f2b0b65952f
+Requires: cpp11, dplyr, ellipsis, glue, lifecycle, magrittr, purrr,
+    rlang, tibble, tidyselect, vctrs
 
 Package: tidyselect
 Source: CRAN
