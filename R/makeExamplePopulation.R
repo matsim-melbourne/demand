@@ -80,7 +80,7 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         '../output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz', 
         3:50, # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
         '../output/3.plan', 
-        20 # write to file every 1000 plans
+        500 # write to file every 1000 plans
       )
     }
     
@@ -135,7 +135,7 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       assignLocationsToActivities(
         '../output/5.locate/plan.csv', 
         '../output/6.place/plan.csv', 
-        100 # write to file every so many plans
+        500 # write to file every so many plans
       )
       placeToSpatial(
         read.csv("../output/6.place/plan.csv"),
@@ -148,7 +148,7 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         '../output/6.place/plan.csv', 
         30, # bin size in minutes 
         '../output/7.time/plan.csv', 
-        100 # write to file every so many plans
+        500 # write to file every so many plans
       )
     }
     if(do.steps[8]) {
@@ -156,7 +156,7 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       writePlanAsMATSimXML(
         '../output/7.time/plan.csv', 
         '../output/8.xml/plan.xml', 
-        100 # write to file in blocks of this size
+        500 # write to file in blocks of this size
       )
     }
   },

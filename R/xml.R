@@ -1,8 +1,11 @@
 writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
-
+  # example inputs
+  # plancsv <- '../output/7.time/plan.csv'
+  # outxml <- '../output/8.xml/plan.xml'
+  # writeInterval <- 100 # write to file in blocks of this size
+  
   options(scipen=999) # disable scientific notation for more readible filenames with small sample sizes
   
-  suppressPackageStartupMessages(library(XML))
 
   # Read in the plans
   gz1<-gzfile(plancsv, 'rt')
@@ -19,7 +22,7 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
   cat(str,file=outxml, sep="\n")
   
   pp<-plans
-  popnWriteBuffer=list()
+  popnWriteBuffer<-""
   processed<-0
   i=0
   while(i<nrow(pp)) {
@@ -30,51 +33,36 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
       # count the persons
       processed<-processed+1
       # create a new person
-      pxml<-newXMLNode("person", attrs=c(id=processed-1))
+      str<-paste0('<person id="',processed-1,'">\n')
       # create a new plan
-      pplan<-newXMLNode("plan", attrs=c(selected="yes"))
-      # attach plan to person
-      addChildren(pxml,pplan)
+      str<-paste0(str, '  <plan selected="yes">\n')
     } else {
       # if not the first activity then also add a leg
-      leg<-newXMLNode("leg", attrs=c(mode=pp[i,]$ArrivingMode))
-      addChildren(pplan, leg)
+      str<-paste0(str, '    <leg mode="',pp[i,]$ArrivingMode,'"/>\n') 
     }
-
+    
     # add this row as an activity    
-    act<-newXMLNode("activity", attrs=c(type=pp[i,]$Activity, x=pp[i,]$x, y=pp[i,]$y, end_time=pp[i,]$act_end_hhmmss))
-    addChildren(pplan, act)
-
+    str<-paste0(str, '    <activity type="',pp[i,]$Activity,'" x="',pp[i,]$x,'" y="',pp[i,]$y,'" end_time="',pp[i,]$act_end_hhmmss,'"/>\n') 
+    
     # if this row marks the end of a person's plan 
     if(i==nrow(pp) || pp[i,]$AgentId != pp[i+1,]$AgentId) {
+      # close off the tags
+      str<-paste0(str, '  </plan>\n')
+      str<-paste0(str, '</person>\n')
       # add person to write buffer
-      popnWriteBuffer[[1+((processed-1)%%writeInterval)]]<-pxml
+      popnWriteBuffer <- paste0(popnWriteBuffer, str)
       # write it out at regular intervals
       if (processed%%writeInterval==0 || i==nrow(pp)) {
-        lapply(popnWriteBuffer, function(x, file, append, sep) {
-          if (!is.null(x)) {
-            cat(saveXML(x), file=file, append=append, sep=sep)
-          }
-        }, file=outxml, append=TRUE, sep="\n")
-        popnWriteBuffer=list() # clear the buffer after writing it out
+        cat(popnWriteBuffer,file=outxml, sep="", append=TRUE)
+        popnWriteBuffer<-"" # clear the buffer after writing it out
       }
       # report progress
       printProgress(processed,'.')
     }
-
+    
   }
   cat('</population>',file=outxml, append=TRUE,sep="\n")
   cat('\n')
   echo(paste0('Wrote ',processed,' plans to ', outxml , '\n'))
   # close off the population XML
-}
-
-
-# example usage
-runexample<- function() {
-  plancsv<-'output/7.time/plan.csv'
-  outxml<-'output/plan.xml'
-  writeInterval <- 2 # write to file every so many plans
-  
-  writePlanAsMATSimXML(plancsv, outxml, writeInterval)
 }
