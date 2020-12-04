@@ -81,6 +81,8 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outdir, outcsv, writ
     }
   }
   
+  dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
+  
   # Read in the plans
   gz1<-gzfile(plancsv, 'rt')
   echo(paste0('Loading VISTA-like plans from ', plancsv, '\n'))
