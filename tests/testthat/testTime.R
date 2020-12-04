@@ -24,6 +24,8 @@ test_that("Assigning times to activities works", {
   setwd(wd) 
   
   expect_true(file.exists('../actual/7.time/plan.csv'))
+  cat(paste0('MD5 ../actual/7.time/plan.csv: ', md5sum('../actual/7.time/plan.csv'), '\n'))
+  cat(paste0('MD5 ../expected/7.time/plan.csv: ', md5sum('../expected/7.time/plan.csv'), '\n'))
   #disabling below, fails on CI server -Dhi 4/12/20
   #expect_true(md5sum('../actual/7.time/plan.csv') == md5sum('../expected/7.time/plan.csv'))
 })
