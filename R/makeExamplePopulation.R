@@ -150,10 +150,10 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       wd<-getwd()
       setwd("..")
       assignTimesToActivities(
-        '../output/6.place/plan.csv', 
+        './output/6.place/plan.csv', 
         30, # bin size in minutes 
-        '../output/7.time', 
-        '../output/7.time/plan.csv', 
+        './output/7.time', 
+        './output/7.time/plan.csv', 
         500 # write to file every so many plans
       )
       setwd(wd)
