@@ -102,7 +102,7 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         '../output/1.setup/locAddresses.rds'
       )
       source('locateParallel.R')
-      # locateParallel uses doParallel which must be run from the project root 
+      # uses doParallel which must be run from the project root 
       # to ensure packrat libraries are sourcecorrectly by the workers.
       # See https://stackoverflow.com/a/36901524.
       wd<-getwd()
@@ -144,12 +144,20 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     }
     if(do.steps[7]) {
       source('time.R', local=TRUE)
+      # uses doParallel which must be run from the project root 
+      # to ensure packrat libraries are sourcecorrectly by the workers.
+      # See https://stackoverflow.com/a/36901524.
+      wd<-getwd()
+      setwd("..")
       assignTimesToActivities(
         '../output/6.place/plan.csv', 
         30, # bin size in minutes 
+        '../output/7.time', 
         '../output/7.time/plan.csv', 
         500 # write to file every so many plans
       )
+      setwd(wd)
+      
     }
     if(do.steps[8]) {
       source('xml.R', local=TRUE)
