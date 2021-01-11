@@ -113,8 +113,14 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outdir, outcsv, writ
   echo(paste0('Finished parallel processing in ', round(etime - stime,1), 's\n'))
   stopCluster(cl)
   
-  files<-list.files(outdir,pattern="plan.csv.[[:digit:]]{1}",full.names=T)
-  combined<-lapply(files,read.csv,header=T) %>%
+  # files<-list.files(outdir,pattern="plan.csv.[[:digit:]]{1}",full.names=T)
+  filesDF <- data.frame(
+    location=list.files(outdir,pattern="plan.csv.[[:digit:]]{1}",full.names=T),
+    order=list.files(outdir,pattern="plan.csv.[[:digit:]]{1}",full.names=F)%>%gsub("plan.csv.", "",.)%>%as.numeric(),
+    stringsAsFactors=FALSE
+  ) %>% arrange(order)
+  
+  combined<-lapply(filesDF$location,read.csv,header=T) %>%
     bind_rows()
   colnames(combined)<-c("PlanId","Activity","StartBin","EndBin","AgentId",
                              "SA1_MAINCODE_2016","LocationType","ArrivingMode",

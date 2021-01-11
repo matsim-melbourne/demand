@@ -125,6 +125,35 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
   return(probabilityDF)
 }
 
+
+
+
+getValidRegions <- function(SA1_id,mode,stops) {
+  # SA1_id=20604112202
+  # mode="walk"
+  # stops=1
+  
+  index <- distanceMatrixIndex_dt[.(as.numeric(SA1_id)),2]%>%as.numeric()
+  
+  distances <-data.frame(index=1:nrow(distanceMatrix),
+                         distance=distanceMatrix[index,]) %>% # look down columns
+    inner_join(distanceMatrixIndex, by=c("index"="index")) %>%
+    pull(distance)
+  distances[distances<1] <- 1 # don't want to divide by 0
+  
+  filteredset<-SA1_attributed_dt %>% # get mean and sd for current mode
+    dplyr::select(Mean=paste0("meanlog_",mode),SD=paste0("sdlog_",mode))
+  
+  distance95 <- qlnorm(0.95,filteredset$Mean,filteredset$SD)
+  numberJumpsBack <- ceiling(distances/distance95) #how many jumps to get back to home SA1
+  # View(data.frame(distance=distances,distance95=distance95,numberJumpsBack=numberJumpsBack))
+  
+  allowedSA1<-numberJumpsBack
+  allowedSA1[allowedSA1>stops] <- NA
+  allowedSA1[!is.na(allowedSA1)] <- 1
+  return(allowedSA1)
+}
+
 getReturnTripLength <- function(SA1_id,mode) {
   # SA1_id=20604112202
   # mode="car"
@@ -149,11 +178,39 @@ getReturnTripLength <- function(SA1_id,mode) {
 
 # This will be made more detailed later, and actually take destination category
 # into account.
+# chooseMode(20604112202)
+chooseMode <- function(SA1_id, primary_mode=NA, anchor_region=FALSE) {
+  # SA1_id=20604112202
+
+  if(is.na(primary_mode)) primary_mode<-''
+  # a list of the four mode probabilities for this SA1
+  modeProbability <- SA1_attributed_dt[.(SA1_id),11:14] %>%
+    unlist()
+  
+  modeProbabilityDF <- data.table(mode=c("walk","bike","pt","car"),
+                                  modeProbability,
+                                  stringsAsFactors=FALSE)
+  if(primary_mode=='bike' & anchor_region==FALSE) {
+    modeProbabilityDF <- modeProbabilityDF[mode%in%c('walk','bike','pt')]
+  }
+  if(primary_mode=='car' & anchor_region==FALSE) {
+    modeProbabilityDF <- modeProbabilityDF[mode%in%c('walk','pt','car')]
+  }
+  if(anchor_region==TRUE | (primary_mode%in%c('walk','pt') & anchor_region==FALSE) ) {
+    modeProbabilityDF <- modeProbabilityDF[mode%in%c('walk','pt')]
+  }
+  mode<-sample(modeProbabilityDF$mode, size=1,
+                prob=modeProbabilityDF$modeProbability)
+  return(mode)
+}
+
+# This will be made more detailed later, and actually take destination category
+# into account.
 # chooseMode(20604112202,"commercial")
-chooseMode <- function(SA1_id,destination_category) {
+chooseModeOld <- function(SA1_id,destination_category) {
   # SA1_id=20604112202
   # destination_category="commercial"
-
+  
   # a list of the four mode probabilities for this SA1
   modeProbability <- SA1_attributed_dt[.(as.numeric(SA1_id))] %>%
     dplyr::select(walk_proportion:car_proportion) %>%
@@ -163,24 +220,23 @@ chooseMode <- function(SA1_id,destination_category) {
                                   modeProbability,
                                   stringsAsFactors=FALSE)
   mode<-sample(modeProbabilityDF$mode, size=1,
-                prob=modeProbabilityDF$modeProbability)
+               prob=modeProbabilityDF$modeProbability)
   return(mode)
 }
-
 # Assuming the transport mode is restricted, this will find a destination SA1
 # findLocationKnownMode(20604112202,"commercial","car")
 findLocationKnownMode <- function(SA1_id,destination_category,mode,allowedSA1) {
   #cat(paste0("\nSA1_id=[",SA1_id,"] destination_category=[",destination_category,"] mode=[",mode,"]\n"))
   probabilityDF <- calculateProbabilities(SA1_id,destination_category,mode,allowedSA1)
   #cat(str(probabilityDF))
-  if(is.null(probabilityDF)) return(NULL)
+  if(is.null(probabilityDF)) return(-1)
   if(length(probabilityDF$sa1_maincode_2016)==1) {
     destinationSA1<-probabilityDF$sa1_maincode_2016
   } else {
     destinationSA1 <- sample(probabilityDF$sa1_maincode_2016, size=1,
                            prob=probabilityDF$combinedProb)
   }
-  return(c(mode,destinationSA1))
+  return(destinationSA1)
 }
 
 # Find a destination SA1 given a source SA1 and destination category
@@ -219,24 +275,17 @@ getReturnProbability <- function(source_SA1,destination_SA1,mode) {
 getAddressCoordinates <- function(SA1_id,destination_category) {
   # SA1_id=21005144422
   # destination_category="home"
-  #potentialAddresses <- addresses %>%
-  #  filter(sa1_main16==SA1_id & category==destination_category) %>%
-  #  dplyr::mutate(id=row_number())
   potentialAddresses <- addresses_dt[.(SA1_id),]
-  potentialAddresses <- potentialAddresses[potentialAddresses$category==destination_category,] %>%
-    dplyr::mutate(id=row_number())
+  potentialAddresses <- potentialAddresses[potentialAddresses$category==destination_category,]
   if(nrow(potentialAddresses)==0) {
     # if no suitable destinations are found, default to the centroid of the SA1 region
     return(sa1_centroids_dt[.(SA1_id), .(X,Y)]%>%unlist())
   }
-  # return(NULL);
-  address_id <- sample(potentialAddresses$id, size=1,
+  address_id <- sample(1:nrow(potentialAddresses), size=1,
                     prob=potentialAddresses$count)
-  address_coordinates <- potentialAddresses %>%
-    filter(id==address_id) %>%
-    dplyr::select(X,Y) %>%
-    unlist()
-  return(address_coordinates)
+  
+  # finding X and Y for selected address, then converting to Named num
+  return(potentialAddresses[address_id,4:5]%>%unlist())
 }
 
 # Returns the distance between two regions

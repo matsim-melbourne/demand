@@ -1,77 +1,132 @@
 locatePlans <- function(censuscsv, vistacsv, matchcsv, outdir, outcsv, rseed = NULL) {
   # example inputs
-  # censuscsv<-'./output/2.sample/sample.csv.gz'
-  # vistacsv<-'./output/3.plan/plan.csv'
-  # matchcsv<-'./output/4.match/match.csv.gz'
-  # outdir<-'./output/5.locate'
-  # outcsv<-'./output/5.locate/plan.csv'
+  # censuscsv<-'../output/2.sample/sample.csv.gz'
+  # vistacsv<-'../output/3.plan/plan.csv'
+  # matchcsv<-'../output/4.match/match.csv.gz'
+  # outdir<-'../output/5.locate'
+  # outcsv<-'../output/5.locate/plan.csv'
+  # planGroup=1
   
 calculatePlanSubset <- function(outdir,planGroup,plans) {
   setDTthreads(1) # only one thread for data.table since we'll be operating in parallel
   
-  discarded<-persons[FALSE,]
   wplans<-NULL
-  pp<-plans%>%filter(ceiling(PlanId/1000)==planGroup)
+  pp<-plans%>%filter(ceiling(PlanId/1000)==planGroup)#%>%dplyr::mutate(Activity=0,AgentId=0)
+  # plans with 1 or 2 entries are automatically discarded.
+  discarded<-pp%>%group_by(AgentId)%>%filter(n()<3)%>%slice_head()%>%dplyr::select(AgentId,SA1_MAINCODE_2016)%>%as.data.frame()
+  pp<-pp%>%group_by(AgentId)%>%filter(n()>2)%>%ungroup()%>%as.data.frame()
   i<-0
   homeSA1<-NA
-  nextHome<-1
+  nextHome<-NA
   returnTripLength<-NA
   processed<-0
+  primary_mode<-NA
+  anchor_region<-FALSE
+
+  # tmp<-pp[(i-10):(i+10),]
+  # tmp<-pp%>%group_by(AgentId)%>%filter(n()<3)%>%ungroup()
   # set.seed(20200406)
-  while(i<nrow(pp)) {
+  # while(i<100) {
+  while(i<nrow(pp)-1) {
     i<-i+1
-    startOfDay <- i==1 || (pp[i,]$PlanId != pp[i-1,]$PlanId &&
-                             pp[i,]$LocationType == "home")
-    endOfDay <- i==nrow(pp) || (pp[i,]$AgentId != pp[i+1,]$AgentId)
+    # if at home
+    # if LocationType_{i}==home and LocationType_{i+1}!=home
+    if(pp[i,7] == "home" & pp[i+1,7] != "home") {
+      nextHome<-which(pp$LocationType[(i+1):nrow(pp)]=="home")%>%first()+i # find next home
+      anchor_region<-FALSE
+      # primary_mode <- chooseMode( SA1_MAINCODE_2016_{i} )
+      primary_mode<-chooseMode(pp[i,6]) # SA1_MAINCODE_2016_{i} choose a new mode
+      
+      # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome}, primary_mode, nextHome-i)
+      validRegions<-getValidRegions(pp[nextHome,6], primary_mode, nextHome-i)
 
-    if(startOfDay) {
-      homeSA1<-pp[i,]$SA1_MAINCODE_2016 # used for calculating return probabilities
-
-      # nothing to do since home SA1s are already assigned; just save and continue
-      wplans<-rbind(wplans, pp[i,])
-    } else {
-      # is the previous LocationType home?
-      allowModeChange<-!startOfDay && !endOfDay && pp[i-1,]$LocationType=="home" # allow mode change at home during the day
-      mode<-pp[i-1,]$ArrivingMode
-      if(allowModeChange) {
-        mode<-chooseMode(pp[i-1,]$SA1_MAINCODE_2016,pp[i,]$ArrivingMode) # choose a new mode
-        nextHome<-which(pp$LocationType[(i):nrow(pp)]=="home")%>%first()+i-1 # find next home
-        returnTripLength<-getReturnTripLength(pp[i-1,]$SA1_MAINCODE_2016,mode)
+      # ArrivingMode_{i+1} <- primary_mode
+      pp[i+1,8] <- primary_mode
+      # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
+      pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], primary_mode, validRegions)
+      
+      # ArrivingMode_{nextHome} <- primary_mode i.e. set the arriving mode of the next home region
+      pp[nextHome,8] <- primary_mode
+    }
+    # if it is possible to change modes
+    if( pp[i,7] != "home" & (nextHome-i>2 | (nextHome-i==2 & primary_mode%in%c('walk','pt'))) ) {
+      # ArrivingMode_{i+1} <- chooseMode( SA1_MAINCODE_2016_{i}, primary_mode, anchor_region )
+      pp[i+1,8] <- chooseMode(pp[i,6], primary_mode, anchor_region)
+      
+      # setting anchor region and mode needed to get there
+      if(anchor_region==FALSE & primary_mode%in%c('bike','car') & primary_mode!=pp[i+1,8]) {
+        # set the region before home to the current region
+        # SA1_MAINCODE_2016_{nextHome-1} <- SA1_MAINCODE_2016_{i}
+        pp[nextHome-1,6] <- pp[i,6]
+        # set the region before home's arriving mode to the next arriving mode
+        # ArrivingMode_{nextHome-1} <- ArrivingMode_{i+1}
+        pp[nextHome-1,8] <- pp[i+1,8]
+        anchor_region <- TRUE
       }
-      allowedSA1<-returnTripLength
-      allowedSA1[allowedSA1>nextHome-i] <- NA
-      allowedSA1[!is.na(allowedSA1)] <- 1
-
-
-      modeAndSa1<-findLocationKnownMode(as.numeric(pp[i-1,]$SA1_MAINCODE_2016), pp[i,]$LocationType, mode, allowedSA1)
-      if(pp[i,]$LocationType=="home") modeAndSa1<-c(mode,homeSA1)
-
-      if(!is.null(modeAndSa1)) {
-        # assign the mode and SA1
-        pp[i,]$ArrivingMode<-modeAndSa1[1]
-        # never change the SA1 of home regions
-        if(pp[i,]$LocationType != "home") pp[i,]$SA1_MAINCODE_2016<-modeAndSa1[2]
-        # add in the distance between the regions
-        pp[i,]$Distance<-calcDistance(pp[i-1,]$SA1_MAINCODE_2016,pp[i,]$SA1_MAINCODE_2016)
-        # add it to our list
-        wplans<-rbind(wplans, pp[i,])
+      # if a walker has switched to pt, then the home region's arriving mode must be pt
+      if(primary_mode=='walk' & pp[i+1,8]=='pt') {
+        # ArrivingMode_{nextHome} <- 'pt'
+        pp[nextHome,8] <- 'pt'
       }
-      if(is.null(modeAndSa1)) {
-        # failed to find a suitable SA1/mode for this activity, so will just discard this person
-        person<-persons[persons$AgentId==pp[i,]$AgentId,]
-        discarded<-rbind(discarded,person)
-        # mark all modes for this plan with 'x' (will delete these later)
-        pp[pp$PlanId==pp[i,]$PlanId,]$ArrivingMode<-'x'
-        # cat(paste0("\n","found an error at line ",i,"\n"))
-        # move to the first row of the next plan
-        i<-as.numeric(last(rownames(pp[pp$PlanId==pp[i,]$PlanId,])))
+      
+      if(anchor_region==TRUE) {
+        # valid regions are the ones reachable within the remaining steps to the
+        # anchor region (the one before the next home region) using the anchor
+        # region's arriving mode.
+        # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome-1}, ArrivingMode_{nextHome-i-1}, nextHome-i-1)
+        validRegions<-getValidRegions(pp[nextHome-1,6], pp[nextHome-1,8], nextHome-i-2)
+        # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
+        pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], primary_mode, validRegions)
       }
+      if(anchor_region==FALSE) {
+        # valid regions are the ones reachable within the remaining steps to the
+        # home region using its arriving mode.
+        # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome}, ArrivingMode_{nextHome-i-1}, nextHome-i-1)
+        validRegions<-getValidRegions(pp[nextHome,6], pp[nextHome,8], nextHome-i-1)
+        # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
+        pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], primary_mode, validRegions)
+      }      
+    }
+    if( pp[i,7] != "home" & nextHome-i==2 & primary_mode%in%c('bike','car') & anchor_region==FALSE ) {
+      # ArrivingMode_{i+1} <- ArrivingMode_{i}
+      pp[i+1,8] <- pp[i,8]
+      # valid regions are the ones reachable within the remaining steps to the
+      # home region using its arriving mode.
+      # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome}, ArrivingMode_{nextHome-i-1}, nextHome-i-1)
+      validRegions<-getValidRegions(pp[nextHome,6], pp[nextHome,8], nextHome-i-1)
+      # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
+      pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], primary_mode, validRegions)
+    }
+      
+    # if the next LocationType isn't home, calculate distance
+    if( pp[i,7] != 'home' | (pp[i,7] == 'home' & pp[i+1,7] != 'home') ) {
+      # Distance_{i+1} <- calcDistance( Distance_{i}, Distance_{i+1} )
+      pp[i,9] <- calcDistance(pp[i,6],pp[i+1,6])
+    }
+    
+    # if SA1_MAINCODE_2016_{i+1} is null
+    if(pp[i+1,6]==-1) {
+      # failed to find a suitable SA1/mode for this activity, so will just discard this person
+      person<-persons[persons$AgentId==pp[i,]$AgentId,]
+      discarded<-rbind(discarded,person)
+      # mark all modes for this plan with 'x' (will delete these later)
+      pp[pp$PlanId==pp[i,]$PlanId,]$ArrivingMode<-'x'
+      # cat(paste0("\n","found an error at line ",i,"\n"))
+      # move to the first row of the next plan
+      i<-as.numeric(last(rownames(pp[pp$PlanId==pp[i,]$PlanId,])))
     }
     # record progress for each person
     if(i==nrow(pp) || pp[i,]$AgentId != pp[i+1,]$AgentId) {
       processed<-processed+1
     }
+    
+    # if SA1_MAINCODE_2016_{i} is not null
+    if(pp[i,6]==-1) {
+      wplans<-rbind(wplans, pp[i,])
+    }
   }
+  # removing discarded plans
+  wplans<-wplans%>%filter(ArrivingMode!='x'|is.na(ArrivingMode))
   write.table(wplans, file=paste0(outdir,'/plan/',planGroup,'.csv'),
               append=FALSE, row.names=FALSE, col.names=FALSE, sep = ',')
   write.table(discarded, file=paste0(outdir,'/discarded/',planGroup,'.csv'),
@@ -184,7 +239,8 @@ results <- foreach(planGroup=planGroups,
                    .export = c("calcDistance", "calculateProbabilities", "chooseMode", 
                                "findLocationKnownMode", "getReturnTripLength", 
                                "SA1_attributed", "SA1_attributed_dt", 
-                               "distanceMatrix", "distanceMatrixIndex", "distanceMatrixIndex_dt")
+                               "distanceMatrix", "distanceMatrixIndex", "distanceMatrixIndex_dt",
+                               "getValidRegions")
 ) %dopar% 
   calculatePlanSubset(outdir,planGroup,plans)
 end_time = Sys.time()
@@ -196,8 +252,14 @@ stopCluster(cl)
 
 echo(paste0("Combining plans into single file:\n"))
 
-planFiles<-list.files(paste0(outdir,'/plan'),pattern="*.csv",full.names=T)
-plansCombined<-lapply(planFiles,read.csv,header=F) %>%
+# planFiles<-list.files(paste0(outdir,'/plan'),pattern="*.csv",full.names=T)
+planFilesDF <- data.frame(
+  location=list.files(paste0(outdir,'/plan'),pattern="*.csv",full.names=T),
+  order=list.files(paste0(outdir,'/plan'),pattern="*.csv",full.names=F)%>%gsub(".csv", "",.)%>%as.numeric(),
+  stringsAsFactors=FALSE
+) %>% arrange(order)
+
+plansCombined<-lapply(planFilesDF$location,read.csv,header=F) %>%
   bind_rows()
 colnames(plansCombined)<-c("PlanId","Activity","StartBin","EndBin","AgentId",
                            "SA1_MAINCODE_2016","LocationType","ArrivingMode",

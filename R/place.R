@@ -14,29 +14,22 @@ assignLocationsToActivities <- function(plancsv, outcsv, writeInterval) {
   wplans<-pp[FALSE,]
   write.table(wplans, file=outcsv, append=FALSE, row.names=FALSE, sep = ',')
   processed<-0
-  homexy<-NULL; workxy<-NULL
+  homexy<-NULL
   i=0
   while(i<nrow(pp)) {
     i<-i+1
     newPerson<-i==1 || pp[i,]$AgentId != pp[i-1,]$AgentId
     if(newPerson) {
       homexy<-NULL 
-      workxy<-NULL
     }
     if(is.null(homexy) && pp[i,]$LocationType=="home") {
-      homexy <- getAddressCoordinates(as.numeric(pp[i,]$SA1_MAINCODE_2016), pp[i,]$LocationType)
-    }
-    if(is.null(workxy) && pp[i,]$LocationType=="work") {
-      workxy <- getAddressCoordinates(as.numeric(pp[i,]$SA1_MAINCODE_2016), pp[i,]$LocationType)
+      homexy <- getAddressCoordinates(pp[i,]$SA1_MAINCODE_2016, pp[i,]$LocationType)
     }
     if(pp[i,]$LocationType=="home") {
       pp[i,]$x <- homexy[1]
       pp[i,]$y <- homexy[2]
-    } else if(pp[i,]$LocationType=="work") {
-      pp[i,]$x <- workxy[1]
-      pp[i,]$y <- workxy[2]
     } else {
-      xy<-getAddressCoordinates(as.numeric(pp[i,]$SA1_MAINCODE_2016), pp[i,]$LocationType)
+      xy<-getAddressCoordinates(pp[i,]$SA1_MAINCODE_2016, pp[i,]$LocationType)
       pp[i,]$x<-xy[1]
       pp[i,]$y<-xy[2]
     }

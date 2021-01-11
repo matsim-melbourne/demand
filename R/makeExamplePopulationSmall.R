@@ -16,8 +16,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
   source("util.R")
   
   
-  dir.create('../output', showWarnings = FALSE, recursive=TRUE)
-  sink('../output/makeExamplePopulation.log', append=FALSE, split=TRUE) # sink to both console and log file
+  dir.create('../outputSmall', showWarnings = FALSE, recursive=TRUE)
+  sink('../outputSmall/makeExamplePopulation.log', append=FALSE, split=TRUE) # sink to both console and log file
 
   tryCatch({
   
@@ -29,14 +29,14 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     }
     
     outdirs <- c(
-      '../output/1.setup',
-      '../output/2.sample',
-      '../output/3.plan',
-      '../output/4.match',
-      '../output/5.locate',
-      '../output/6.place',
-      '../output/7.time',
-      '../output/8.xml'
+      '../outputSmall/1.setup',
+      '../outputSmall/2.sample',
+      '../outputSmall/3.plan',
+      '../outputSmall/4.match',
+      '../outputSmall/5.locate',
+      '../outputSmall/6.place',
+      '../outputSmall/7.time',
+      '../outputSmall/8.xml'
     )
     for (outdir in outdirs) {
       dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
@@ -47,15 +47,16 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       source("vista.R", local=TRUE)
       source('setup.R', local=TRUE); 
       source('locations.R', local=TRUE);
-      demand_setup('../output/1.setup', 
+      demand_setup('../outputSmall/1.setup', 
                    '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv')
       locations_setup(
-        '../output/1.setup', 
+        '../outputSmall/1.setup', 
         '../data/distanceMatrix.rds', 
         '../data/distanceMatrixIndex.csv', 
         '../data/SA1attributed.csv.gz', 
         '../data/SA1centroids.csv.gz', 
-        '../data/addresses.csv.gz'
+        '../data/addresses.csv.gz',
+        plansFile="../../small-region/filteredRegions.csv"
       )
     }
     
@@ -65,7 +66,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       sampleMelbourne2016Population(
         '../data', 
         samplePercent, 
-        '../output/2.sample/sample.csv.gz'
+        '../outputSmall/2.sample/sample.csv.gz',
+        plansFile="../../small-region/filteredRegions.csv"
       )
     }
 
@@ -73,13 +75,13 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     if(do.steps[3]) {
       source('sample.R', local=TRUE); 
       source('plan.R', local=TRUE);
-      numPlans<-ceiling((samplePercent/100)* countMelbourne2016Population('../data')) + 100 # generate a few extra
+      numPlans<-ceiling((samplePercent/100)* countMelbourne2016Population('../data',plansFile="../../small-region/filteredRegions.csv")) + 100 # generate a few extra
       generatePlans(
         numPlans, 
-        '../output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz', 
-        '../output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz', 
+        '../outputSmall/1.setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz', 
+        '../outputSmall/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz', 
         3:50, # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
-        '../output/3.plan', 
+        '../outputSmall/3.plan', 
         500 # write to file every 1000 plans
       )
     }
@@ -87,75 +89,73 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     if(do.steps[4]) {
       source('match.R', local=TRUE); 
       matchPersons(
-        '../output/2.sample/sample.csv.gz', 
-        '../output/3.plan/plan.csv', 
-        '../output/4.match/match.csv.gz'
+        '../outputSmall/2.sample/sample.csv.gz', 
+        '../outputSmall/3.plan/plan.csv', 
+        '../outputSmall/4.match/match.csv.gz'
       )
     }
     if(do.steps[5]) {
       source('locations.R')
       loadLocationsData(
-        '../output/1.setup/locDistanceMatrix.rds',
-        '../output/1.setup/locDistanceMatrixIndex.rds',
-        '../output/1.setup/locSa1Aattributed.rds',
-        '../output/1.setup/locSa1Centroids.rds',
-        '../output/1.setup/locAddresses.rds'
+        '../outputSmall/1.setup/locDistanceMatrix.rds',
+        '../outputSmall/1.setup/locDistanceMatrixIndex.rds',
+        '../outputSmall/1.setup/locSa1Aattributed.rds',
+        '../outputSmall/1.setup/locSa1Centroids.rds',
+        '../outputSmall/1.setup/locAddresses.rds'
       )
       source('locateParallel.R')
       # uses doParallel which must be run from the project root 
-      # to ensure packrat libraries are sourcecorrectly by the workers.
+      # to ensure packrat libraries are sourced correctly by the workers.
       # See https://stackoverflow.com/a/36901524.
       wd<-getwd()
       setwd("..")
       locatePlans(
-        './output/2.sample/sample.csv.gz',
-        './output/3.plan/plan.csv',
-        './output/4.match/match.csv.gz',
-        './output/5.locate',
-        './output/5.locate/plan.csv'
+        './outputSmall/2.sample/sample.csv.gz',
+        './outputSmall/3.plan/plan.csv',
+        './outputSmall/4.match/match.csv.gz',
+        './outputSmall/5.locate',
+        './outputSmall/5.locate/plan.csv'
       )
       setwd(wd) 
       planToSpatial(
-        read.csv("../output/5.locate/plan.csv"),
-        '../output/5.locate/plan.sqlite'
+        read.csv("../outputSmall/5.locate/plan.csv"),
+        '../outputSmall/5.locate/plan.sqlite'
       )
-      source('locateVISTA.R', local=TRUE); 
-      analyseLocate('../output/5.locate')
     }
     if(do.steps[6]) {
       if(!do.steps[5]) { # if not already loaded in the last step
         source("locations.R")
         loadLocationsData(
-          '../output/1.setup/locDistanceMatrix.rds', 
-          '../output/1.setup/locDistanceMatrixIndex.rds',
-          '../output/1.setup/locSa1Aattributed.rds', 
-          '../output/1.setup/locSa1Centroids.rds', 
-          '../output/1.setup/locAddresses.rds'
+          '../outputSmall/1.setup/locDistanceMatrix.rds', 
+          '../outputSmall/1.setup/locDistanceMatrixIndex.rds',
+          '../outputSmall/1.setup/locSa1Aattributed.rds', 
+          '../outputSmall/1.setup/locSa1Centroids.rds', 
+          '../outputSmall/1.setup/locAddresses.rds'
         )
       }
       source('place.R', local=TRUE); 
       assignLocationsToActivities(
-        '../output/5.locate/plan.csv', 
-        '../output/6.place/plan.csv', 
+        '../outputSmall/5.locate/plan.csv', 
+        '../outputSmall/6.place/plan.csv', 
         500 # write to file every so many plans
       )
       placeToSpatial(
-        read.csv("../output/6.place/plan.csv"),
-        '../output/6.place/plan.sqlite'
+        read.csv("../outputSmall/6.place/plan.csv"),
+        '../outputSmall/6.place/plan.sqlite'
       )
     }
     if(do.steps[7]) {
       source('time.R', local=TRUE)
       # uses doParallel which must be run from the project root 
-      # to ensure packrat libraries are sourcecorrectly by the workers.
+      # to ensure packrat libraries are sourced correctly by the workers.
       # See https://stackoverflow.com/a/36901524.
       wd<-getwd()
       setwd("..")
       assignTimesToActivities(
-        './output/6.place/plan.csv', 
+        './outputSmall/6.place/plan.csv', 
         30, # bin size in minutes 
-        './output/7.time', 
-        './output/7.time/plan.csv', 
+        './outputSmall/7.time', 
+        './outputSmall/7.time/plan.csv', 
         500 # write to file every so many plans
       )
       setwd(wd)
@@ -164,8 +164,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     if(do.steps[8]) {
       source('xml.R', local=TRUE)
       writePlanAsMATSimXML(
-        '../output/7.time/plan.csv', 
-        '../output/8.xml/plan.xml', 
+        '../outputSmall/7.time/plan.csv', 
+        '../outputSmall/8.xml/plan.xml', 
         500 # write to file in blocks of this size
       )
     }

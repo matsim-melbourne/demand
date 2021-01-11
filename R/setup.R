@@ -89,6 +89,14 @@ locations_setup<-function(setupDir,
   sa1Aattributed <- inner_join(dmi,
                                read.csv(gzfile(sa1AttributedFile)),
                                by="sa1_maincode_2016")
+  # Need to make sure that the probabilities sum to 1
+  sa1Aattributed <- sa1Aattributed %>%
+    mutate(home=home/sum(home,na.rm=T),
+           work=work/sum(work,na.rm=T),
+           park=park/sum(park,na.rm=T),
+           education=education/sum(education,na.rm=T),
+           commercial=commercial/sum(commercial,na.rm=T))
+  
   outfile<-paste0(setupDir,"/locSa1Aattributed.rds")
   echo(paste0("Writing ", outfile, "\n"))
   saveRDS(sa1Aattributed, outfile)
@@ -97,12 +105,14 @@ locations_setup<-function(setupDir,
   # These coordinates are in EPSG:28355, which is a projected coordinate system.
   echo(paste0("Reading ", addressesFile, "\n"))
   addresses <- read.csv(gzfile(addressesFile))
+  if (filterSa1s) addresses <- addresses%>%filter(sa1_maincode_2016%in%sa1s)
   outfile<-paste0(setupDir,"/locAddresses.rds")
   echo(paste0("Writing ", outfile, "\n"))
   saveRDS(addresses, outfile)
   
   echo(paste0("Reading ", sa1CentroidsFile, "\n"))
   sa1Centroids <- read.csv(gzfile(sa1CentroidsFile))
+  if (filterSa1s) sa1Centroids <- sa1Centroids%>%filter(sa1_maincode_2016%in%sa1s)
   outfile<-paste0(setupDir,"/locSa1Centroids.rds")
   echo(paste0("Writing ", outfile, "\n"))
   saveRDS(sa1Centroids, outfile)
