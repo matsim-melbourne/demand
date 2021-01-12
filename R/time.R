@@ -1,10 +1,10 @@
 assignTimesToActivities <- function(plancsv, binSizeInMins, outdir, outcsv, writeInterval, rseed=NULL) {
   # example inputs:
-  # plancsv <- './output/6.place/plan.csv'
+  # plancsv <- '../output/6.place/plan.csv'
   # binSizeInMins <- 30
-  # outdir <- './output/7.time'
-  # outcsv <- './output/7.time/plan.csv'
-  # writeInterval <- 100
+  # outdir <- '../output/7.time'
+  # outcsv <- '../output/7.time/plan.csv'
+  # writeInterval <- 500
   # rseed <- 12345
   
   options(scipen=999) # disable scientific notation for more readible filenames with small sample sizes
@@ -46,8 +46,12 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outdir, outcsv, writ
   }
     
   processBlocks <- function(plans, blocks, outcsv, writeInterval, i) {
-    lower<-min(which(plans$PlanId==blocks[i,"lower"]))
-    upper<-max(which(plans$PlanId==blocks[i,"upper"]))
+    # previous method didn't account for deleted plans
+    planIds<-unique(plans$PlanId)
+    lower<-min(which(plans$PlanId==first(planIds[planIds>=blocks[i,"lower"]])))
+    upper<-max(which(plans$PlanId==last(planIds[planIds<=blocks[i,"upper"]])))
+    # lower<-min(which(plans$PlanId==blocks[i,"lower"]))
+    # upper<-max(which(plans$PlanId==blocks[i,"upper"]))
     pp<-plans[lower:upper,]
     outfile<-paste0(outcsv, ".", i)
     pp$act_start_hhmmss<-""; pp$act_end_hhmmss<-""
@@ -90,8 +94,9 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outdir, outcsv, writ
   close(gz1)
   
   # use all but one cores
-  ncores <- max(1,detectCores()-1)
   nrecords <- length(unique(plans$PlanId))
+  ncores <- max(1,detectCores()-1)
+  if(nrecords<=1000) ncores <- 1
   blockSize <- ceiling(nrecords/ncores)
   blocks <- getParallelBlocks(nrecords, blockSize)
   

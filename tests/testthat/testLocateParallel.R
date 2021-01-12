@@ -1,4 +1,8 @@
 library(tools) # for md5sum
+# setwd('~/Projects/matsim-melbourne/demand/R')
+# wd<-getwd()
+# setwd("../tests/testthat")
+# source("helper_tests.R")
 
 source("../../R/locateParallel.R")
 

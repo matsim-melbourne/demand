@@ -121,7 +121,7 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
     }
     
     # if SA1_MAINCODE_2016_{i} is not null
-    if(pp[i,6]==-1) {
+    if(pp[i,6]!=-1) {
       wplans<-rbind(wplans, pp[i,])
     }
   }
