@@ -55,9 +55,9 @@ sampleMelbourne2016Population <- function(dataDir, samplePercentage, outcsvgz, p
       percent = rows
     } else {
       # clip to within 0-100 %
-      percent<-max(min(percent,100),0) 
+      percent<-max(min(samplePercent,100),0) 
     }
-    sampleSize<-round(rows*(percent/100.0))
+    sampleSize<-round(rows*(samplePercent/100.0))
 
     # sample the required number of persons from the population
     if (sampleSize == rows) {

@@ -2,7 +2,7 @@ library(tools) # for md5sum
 
 source("../../R/xml.R")
 
-test_that("Assigning times to activities works", {
+test_that("Converting to xml works", {
   set.seed(12345)
   plancsv<-'../expected/7.time/plan.csv'
   outxml<-'../actual/8.xml/plan.xml'
