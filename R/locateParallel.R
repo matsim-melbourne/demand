@@ -9,6 +9,10 @@ locatePlans <- function(censuscsv, vistacsv, matchcsv, outdir, outcsv, rseed = N
   
 calculatePlanSubset <- function(outdir,planGroup,plans) {
   setDTthreads(1) # only one thread for data.table since we'll be operating in parallel
+  # read in all distances
+  distanceCounts<<-readDistanceDistributions(outdir) # needs to be global
+  distanceCountsCurrent<-data.frame(distance=seq(250,163250,500),
+                                    walk_count=0,bike_count=0,pt_count=0,car_count=0)
   
   wplans<-NULL
   pp<-plans%>%filter(ceiling(PlanId/1000)==planGroup)#%>%dplyr::mutate(Activity=0,AgentId=0)
@@ -76,7 +80,7 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
         # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome-1}, ArrivingMode_{nextHome-i-1}, nextHome-i-1)
         validRegions<-getValidRegions(pp[nextHome-1,6], pp[nextHome-1,8], nextHome-i-2)
         # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
-        pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], primary_mode, validRegions)
+        pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], pp[i+1,8], validRegions)
       }
       if(anchor_region==FALSE) {
         # valid regions are the ones reachable within the remaining steps to the
@@ -84,7 +88,7 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
         # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome}, ArrivingMode_{nextHome-i-1}, nextHome-i-1)
         validRegions<-getValidRegions(pp[nextHome,6], pp[nextHome,8], nextHome-i-1)
         # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
-        pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], primary_mode, validRegions)
+        pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], pp[i+1,8], validRegions)
       }      
     }
     if( pp[i,7] != "home" & nextHome-i==2 & primary_mode%in%c('bike','car') & anchor_region==FALSE ) {
@@ -101,7 +105,14 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
     # if the next LocationType isn't home, calculate distance
     if( pp[i,7] != 'home' | (pp[i,7] == 'home' & pp[i+1,7] != 'home') ) {
       # Distance_{i+1} <- calcDistance( Distance_{i}, Distance_{i+1} )
-      pp[i,9] <- calcDistance(pp[i,6],pp[i+1,6])
+      currentDistance <- calcDistance(pp[i,6],pp[i+1,6])
+      if(!is.na(currentDistance)) {
+        currentCol<-which(colnames(distanceCounts)==paste0(pp[i+1,8],"_count"))
+        currentRow<-findInterval(currentDistance,seq(0,163500,500))
+        distanceCounts[currentRow,currentCol]<-distanceCounts[currentRow,currentCol]+1
+        distanceCountsCurrent[currentRow,currentCol]<-distanceCountsCurrent[currentRow,currentCol]+1
+        pp[i,9] <- currentDistance
+      }
     }
     
     # if SA1_MAINCODE_2016_{i+1} is null
@@ -127,6 +138,7 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
   }
   # removing discarded plans
   wplans<-wplans%>%filter(ArrivingMode!='x'|is.na(ArrivingMode))
+  saveRDS(distanceCountsCurrent,file=paste0(outdir,'/distanceCounts/',planGroup,'.rds'))
   write.table(wplans, file=paste0(outdir,'/plan/',planGroup,'.csv'),
               append=FALSE, row.names=FALSE, col.names=FALSE, sep = ',')
   write.table(discarded, file=paste0(outdir,'/discarded/',planGroup,'.csv'),
@@ -222,6 +234,12 @@ planGroups <- 1:ceiling(max(plans$PlanId,na.rm=T)/1000)
 dir.create(paste0(outdir,'/plan'), showWarnings = FALSE, recursive=TRUE)
 dir.create(paste0(outdir,'/discarded'), showWarnings = FALSE, recursive=TRUE)
 
+dir.create(paste0(outdir,"/distanceCounts"), showWarnings = FALSE, recursive=TRUE)
+unlink(paste0(outdir,"/distanceCounts/*"))
+saveRDS(data.frame(distance=seq(250,163250,500),
+                   walk_count=0,bike_count=0,pt_count=0,car_count=0),
+        paste0(outdir,"/distanceCounts/0.rds"))
+
 number_cores <- max(1,floor(as.integer(detectCores())*0.8))
 cl <- makeCluster(number_cores)
 echo(paste0("About to start processing density in parallel, using ",number_cores," cores\n"))
@@ -240,7 +258,7 @@ results <- foreach(planGroup=planGroups,
                                "findLocationKnownMode", "getReturnTripLength", 
                                "SA1_attributed", "SA1_attributed_dt", 
                                "distanceMatrix", "distanceMatrixIndex", "distanceMatrixIndex_dt",
-                               "getValidRegions")
+                               "getValidRegions", "readDistanceDistributions", "expectedDistances")
 ) %dopar% 
   calculatePlanSubset(outdir,planGroup,plans)
 end_time = Sys.time()

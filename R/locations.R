@@ -4,7 +4,7 @@ suppressPackageStartupMessages(library(scales)) # for scaling datasets
 suppressPackageStartupMessages(library(data.table)) # for sa1_main16 indexing for faster lookups
 
 loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
-                             sa1AttributedFile, sa1CentroidsFile, addressesFile) {
+                             sa1AttributedFile, sa1CentroidsFile, addressesFile, distancesFile=NULL) {
   # Read in the distance matrix. This matrix is symmetric so it doesn't matter if
   # you do lookups by column or row.
   echo(paste0("Reading ", distanceMatrixFile, "\n"))
@@ -37,6 +37,10 @@ loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
   sa1_centroids <<- readRDS(file=sa1CentroidsFile)
   sa1_centroids_dt <<- data.table(sa1_centroids)  # note '<<' to make it global
   setkey(sa1_centroids_dt, sa1_maincode_2016)
+  
+  if(!is.null(distancesFile)) {
+    expectedDistances <<- readRDS(file=distancesFile)
+  }
 }
 
 # This returns a dataframe with possible SA1_ids and their probabilities.
@@ -50,14 +54,10 @@ loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
 #                  lot more spread out.
 # calculateProbabilities(20604112202,"commercial","car")
 calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=NULL) {
-  # SA1_id=20604112202
-  # destination_category="commercial"
-  # mode="car"
-  
+  # SA1_id=20604112202;destination_category="commercial";mode="walk"
+  # allowedSA1<-getValidRegions(20604112202,"walk",1)
   # if you don't include allowedSA1, then we assume all regions are allowed
   if(is.null(allowedSA1)) allowedSA1<-rep(1,nrow(distanceMatrix))
-  #index <- distanceMatrixIndex %>%
-  #  filter(sa1_main16 == SA1_id) %>%
   index <- distanceMatrixIndex_dt[.(as.numeric(SA1_id))] %>%
     pull(index)
   distances <-data.frame(index=1:nrow(distanceMatrix),
@@ -67,59 +67,88 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
   
   modeMean <- NULL
   modeSD <- NULL
+  expected_prop <- NULL
+  actual_count <- NULL
   filteredset<-SA1_attributed_dt[.(as.numeric(SA1_id))]
   if(mode=="walk"){
     modeMean <- filteredset$meanlog_walk
     modeSD <- filteredset$sdlog_walk
+    expected_prop <- expectedDistances$walk_prop
+    actual_count <- distanceCounts$walk_count
   } else if(mode=="car"){
     modeMean <- filteredset$meanlog_car
     modeSD <- filteredset$sdlog_car
+    expected_prop <- expectedDistances$car_prop
+    actual_count <- distanceCounts$car_count
   } else if(mode=="pt"){
     modeMean <- filteredset$meanlog_pt
     modeSD <- filteredset$sdlog_pt
+    expected_prop <- expectedDistances$pt_prop
+    actual_count <- distanceCounts$pt_count
   } else if(mode=="bike"){
     modeMean <- filteredset$meanlog_bike
     modeSD <- filteredset$sdlog_bike
+    expected_prop <- expectedDistances$bike_prop
+    actual_count <- distanceCounts$pt_count
   }
   
+  actual_prop=actual_count*0
+  if(sum(actual_count,na.rm=T)>0) actual_prop=actual_count/sum(actual_count,na.rm=T)
+  diff_prop=expected_prop-actual_prop
+  diff_prop[diff_prop<0]<-0 # negative values could break things
+  globalProb <- data.frame(interval=expectedDistances$distance,
+                           expected_prop=diff_prop)
+  
+  expectedProbability <- rep(0,length(distances))
   attractionProbability <- SA1_attributed[,match(destination_category,colnames(SA1_attributed))]
   # alternative way to compute distance probabilities for SA1s clipped to a much smaller set
   # within 2 standard deviations of the mode mean - Dhi, 21/Feb/20
   dd <- distances 
-  dd[dd<400] <- 400
+  dd[dd<200] <- 200 # Distances less than 200m are set to 200. This is to account for intra-SA1 trips
+  if(mode=="walk") dd[dd>5000] <- NA # Shouldn't ever walk more then 5km (i.e. ~ 1 hour)
   dd[dd<qlnorm(0.05,modeMean,modeSD) | dd>qlnorm(0.95,modeMean,modeSD)]<- NA # discard anything >2SDs either side
   dd[is.na(attractionProbability)] <- NA # discard regions with no valid destination types
   dd[is.na(allowedSA1)] <- NA # discard regions too far away from home
+  distProbability <- dd
   if(sum(!is.na(dd)) == 0) return(NULL) # return NULL if nothing is left
   if(sum(!is.na(dd)) == 1) { # if only one possible destination
-    dd[!is.na(dd)]<-1
+    distProbability[!is.na(distProbability)]<-1
   } else {
-    dd<-plnorm(dd+0.5,modeMean,modeSD)-plnorm(dd-0.5,modeMean,modeSD)
-    # #  changed this to a probability based method since standard z-score won't work
-    # #  for lognormal distributions - Alan, 08/Oct/20
-    dd<-dd/sum(dd, na.rm=TRUE) # normalise
+    distProbability<-plnorm(dd+0.5,modeMean,modeSD)-plnorm(dd-0.5,modeMean,modeSD)
+    # distanceInterval<-findInterval(dd,seq(0,max(dd,na.rm=T),500))*500-250
+    groupProb<-data.frame(interval=seq(0,max(dd,na.rm=T),500)+250) %>%
+      mutate(group_prob=plnorm(interval+250,modeMean,modeSD)-plnorm(interval-250,modeMean,modeSD)) %>%
+      inner_join(globalProb,by="interval")
+      
+    
+    # There are a lot less short distances than longer distances, we need to take
+    # this into account for the distributions to look right
+    proportionDF <- data.frame(distance=dd,distance_prob=distProbability) %>%
+      mutate(interval=findInterval(distance,seq(0,max(dd,na.rm=T),500))*500-250) %>%
+      group_by(interval) %>%
+      mutate(group_proportion=distance_prob/sum(distance_prob,na.rm=T),
+             group_count=n()) %>%
+      ungroup() %>%
+      left_join(groupProb, by="interval") %>%
+      mutate(corrected_proportion=group_proportion*group_prob,
+             global_proportion=expected_prop/group_count)
+    distProportion<-proportionDF$corrected_proportion
+    expectedProbability<-proportionDF$global_proportion
+    if(sum(expectedProbability,na.rm=T)>0) expectedProbability<-expectedProbability/sum(expectedProbability,na.rm=T) # normalising
+
+    distProbability<-distProportion/sum(distProportion,na.rm=T) # normalise
   }
-  distProbability <- dd
-  # There are a lot less short distances than longer distances, we need to take
-  # this into account for the distributions to look right
-  distProportion <- data.frame(distance=distances) %>%
-    mutate(interval=findInterval(distance,seq(0,max(distances),500))) %>%
-    group_by(interval) %>%
-    mutate(proportion=1/n()) %>%
-    ungroup() %>%
-    pull(proportion)
-  
-  distProbability <- distProbability * distProportion
-  distProbability <- distProbability/sum(distProbability, na.rm=TRUE)
   
   # I've set distance probability to 4x more important than destination 
   # attraction. This is arbitrary.
   multiplier=1 #  changed this from 4 to 1 - Dhi, 21/Feb/20
-  combinedDensity <- multiplier*distProbability+attractionProbability
+  combinedDensity <- multiplier*distProbability+expectedProbability
+  # combinedDensity <- multiplier*distProbability+attractionProbability+expectedProbability
+  # combinedDensity <- expectedProbability # this won't work on its own, sometimes all probs are 0.
   combinedProbability <- combinedDensity/sum(combinedDensity, na.rm=TRUE) # normalising here so the sum of the probabilities equals 1
   probabilityDF <- data.frame(sa1_maincode_2016=SA1_attributed$sa1_maincode_2016,
-                              distProb=distProbability,
-                              attractProb=attractionProbability,
+                              # distProb=distProbability,
+                              # attractProb=attractionProbability,
                               combinedProb=combinedProbability) %>%
                               filter(!is.na(combinedProb))
   return(probabilityDF)
@@ -327,7 +356,7 @@ planToSpatial <- function(pp,fileLocation) {
 # .sqlite extension instead of shapefiles.
 # placeToSpatial(read.csv("output/6.place/plan.csv"),'output/6.place/plan.sqlite')
 placeToSpatial <- function(pp,fileLocation) {
-  # pp=read.csv("output/6.place/plan.csv")
+  # pp=read.csv("../output/6.place/plan.csv")
   # fileLocation='output/6.place/plan.sqlite'
   ppp <- pp %>%
     # Ignore the first entries for a person as they won't have a valid previous location
@@ -347,6 +376,81 @@ placeToSpatial <- function(pp,fileLocation) {
     filter(!is.na(ArrivingMode)) %>%
     st_as_sf(wkt = "GEOMETRY", crs = 28355)
   st_write(ppp2,fileLocation,delete_layer=TRUE,layer="points",quiet=TRUE)
+}
+
+# don't need
+calculateExpected <- function(transport_mode) {
+  # transport_mode="walk"
+  # distanceCounts<-distanceCounts%>%mutate(walk_count=sample(0:30, nrow(expectedHistograms), replace=T))
+  expected_prop<-NULL
+  actual_count<-NULL
+  if(transport_mode=="walk"){
+    expected_prop <- expectedDistances$walk_prop
+    actual_count <- distanceCounts$walk_count
+  } else if(transport_mode=="car"){
+    expected_prop <- expectedDistances$car_prop
+    actual_count <- distanceCounts$car_count
+  } else if(transport_mode=="pt"){
+    expected_prop <- expectedDistances$pt_prop
+    actual_count <- distanceCounts$pt_count
+  } else if(transport_mode=="bike"){
+    expected_prop <- expectedDistances$bike_prop
+    actual_count <- distanceCounts$pt_count
+  }
+  actual_prop=actual_count*0
+  if(sum(actual_count,na.rm=T)>0) actual_prop=actual_count/sum(actual_count,na.rm=T)
+  diff_prop=expected_prop-actual_prop
+  diff_prop[diff_prop<0]<-0 # negative values could break things
+  df <- data.frame(distance=expectedDistances$distance,
+                   expected_prop=diff_prop)
+  return(df)
+}
+
+createExpectedDistances <- function(vistaLocation,outdir) {
+  # outdir='../output/1.setup';vistaLocation='../data/vistaSummaries/distanceHistograms.rds'
+  
+expDist<-readRDS(vistaLocation) %>%
+  dplyr::select(mode=transport_mode,logmean,logsd) %>%
+  distinct() %>%
+  mutate(mode=as.character(mode))
+
+expectedDistances <- data.frame(distance=seq(250,163250,500)) %>%
+  mutate(logmean=expDist[expDist$mode=='walk',]$logmean,
+         logsd=expDist[expDist$mode=='walk',]$logsd) %>%
+  mutate(walk_prop=plnorm(distance+250,logmean,logsd)-plnorm(distance-250,logmean,logsd)) %>%
+  mutate(logmean=expDist[expDist$mode=='bike',]$logmean,
+         logsd=expDist[expDist$mode=='bike',]$logsd) %>%
+  mutate(bike_prop=plnorm(distance+250,logmean,logsd)-plnorm(distance-250,logmean,logsd)) %>%
+  mutate(logmean=expDist[expDist$mode=='pt',]$logmean,
+         logsd=expDist[expDist$mode=='pt',]$logsd) %>%
+  mutate(pt_prop=plnorm(distance+250,logmean,logsd)-plnorm(distance-250,logmean,logsd)) %>%
+  mutate(logmean=expDist[expDist$mode=='car',]$logmean,
+         logsd=expDist[expDist$mode=='car',]$logsd) %>%
+  mutate(car_prop=plnorm(distance+250,logmean,logsd)-plnorm(distance-250,logmean,logsd)) %>%
+  dplyr::select(-logmean,-logsd) %>%
+  as.data.frame()
+
+  saveRDS(expectedDistances,paste0(outdir,"/","expectedDistances.rds"))
+}
+
+# distanceCounts<-readDistanceDistributions(outdir)
+# reads in the currently used distance histograms
+
+readDistanceDistributions <- function(outdir) {
+  # outdir<-'../output/5.locate'
+  distCountDir<-paste0(outdir,"/distanceCounts")
+  
+  distFiles<-list.files(distCountDir,pattern="*.rds",full.names=T)
+  Sys.sleep(2)
+  distanceCounts<-lapply(distFiles,readRDS) %>%
+    bind_rows() %>%
+    group_by(distance) %>%
+    summarise(walk_count=sum(walk_count,na.rm=T),
+              bike_count=sum(bike_count,na.rm=T),
+              pt_count=sum(pt_count,na.rm=T),
+              car_count=sum(car_count,na.rm=T)) %>%
+    as.data.frame()
+  return(distanceCounts)
 }
 
 # EXAMPLES

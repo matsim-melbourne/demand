@@ -99,7 +99,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         '../output/1.setup/locDistanceMatrixIndex.rds',
         '../output/1.setup/locSa1Aattributed.rds',
         '../output/1.setup/locSa1Centroids.rds',
-        '../output/1.setup/locAddresses.rds'
+        '../output/1.setup/locAddresses.rds',
+        '../output/1.setup/expectedDistances.rds'
       )
       source('locateParallel.R')
       # uses doParallel which must be run from the project root 

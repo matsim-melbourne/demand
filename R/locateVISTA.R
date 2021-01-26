@@ -78,7 +78,7 @@ analyseLocate <- function(outdir) {
   # Distance histograms -----------------------------------------------------
   histogramAttributes <- data.frame(
     transport_mode=c('walk', 'bike',  'pt', 'car'),
-    binwidth      =c(   400,   2000,  5000,  5000),
+    binwidth      =c(   500,   2000,  5000,  5000),
     max_dist      =c(  5000,  20000, 60000, 60000)
   )
   vpDistanceHistograms <- vpTripsSA1 %>%
