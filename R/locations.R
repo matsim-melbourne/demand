@@ -4,7 +4,7 @@ suppressPackageStartupMessages(library(scales)) # for scaling datasets
 suppressPackageStartupMessages(library(data.table)) # for sa1_main16 indexing for faster lookups
 
 loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
-                             sa1AttributedFile, sa1CentroidsFile, addressesFile, distancesFile=NULL) {
+                             sa1AttributedFile, sa1CentroidsFile, addressesFile, distancesFile) {
   # Read in the distance matrix. This matrix is symmetric so it doesn't matter if
   # you do lookups by column or row.
   echo(paste0("Reading ", distanceMatrixFile, "\n"))
@@ -38,9 +38,7 @@ loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
   sa1_centroids_dt <<- data.table(sa1_centroids)  # note '<<' to make it global
   setkey(sa1_centroids_dt, sa1_maincode_2016)
   
-  if(!is.null(distancesFile)) {
-    expectedDistances <<- readRDS(file=distancesFile)
-  }
+  expectedDistances <<- readRDS(file=distancesFile)
 }
 
 # This returns a dataframe with possible SA1_ids and their probabilities.
