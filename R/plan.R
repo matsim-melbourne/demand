@@ -36,14 +36,10 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     
     groups<-getActivityGroups(bins)
     astp <- getProbabilitiesMatrix(bins, "Act.Start.Time.Prob", binCols)
-    aetp <- getProbabilitiesMatrix(bins, "Act.End.Time.Prob", binCols)
-    admm <- getProbabilitiesMatrix(bins, "Act.Duration.Mins.Mean", binCols)
-    adms <- getProbabilitiesMatrix(bins, "Act.Duration.Mins.Sigma", binCols)
-    
     nastp <- getProbabilitiesMatrix(newbins, "Act.Start.Time.Prob", binCols)
-    naetp <- getProbabilitiesMatrix(newbins, "Act.End.Time.Prob", binCols)
-    nadmm <- getProbabilitiesMatrix(newbins, "Act.Duration.Mins.Mean", binCols)
-    nadms <- getProbabilitiesMatrix(newbins, "Act.Duration.Mins.Sigma", binCols)
+    
+    aetp <- getProbabilitiesMatrix(bins, "Act.End.Time.Prob", binCols)
+    
     
     # normalise new-activity-start-time-probs (nastp) row-wise if non-zero
     xastp<-t(apply(nastp, 1, function(x) {
@@ -53,7 +49,6 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
         x
       }
     }))
-    
     # get the difference from expected
     xastp<-(astp-xastp)
     xastp<-t(apply(xastp,1,function(x) {
@@ -90,15 +85,6 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       act<-rownames(astp)[selectIndexFromProbabilities(probs)]
       # this will be the start bin for this activity  
       sbin<-bin 
-      # pick duration for activity starting in this bin
-      #mean<-admm[act,bin]; sigma<-adms[act,bin]
-      #duration<-ifelse(mean==0||sigma==0, 
-      #                 binSizeInMins, 
-      #                 abs(round(rnorm(1,admm[act,bin],adms[act,bin]))) # WARNING: abs will change the distribution
-      #)
-      # pick an end bin for this activity (clipped to final bin)
-      #ebin<-min(binsize, sbin + duration %/% binSizeInMins)
-      
       ebins<-as.numeric(endbins[endbins$Act.Start.Bin==sbin & endbins$Activity.Group==act,binCols])
       if (sum(ebins==0)==length(ebins)) {
         # all probabilities are zero so make them equally non-zero for bins >= sbin 
