@@ -1,6 +1,6 @@
 generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
   # example inputs:
-  N<-500
+  # N<-500
   # csv<-'../output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz'
   # endcsv<-'../output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz'
   # binCols <-3:50 # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
