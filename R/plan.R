@@ -112,10 +112,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       # this will be the start bin for this activity  
       sbin<-bin
       
-      
-      #ebins<-as.numeric(endbins[endbins$Act.Start.Bin==sbin & endbins$Activity.Group==act,binCols])
       ebins<-as.numeric(xaetp[xaetp$Act.Start.Bin==sbin & xaetp$Activity.Group==act,binCols])
-      
       if (sum(ebins==0)==length(ebins)) {
         # all probabilities are zero so make them equally non-zero for bins >= sbin 
         # therefore we will select randomly from them 
@@ -133,20 +130,6 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       plan[nrow(plan)+1,]<-list("Home", 1, binsize)
     }
     
-    # Sew up Home Morning/Night activities properly
-    
-    # First activity should always be Home, and starting in Bin1 
-    #if(plan[1,]$Activity != "Home") {
-    #  plan<-rbind(data.frame(Activity="Home", StartBin=c(1), EndBin=c(plan[1,]$StartBin)), plan)
-    #}
-    # If last activity is not Home, then make it so
-    #if(plan[nrow(plan),]$Activity != "Home") {
-    #  plan[nrow(plan)+1,]<-list("Home", plan[nrow(plan),]$EndBin, binsize)
-    #}
-    # If last activity is Home, then make sure it ends in the last bin
-    #if(plan[nrow(plan),]$Activity == "Home" && plan[nrow(plan),]$EndBin != binsize) {
-    #  plan[nrow(plan),]$EndBin<-binsize
-    #}
     # Collapse blocks of same activity into one
     # see https://stackoverflow.com/questions/32529854/group-data-in-r-for-consecutive-rows
     plan <- plan %>%
