@@ -15,7 +15,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     return(groups)
   }
   
-  createNewPlan <- function(bins, newbins, endbins, binCols) {
+  createNewPlan <- function(bins, newbins, endbins, newendbins, binCols) {
     
     getProbabilitiesMatrix <- function(bins, stat, binCols) {
       df<-bins
@@ -28,19 +28,17 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       colnames(df)<-cnames
       return(df)
     }  
-    
+
     binsize<-length(binCols)
     binSizeInMins<-floor(60*24)/binsize
     binStartMins<-seq(0,binsize-1)*binSizeInMins
     binEndMins<-binStartMins+binSizeInMins-1
     
     groups<-getActivityGroups(bins)
+    
     astp <- getProbabilitiesMatrix(bins, "Act.Start.Time.Prob", binCols)
     nastp <- getProbabilitiesMatrix(newbins, "Act.Start.Time.Prob", binCols)
-    
-    aetp <- getProbabilitiesMatrix(bins, "Act.End.Time.Prob", binCols)
-    
-    
+   
     # normalise new-activity-start-time-probs (nastp) row-wise if non-zero
     xastp<-t(apply(nastp, 1, function(x) {
       if (sum(x==0)!=length(x)) {
@@ -63,6 +61,34 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
         x
       }
     }))
+
+    
+    xaetp<-data.frame(endbins)
+    xaetp[,binCols]<-0
+
+    # normalise new-activity-end-time-probs row-wise if non-zero
+    xaetp[,binCols]<-t(apply(newendbins[,binCols], 1, function(x) {
+      if (sum(x==0)!=length(x)) {
+        x/sum(x)
+      } else {
+        x
+      }
+    }))
+    # get the difference from expected
+    xaetp[,binCols]<-(endbins[,binCols]-xaetp[,binCols])
+    xaetp[,binCols]<-t(apply(xaetp[,binCols],1,function(x) {
+      (x-min(x))
+    }))
+    xaetp[,binCols][endbins[,binCols]==0]<-0
+    # normalise new-activity-end-time-probs row-wise if non-zero
+    xaetp[,binCols]<-t(apply(xaetp[,binCols], 1, function(x) {
+      if (sum(x==0)!=length(x)) {
+        x/sum(x)
+      } else {
+        x
+      }
+    }))
+    
     
     plan<-data.frame(Activity=factor(levels=groups), StartBin=integer(), EndBin=integer())
     bin<-1
@@ -84,8 +110,12 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       # pick a new activity for this bin
       act<-rownames(astp)[selectIndexFromProbabilities(probs)]
       # this will be the start bin for this activity  
-      sbin<-bin 
-      ebins<-as.numeric(endbins[endbins$Act.Start.Bin==sbin & endbins$Activity.Group==act,binCols])
+      sbin<-bin
+      
+      
+      #ebins<-as.numeric(endbins[endbins$Act.Start.Bin==sbin & endbins$Activity.Group==act,binCols])
+      ebins<-as.numeric(xaetp[xaetp$Act.Start.Bin==sbin & xaetp$Activity.Group==act,binCols])
+      
       if (sum(ebins==0)==length(ebins)) {
         # all probabilities are zero so make them equally non-zero for bins >= sbin 
         # therefore we will select randomly from them 
@@ -128,7 +158,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     return(as.data.frame(plan))
   }
   
-  recordProgress <- function(plan, newbins, binCols) {
+  recordProgress <- function(plan, newbins, newendbins, binCols) {
     binIndexOffset<-head(binCols,1)-1
     for(j in 1:nrow(plan)) {
       srow<-newbins$Activity.Group==plan[j,]$Activity & newbins$Activity.Stat=="Act.Start.Time.Prob"
@@ -137,14 +167,13 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       ecol<-binIndexOffset+plan[j,]$EndBin
       newbins[srow, scol]<-newbins[srow, scol] + 1
       newbins[erow, ecol]<-newbins[erow, ecol] + 1
-      drow<-newbins$Activity.Group==plan[j,]$Activity & newbins$Activity.Stat=="Act.Duration.Mins.Mean"
-      dcol<-scol
-      newbins[drow, dcol]<-newbins[drow, dcol] + (ecol-scol) # save duration as number of bins
-      drow<-newbins$Activity.Group==plan[j,]$Activity & newbins$Activity.Stat=="Act.Duration.Mins.Sigma"
-      dcol<-scol
-      newbins[drow, dcol]<-newbins[drow, dcol] + 1 # save count so we can calculate the mean later
+      
+      srow<-newendbins$Activity.Group==plan[j,]$Activity & newendbins$Act.Start.Bin==plan[j,]$StartBin
+      scol<-binIndexOffset+plan[j,]$EndBin
+      newendbins[srow, scol]<-newendbins[srow, scol] + 1
+      
     }
-    return(newbins)
+    return(list(newbins,newendbins))
   }
   
   analysePlans<-function(bins, newbins, outdir) {
@@ -402,7 +431,8 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
   # make a copy of the bins to track progress
   newbins<-data.frame(bins)
   newbins[,binCols]<-0
-  binIndexOffset<-head(binCols,1)-1
+  newendbins<-data.frame(endbins)
+  newendbins[,binCols]<-0
   
   # generate the plans
   outfile<-paste0(outdir, '/plan.csv')
@@ -413,10 +443,12 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     # print progress
     printProgress(i,'.')
     # create a new plan and add it to the list
-    plan<-createNewPlan(bins, newbins, endbins, binCols)
+    plan<-createNewPlan(bins, newbins, endbins, newendbins, binCols)
     plan<-cbind(PlanId=i, plan)
     # record progress
-    newbins<-recordProgress(plan, newbins, binCols)
+    allbins<-recordProgress(plan, newbins, newendbins, binCols)
+    newbins<-allbins[[1]]
+    newendbins<-allbins[[2]]
     # add it to our list
     plans<-rbind(plans, plan)
     # write it out at regular intervals
