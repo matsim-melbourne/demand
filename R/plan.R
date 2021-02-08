@@ -1,6 +1,6 @@
 generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
   # example inputs:
-  # N<-500
+  N<-500
   # csv<-'../output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz'
   # endcsv<-'../output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz'
   # binCols <-3:50 # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
@@ -150,6 +150,12 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       ecol<-binIndexOffset+plan[j,]$EndBin
       newbins[srow, scol]<-newbins[srow, scol] + 1
       newbins[erow, ecol]<-newbins[erow, ecol] + 1
+      drow<-newbins$Activity.Group==plan[j,]$Activity & newbins$Activity.Stat=="Act.Duration.Mins.Mean"
+      dcol<-scol
+      newbins[drow, dcol]<-newbins[drow, dcol] + (ecol-scol) # save duration as number of bins
+      drow<-newbins$Activity.Group==plan[j,]$Activity & newbins$Activity.Stat=="Act.Duration.Mins.Sigma"
+      dcol<-scol
+      newbins[drow, dcol]<-newbins[drow, dcol] + 1 # save count so we can calculate the mean later
       
       srow<-newendbins$Activity.Group==plan[j,]$Activity & newendbins$Act.Start.Bin==plan[j,]$StartBin
       scol<-binIndexOffset+plan[j,]$EndBin
@@ -166,7 +172,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     binsize<-length(binCols)
     binSizeInMins<-floor(60*24)/binsize
     pp<-data.frame(matrix(0, nrow = binsize*length(groups)*length(stats), ncol = 5))
-    colnames(pp)<-c("Activity", "Stat", "Bin", "Expected", "Actual")
+    colnames(pp)<-c("Activity", "Stat", "Bin", "VISTA", "Synthetic")
     rowid<-1
     for (act in groups) {
       for (stat in stats) {
@@ -178,13 +184,13 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
         pp[shift+(1:binsize),"Activity"]<-rep(act,binsize)
         pp[shift+(1:binsize),"Stat"]<-rep(stat,binsize)
         pp[shift+(1:binsize),"Bin"]<-1:binsize
-        pp[shift+(1:binsize),"Expected"]<-e
-        pp[shift+(1:binsize),"Actual"]<-a
+        pp[shift+(1:binsize),"VISTA"]<-e
+        pp[shift+(1:binsize),"Synthetic"]<-a
         rowid<-rowid+1
       }
     }
     qq<-data.frame(matrix(0, nrow = binsize*length(stats), ncol = 4))
-    colnames(qq)<-c("Stat", "Bin", "Expected", "Actual")
+    colnames(qq)<-c("Stat", "Bin", "VISTA", "Synthetic")
     rowid<-1
     for (stat in stats) {
       e<-as.numeric(colSums(bins[bins$Activity.Stat==stat,binCols]))
@@ -194,12 +200,12 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       shift<-(rowid-1)*binsize
       qq[shift+(1:binsize),"Stat"]<-rep(stat,binsize)
       qq[shift+(1:binsize),"Bin"]<-1:binsize
-      qq[shift+(1:binsize),"Expected"]<-e
-      qq[shift+(1:binsize),"Actual"]<-a
+      qq[shift+(1:binsize),"VISTA"]<-e
+      qq[shift+(1:binsize),"Synthetic"]<-a
       rowid<-rowid+1
     }
     rr<-data.frame(matrix(0, nrow = binsize*length(groups)*length(stats), ncol = 5))
-    colnames(rr)<-c("Activity", "Stat", "Bin", "Expected", "Actual")
+    colnames(rr)<-c("Activity", "Stat", "Bin", "VISTA", "Synthetic")
     rowid<-1
     for (act in groups) {
       stat <- "Act.Duration.Mins.Mean"
@@ -216,8 +222,8 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
       rr[shift+(1:binsize),"Activity"]<-rep(act,binsize)
       rr[shift+(1:binsize),"Stat"]<-rep(stat,binsize)
       rr[shift+(1:binsize),"Bin"]<-1:binsize
-      rr[shift+(1:binsize),"Expected"]<-e
-      rr[shift+(1:binsize),"Actual"]<-a
+      rr[shift+(1:binsize),"VISTA"]<-e
+      rr[shift+(1:binsize),"Synthetic"]<-a
       rowid<-rowid+1
     }
     
@@ -226,7 +232,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     
     outfile<-paste0(outdir,"/analysis-start-times-by-activity-qq.pdf")
     echo(paste0("Writing ", outfile, "\n"))
-    gg<-ggplot(pp[pp$Stat=="Act.Start.Time.Prob",], aes(x=Expected, y=Actual)) + 
+    gg<-ggplot(pp[pp$Stat=="Act.Start.Time.Prob",], aes(x=VISTA, y=Synthetic)) + 
       geom_abline(aes(colour='red', slope = 1, intercept=0)) +
       geom_point(aes(fill=Bin), colour = 'blue', size=3, shape=21, alpha=0.9) + guides(colour=FALSE) +
       #theme(legend.position="none") + 
@@ -237,7 +243,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     
     outfile<-paste0(outdir,"/analysis-end-times-by-activity-qq.pdf")
     echo(paste0("Writing ", outfile, "\n"))
-    gg<-ggplot(pp[pp$Stat=="Act.End.Time.Prob",], aes(x=Expected, y=Actual)) + 
+    gg<-ggplot(pp[pp$Stat=="Act.End.Time.Prob",], aes(x=VISTA, y=Synthetic)) + 
       geom_abline(aes(colour='red', slope = 1, intercept=0)) +
       geom_point(aes(fill=Bin), colour='blue', size=4, shape=21, alpha=0.9) + guides(colour=FALSE) +
       #theme(legend.position="none") + 
@@ -248,7 +254,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     
     outfile<-paste0(outdir,"/analysis-start-times-by-bin-qq.pdf")
     echo(paste0("Writing ", outfile, "\n"))
-    gg<-ggplot(pp[pp$Stat=="Act.Start.Time.Prob",], aes(x=Expected, y=Actual)) + 
+    gg<-ggplot(pp[pp$Stat=="Act.Start.Time.Prob",], aes(x=VISTA, y=Synthetic)) + 
       geom_abline(aes(colour='red', slope = 1, intercept=0)) +
       geom_point(aes(fill=Activity, colour=Activity), size=2, shape=21, alpha=1)  +
       guides(colour=FALSE, fill=guide_legend(title="")) +
@@ -260,7 +266,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     
     outfile<-paste0(outdir,"/analysis-end-times-by-bin-qq.pdf")
     echo(paste0("Writing ", outfile, "\n"))
-    gg<-ggplot(pp[pp$Stat=="Act.End.Time.Prob",], aes(x=Expected, y=Actual)) + 
+    gg<-ggplot(pp[pp$Stat=="Act.End.Time.Prob",], aes(x=VISTA, y=Synthetic)) + 
       geom_abline(aes(colour='red', slope = 1, intercept=0)) +
       geom_point(aes(fill=Activity, colour=Activity), size=2, shape=21, alpha=1)  +
       guides(colour=FALSE, fill=guide_legend(title="")) +
