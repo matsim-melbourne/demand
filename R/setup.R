@@ -119,7 +119,7 @@ locations_setup<-function(setupDir,
   saveRDS(sa1Centroids, outfile)
   
   echo(paste0("Reading ", distancesFile, "\n"))
-  expectedDistances <- read.csv(gzfile(distancesFile))
+  expectedDistances <- readRDS(distancesFile)
   outfile<-paste0(setupDir,"/expectedDistances.rds")
   echo(paste0("Writing ", outfile, "\n"))
   saveRDS(expectedDistances, outfile)
