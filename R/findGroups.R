@@ -17,6 +17,18 @@ vista_data_persons<-read.csv(gz1,header = T,sep=',',stringsAsFactors = F,strip.w
 close(gz1)
 
 
+# build cohorts dataframe -------------------------------------------------
+
+#note: using 150 as max age since there is a 116 year old in the VISTA data
+demographics <- crossing(data.frame(sex=c("M","F")),
+                         data.frame(min_age=c(0,seq(15,65,5)),
+                                    max_age=c(seq(14,64,5),150))) %>%
+  mutate(age_group=ifelse(max_age>65,
+                          paste0(min_age,"plus"),
+                          paste0(min_age,"-",max_age))) %>%
+  mutate(cohort_id=paste0(sex,"_",age_group)) %>%
+  dplyr::select(cohort_id,sex,min_age,max_age)
+
 
 # clean data --------------------------------------------------------------
 
@@ -60,10 +72,10 @@ vista_data_weekday <- vista_data %>%
     DESTPURP1=="Pick-up or Drop-off Someone" ~ 'Shop',
     DESTPURP1=="Pick-up or Deliver Something" ~ 'Pickup/Dropoff/Deliver')) %>%
   mutate(transport_mode = case_when(
-    LINKMODE %in% c("Vehicle Driver","Vehicle Passenger","Taxi","Motorcycle")  ~ 'car',
-    LINKMODE == "Walking"             ~ 'walk',
-    LINKMODE == "Bicycle"             ~ 'bike',
-    LINKMODE %in% c("Train","Public Bus","School Bus","Tram") ~ 'pt'
+    LINKMODE %in% c("Vehicle Driver","Vehicle Passenger","Taxi","Motorcycle") ~ 'car',
+    LINKMODE == "Walking"                                                     ~ 'walk',
+    LINKMODE == "Bicycle"                                                     ~ 'bike',
+    LINKMODE %in% c("Train","Public Bus","School Bus","Tram")                 ~ 'pt'
   )) %>%
   filter(!is.na(transport_mode)) %>%
   dplyr::select(PERSID,Activity,transport_mode,WDTRIPWGT)
@@ -105,44 +117,28 @@ cohorts <- vista_data_cohorts2 %>%
   as.matrix()
 rownames(cohorts)<-vista_data_cohorts2$id
 
-cohortsMode <- vista_data_cohorts2 %>%
-  dplyr::select('Work','Study','Shop','Personal','Social/Recreational','bike','car','pt','walk') %>%
-  as.matrix()
-rownames(cohortsMode)<-vista_data_cohorts2$id
 
 
-
-# k-means clustering ------------------------------------------------------
-
-# # making 4  clusters
-# clusters<-kmeans(cohorts, 4, iter.max = 100, nstart = 4)
-# 
-# # visualising the clusters
-# fviz_cluster(clusters, data = cohorts)
-# ggsave("clusterPlot.pdf",width=8,height=6)
+# gap statistic -----------------------------------------------------------
 
 # how many clusters should we use?
-fviz_nbclust(cohorts, kmeans, method = "gap_stat")
+fviz_nbclust(cohorts, kmeans, method = "wss")
 ggsave("gapStatistic.pdf",width=8,height=6)
-fviz_nbclust(cohortsMode, kmeans, method = "gap_stat")
-ggsave("gapStatisticWithMode.pdf",width=8,height=6)
 
 
 
 # Hierarchical clustering -------------------------------------------------
 
-
-
-# methods to assess
-m <- c( "average", "single", "complete", "ward")
-names(m) <- c( "average", "single", "complete", "ward")
-
-# function to compute coefficient
-ac <- function(x) {
-  agnes(cohorts, method = x)$ac
-}
-
-map_dbl(m, ac)
+# # methods to assess
+# m <- c( "average", "single", "complete", "ward")
+# names(m) <- c( "average", "single", "complete", "ward")
+# 
+# # function to compute coefficient
+# ac <- function(x) {
+#   agnes(cohorts, method = x)$ac
+# }
+# 
+# map_dbl(m, ac)
 # average    single  complete      ward 
 # 0.9055169 0.8861145 0.9207356 0.9605694 
 # ward is the best
@@ -174,41 +170,16 @@ fviz_cluster(list(data = cohorts, cluster = sub_grp7))
 ggsave("clusterPlotHierarchical7.pdf",width=8,height=6)
 
 
-# Hierarchical clustering with mode ---------------------------------------
-
-hcMode <- agnes(cohortsMode, method = "ward")
-
-# Cut tree into groups
-sub_grp4_mode <- cutree(hcMode, k = 4)
-sub_grp5_mode <- cutree(hcMode, k = 5)
-sub_grp6_mode <- cutree(hcMode, k = 6)
-sub_grp7_mode <- cutree(hcMode, k = 7)
+vistaCohorts <- demographics %>%
+  mutate(cluster_id_4=sub_grp4,
+         cluster_id_5=sub_grp5,
+         cluster_id_6=sub_grp6,
+         cluster_id_7=sub_grp7)
 
 
+write.csv(vistaCohorts, file=gzfile("../data/vistaCohorts.csv.gz"), row.names=FALSE, quote=TRUE)
 
-pdf("dendrogramMode.pdf",width=8,height=6) # The height of the plot in inches
-pltree(hcMode, cex = 0.6, hang = -1, main = "Dendrogram of agnes") 
-rect.hclust(hc, k = 5, border = 2:5)
-dev.off()
+# data.frame(cohort=vista_data_cohorts2$id,
+#            cluster_id_4=sub_grp4,
+#            cluster_id_7=sub_grp7)
 
-fviz_cluster(list(data = cohortsMode, cluster = sub_grp4_mode))
-ggsave("clusterPlotHierarchical4withMode.pdf",width=8,height=6)
-fviz_cluster(list(data = cohortsMode, cluster = sub_grp5_mode))
-ggsave("clusterPlotHierarchical5withMode.pdf",width=8,height=6)
-fviz_cluster(list(data = cohortsMode, cluster = sub_grp6_mode))
-ggsave("clusterPlotHierarchical6withMode.pdf",width=8,height=6)
-fviz_cluster(list(data = cohortsMode, cluster = sub_grp7_mode))
-ggsave("clusterPlotHierarchical7withMode.pdf",width=8,height=6)
-
-# 
-# 
-# pca<-prcomp(cohorts)
-# 
-# fviz_pca_ind(pca, pointsize = "cos2", 
-#              pointshape = 21, fill = "#E7B800",
-#              repel = TRUE # Avoid text overlapping (slow if many points)
-# )
-# 
-# ggplot(vista_data_cohorts, aes(x=Study, y=Work)) +
-#   # geom_point(aes(color=Shop))+
-#   geom_text(aes(label=id))
