@@ -7,7 +7,15 @@ test_that("VISTA 2012-18 trips pre-processing works", {
   outdir<-'../actual/1.setup'
   dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
   capture_output(
-    demand_setup(outdir, '../data/T_VISTA1218_V1.sample.csv')
+    demand_setup(
+      outdir, 
+      '../data/T_VISTA1218_V1.sample.csv',
+      '../actual/1.setup/vista_2012_18_extracted_activities_weekday.csv.gz',
+      '../actual/1.setup/vista_2012_18_extracted_activities_weekend.csv.gz',
+      '../actual/1.setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz',
+      '../actual/1.setup/vista_2012_18_extracted_activities_weekend_time_bins.csv.gz',
+      '../actual/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz'
+    )
   )
 
   files<-c(

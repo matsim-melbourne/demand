@@ -58,8 +58,15 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         'vista_2012_18_extracted_group_weekday_',
         'vista_2012_18_extracted_trips_weekday_'
       )
-      demand_setup('../output/1.setup', 
-                   '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv')
+      demand_setup(
+        '../output/1.setup', 
+        '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv',
+        '../output/1.setup/vista_2012_18_extracted_activities_weekday.csv.gz',
+        '../output/1.setup/vista_2012_18_extracted_activities_weekend.csv.gz',
+        '../output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz',
+        '../output/1.setup/vista_2012_18_extracted_activities_weekend_time_bins.csv.gz',
+        '../output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz'
+      )
       locations_setup(
         '../output/1.setup', 
         '../data/distanceMatrix.rds', 
