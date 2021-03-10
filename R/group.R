@@ -105,7 +105,7 @@ make_groups<-function(vista18PersonsCsv,
   }
   
   extract_trips_groups<-function(vista18TripsCsv, 
-                                 filterCsv, 
+                                 groups, 
                                  setupDir, 
                                  weekday_groups_csv_prefix, 
                                  out_weekday_trips_csv_prefix
@@ -113,11 +113,9 @@ make_groups<-function(vista18PersonsCsv,
     # example parameter values
     # setupDir <- '../output/1.setup'
     # vista18TripsCsv <- '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv'
-    # filterCsv <- '../data/vistaCohorts.csv.gz'
+    # groups<-getGroupIds('../data/vistaCohorts.csv.gz')
     # weekday_groups_csv_prefix <- 'vista_2012_18_extracted_group_weekday_'
     # out_weekday_trips_csv_prefix <- 'vista_2012_18_extracted_trips_weekday_'
-    
-    groups<-getGroupIds(filterCsv)
     
     gz1 <- gzfile(vista18TripsCsv,'rt')
     vista_data<-read.csv(gz1,header = T,sep=',',stringsAsFactors = F,strip.white = T)
@@ -150,6 +148,6 @@ make_groups<-function(vista18PersonsCsv,
   echo(paste0('Extracting VISTA groups based on ',filterCsv,'\n'))
   extract_groups(out_weekday_persons_csv_gz, filterCsv, setupDir, out_weekday_groups_csv_prefix)
   echo(paste0('Extracting VISTA trips groups based on ',filterCsv,'\n'))
-  extract_trips_groups(vista18TripsCsv, filterCsv, setupDir, out_weekday_groups_csv_prefix, out_weekday_trips_csv_prefix) 
+  extract_trips_groups(vista18TripsCsv, getGroupIds(filterCsv), setupDir, out_weekday_groups_csv_prefix, out_weekday_trips_csv_prefix) 
 }
 
