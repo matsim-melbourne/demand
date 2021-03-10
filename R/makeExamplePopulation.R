@@ -50,10 +50,13 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       source('locations.R', local=TRUE);
       make_groups(
         '../data/VISTA_12_18_CSV.zip.dir/P_VISTA1218_V1.csv',
+        '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv',
         '../data/vistaCohorts.csv.gz',
+        '../output/1.setup', 
         '../output/1.setup/vista_2012_18_extracted_persons_weekday.csv.gz',
         '../output/1.setup/vista_2012_18_extracted_persons_weekend.csv.gz',
-        '../output/1.setup/vista_2012_18_extracted_group_weekday_'
+        'vista_2012_18_extracted_group_weekday_',
+        'vista_2012_18_extracted_trips_weekday_'
       )
       demand_setup('../output/1.setup', 
                    '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv')
