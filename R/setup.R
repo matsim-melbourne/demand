@@ -1,11 +1,32 @@
-# Function to pre-process some data; need only be run once
+demand_setup_groups<-function(groups,
+                              setupDir,
+                              vista18TripsCsv,
+                              out_weekday_activities_csv_gz_prefix,
+                              out_weekend_activities_csv_gz_prefix,
+                              out_weekday_activities_time_bins_csv_gz_prefix,
+                              out_weekend_activities_time_bins_csv_gz_prefix,
+                              out_weekday_activities_end_time_dist_by_start_bins_csv_gz_prefix
+                              ) {
+  for (gid in groups) {
+    demand_setup(
+      setupDir,
+      vista18TripsCsv,
+      paste0(setupDir,"/",out_weekday_activities_csv_gz_prefix,gid,".csv.gz"),
+      paste0(setupDir,"/",out_weekend_activities_csv_gz_prefix,gid,".csv.gz"),
+      paste0(setupDir,"/",out_weekday_activities_time_bins_csv_gz_prefix,gid,".csv.gz"),
+      paste0(setupDir,"/",out_weekend_activities_time_bins_csv_gz_prefix,gid,".csv.gz"),
+      paste0(setupDir,"/",out_weekday_activities_end_time_dist_by_start_bins_csv_gz_prefix,gid,".csv.gz")
+    )
+  }
+}
+
 demand_setup<-function(setupDir, 
                        vista18TripsCsv,
                        out_weekday_activities_csv_gz,
                        out_weekend_activities_csv_gz,
                        out_weekday_activities_time_bins_csv_gz,
                        out_weekend_activities_time_bins_csv_gz,
-                       out_csv
+                       out_weekday_activities_end_time_dist_by_start_bins_csv_gz
                        ) {
   # example parameter values
   # setupDir <- '../output/1.setup'
@@ -14,7 +35,7 @@ demand_setup<-function(setupDir,
   # out_weekend_activities_csv_gz <- paste0(setupDir,'/vista_2012_18_extracted_activities_weekend.csv.gz')
   # out_weekday_activities_time_bins_csv_gz<-paste0(setupDir,'/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz')
   # out_weekend_activities_time_bins_csv_gz<-paste0(setupDir,'/vista_2012_18_extracted_activities_weekend_time_bins.csv.gz')
-  # out_csv <- paste0(setupDir,'/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz')
+  # out_weekday_activities_end_time_dist_by_start_bins_csv_gz <- paste0(setupDir,'/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz')
   
   # Extract VISTA activities and save separately into weekday and weekend activities
   vista_csv <- vista18TripsCsv
@@ -42,8 +63,8 @@ demand_setup<-function(setupDir,
   
   # Write out the activity end time probabilities for each start time bin
   in_activities_csv_gz<-out_weekday_activities_csv_gz
-  echo(paste0('Extracting VISTA weekday activities end times distributions for each start time bin into ',out_csv,'\n'))
-  extract_and_write_activities_end_time_dist_by_start_bins(in_activities_csv_gz, out_csv, binsize)
+  echo(paste0('Extracting VISTA weekday activities end times distributions for each start time bin into ',out_weekday_activities_end_time_dist_by_start_bins_csv_gz,'\n'))
+  extract_and_write_activities_end_time_dist_by_start_bins(in_activities_csv_gz, out_weekday_activities_end_time_dist_by_start_bins_csv_gz, binsize)
     
   echo('Setup complete\n')
   return(TRUE)
