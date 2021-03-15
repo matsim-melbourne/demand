@@ -24,6 +24,12 @@ printProgress<-function(row, char, majorInterval=100, minorInterval=10) {
 }
 
 getGroupIds<-function(filterCsv) {
+  groups<- getGroups(filterCsv)
+  groupIds <- unique(groups$cluster_id_5)
+  return(groupIds)
+}
+
+getGroups<-function(filterCsv) {
   gz1 <- gzfile(filterCsv,'rt')
   data<-read.csv(gz1,header = T,sep=',',stringsAsFactors = F,strip.white = T)
   close(gz1)
@@ -37,6 +43,5 @@ getGroupIds<-function(filterCsv) {
     group_by(cluster_id_5,sex) %>%
     summarise(age_start=min(min_age), age_end=max(max_age)) 
   
-  groups <- unique(filters$cluster_id_5)
-  return(groups)
+  return(filters)
 }
