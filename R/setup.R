@@ -1,32 +1,37 @@
 demand_setup_groups<-function(groups,
                               setupDir,
-                              vista18TripsCsv,
+                              vista_2012_18_extracted_trips_weekday_csv_prefix,
                               out_weekday_activities_csv_gz_prefix,
-                              out_weekend_activities_csv_gz_prefix,
                               out_weekday_activities_time_bins_csv_gz_prefix,
-                              out_weekend_activities_time_bins_csv_gz_prefix,
-                              out_weekday_activities_end_time_dist_by_start_bins_csv_gz_prefix
+                              out_weekday_activities_end_time_dist_by_start_bins_csv_gz_prefix,
+                              out_weekend_activities_csv_gz_prefix,
+                              out_weekend_activities_time_bins_csv_gz_prefix
                               ) {
   for (gid in groups) {
-    demand_setup(
-      setupDir,
-      vista18TripsCsv,
-      paste0(setupDir,"/",out_weekday_activities_csv_gz_prefix,gid,".csv.gz"),
-      paste0(setupDir,"/",out_weekend_activities_csv_gz_prefix,gid,".csv.gz"),
-      paste0(setupDir,"/",out_weekday_activities_time_bins_csv_gz_prefix,gid,".csv.gz"),
-      paste0(setupDir,"/",out_weekend_activities_time_bins_csv_gz_prefix,gid,".csv.gz"),
-      paste0(setupDir,"/",out_weekday_activities_end_time_dist_by_start_bins_csv_gz_prefix,gid,".csv.gz")
-    )
+    a<-b<-c<-d<-e<-f<-NULL
+    if(!is.null(vista_2012_18_extracted_trips_weekday_csv_prefix))
+      a<-paste0(setupDir,"/",vista_2012_18_extracted_trips_weekday_csv_prefix,gid,".csv")
+    if(!is.null(out_weekday_activities_csv_gz_prefix))
+      b<-paste0(setupDir,"/",out_weekday_activities_csv_gz_prefix,gid,".csv.gz")
+    if(!is.null(out_weekday_activities_time_bins_csv_gz_prefix))
+      c<-paste0(setupDir,"/",out_weekday_activities_time_bins_csv_gz_prefix,gid,".csv.gz")
+    if(!is.null(out_weekday_activities_end_time_dist_by_start_bins_csv_gz_prefix))
+      d<-paste0(setupDir,"/",out_weekday_activities_end_time_dist_by_start_bins_csv_gz_prefix,gid,".csv.gz")
+    if(!is.null(out_weekend_activities_csv_gz_prefix))
+      e<-paste0(setupDir,"/",out_weekend_activities_csv_gz_prefix,gid,".csv.gz")
+    if(!is.null(out_weekend_activities_time_bins_csv_gz_prefix))
+      f<-paste0(setupDir,"/",out_weekend_activities_time_bins_csv_gz_prefix,gid,".csv.gz")
+    demand_setup(setupDir, a, b, c, d, e, f)
   }
 }
 
 demand_setup<-function(setupDir, 
                        vista18TripsCsv,
                        out_weekday_activities_csv_gz,
-                       out_weekend_activities_csv_gz,
                        out_weekday_activities_time_bins_csv_gz,
-                       out_weekend_activities_time_bins_csv_gz,
-                       out_weekday_activities_end_time_dist_by_start_bins_csv_gz
+                       out_weekday_activities_end_time_dist_by_start_bins_csv_gz,
+                       out_weekend_activities_csv_gz,
+                       out_weekend_activities_time_bins_csv_gz
                        ) {
   # example parameter values
   # setupDir <- '../output/1.setup'
@@ -39,34 +44,44 @@ demand_setup<-function(setupDir,
   
   # Extract VISTA activities and save separately into weekday and weekend activities
   vista_csv <- vista18TripsCsv
-  echo(paste0('Extracting VISTA weekday/end activities from ', vista_csv, ' (can take a while)\n'))
+  echo(paste0('Extracting VISTA activities from ', vista_csv, ' (can take a while)\n'))
   extract_and_write_activities_from(vista_csv, out_weekday_activities_csv_gz, out_weekend_activities_csv_gz)
-  echo(paste0('Wrote ', out_weekday_activities_csv_gz, ' and ', out_weekend_activities_csv_gz,'\n'))
-  
+
   # Simplify some activity classes to activity groups
-  echo(paste0('Grouping some VISTA activities\n'))
-  simplify_activities_and_create_groups(out_weekday_activities_csv_gz)
-  echo(paste0('Updated ', out_weekday_activities_csv_gz,'\n'))
-  simplify_activities_and_create_groups(out_weekend_activities_csv_gz)
-  echo(paste0('Updated ', out_weekend_activities_csv_gz,'\n'))
+  if(!is.null(out_weekday_activities_csv_gz)) {
+    echo(paste0('Grouping some VISTA activities\n'))
+    simplify_activities_and_create_groups(out_weekday_activities_csv_gz)
+    echo(paste0('Updated ', out_weekday_activities_csv_gz,'\n'))
+  }
+  if(!is.null(out_weekend_activities_csv_gz)) {
+    echo(paste0('Grouping some VISTA activities\n'))
+    simplify_activities_and_create_groups(out_weekend_activities_csv_gz)
+    echo(paste0('Updated ', out_weekend_activities_csv_gz,'\n'))
+  }
   
   # Write out the activity probabilities by time bins
   binsize<-48 # 30-min bins
-  echo(paste0('Extracting VISTA weekday/end activities times into ',binsize,' bins (can take a while)\n'))
-  in_activities_csv_gz<-out_weekday_activities_csv_gz
-  out_csv_gz<-out_weekday_activities_time_bins_csv_gz
-  extract_and_write_activities_time_bins(in_activities_csv_gz, out_csv_gz, binsize)
-  in_activities_csv_gz<-out_weekend_activities_csv_gz
-  out_csv_gz<-out_weekend_activities_time_bins_csv_gz
-  extract_and_write_activities_time_bins(in_activities_csv_gz, out_csv_gz, binsize)
-  echo(paste0('Wrote ', out_weekday_activities_time_bins_csv_gz, ' and ', out_weekend_activities_time_bins_csv_gz,'\n'))
+  echo(paste0('Extracting VISTA activities times into ',binsize,' bins (can take a while)\n'))
+  if(!is.null(out_weekday_activities_time_bins_csv_gz)) {
+    in_activities_csv_gz<-out_weekday_activities_csv_gz
+    out_csv_gz<-out_weekday_activities_time_bins_csv_gz
+    extract_and_write_activities_time_bins(in_activities_csv_gz, out_csv_gz, binsize)
+    echo(paste0('Wrote ', out_weekday_activities_time_bins_csv_gz,'\n'))
+  }
+  if(!is.null(out_weekend_activities_time_bins_csv_gz)) {
+    in_activities_csv_gz<-out_weekend_activities_csv_gz
+    out_csv_gz<-out_weekend_activities_time_bins_csv_gz
+    extract_and_write_activities_time_bins(in_activities_csv_gz, out_csv_gz, binsize)
+    echo(paste0('Wrote ', out_weekend_activities_time_bins_csv_gz,'\n'))
+  }
   
   # Write out the activity end time probabilities for each start time bin
-  in_activities_csv_gz<-out_weekday_activities_csv_gz
-  echo(paste0('Extracting VISTA weekday activities end times distributions for each start time bin into ',out_weekday_activities_end_time_dist_by_start_bins_csv_gz,'\n'))
-  extract_and_write_activities_end_time_dist_by_start_bins(in_activities_csv_gz, out_weekday_activities_end_time_dist_by_start_bins_csv_gz, binsize)
+  if(!is.null(out_weekday_activities_end_time_dist_by_start_bins_csv_gz)) {
+    in_activities_csv_gz<-out_weekday_activities_csv_gz
+    echo(paste0('Extracting VISTA weekday activities end times distributions for each start time bin into ',out_weekday_activities_end_time_dist_by_start_bins_csv_gz,'\n'))
+    extract_and_write_activities_end_time_dist_by_start_bins(in_activities_csv_gz, out_weekday_activities_end_time_dist_by_start_bins_csv_gz, binsize)
+  }
     
-  echo('Setup complete\n')
   return(TRUE)
 }
 

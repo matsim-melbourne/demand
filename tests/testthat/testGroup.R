@@ -13,14 +13,13 @@ test_that("VISTA 2012-18 groupings work", {
       '../data/vistaCohorts.csv.gz',
       '../actual/1.setup',
       '../actual/1.setup/vista_2012_18_extracted_persons_weekday.csv.gz',
-      '../actual/1.setup/vista_2012_18_extracted_persons_weekend.csv.gz',
       'vista_2012_18_extracted_group_weekday_',
-      'vista_2012_18_extracted_trips_weekday_'
+      'vista_2012_18_extracted_trips_weekday_',
+      NULL, NULL, NULL # ignoring weekends
     )
   )
   files<-c(
     'vista_2012_18_extracted_persons_weekday.csv.gz',
-    'vista_2012_18_extracted_persons_weekend.csv.gz',
     'vista_2012_18_extracted_group_weekday_1.csv',
     'vista_2012_18_extracted_group_weekday_2.csv',
     'vista_2012_18_extracted_group_weekday_3.csv',

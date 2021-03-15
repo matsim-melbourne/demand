@@ -10,21 +10,18 @@ test_that("VISTA 2012-18 trips pre-processing works", {
     demand_setup_groups(
       getGroupIds('../data/vistaCohorts.csv.gz'),
       outdir, 
-      '../data/T_VISTA1218_V1.sample.csv',
+      '../../expected/1.setup/vista_2012_18_extracted_trips_weekday_',
       'vista_2012_18_extracted_activities_weekday_',
-      'vista_2012_18_extracted_activities_weekend_',
       'vista_2012_18_extracted_activities_weekday_time_bins_',
-      'vista_2012_18_extracted_activities_weekend_time_bins_',
-      'vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins_'
+      'vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins_',
+      NULL, NULL # ignoring weekends
     )
   )
 
   files_prefix<-c(
     'vista_2012_18_extracted_activities_weekday_',
-    'vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins_',
     'vista_2012_18_extracted_activities_weekday_time_bins_',
-    'vista_2012_18_extracted_activities_weekend_',
-    'vista_2012_18_extracted_activities_weekend_time_bins_'
+    'vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins_'
   )
   
   groups<-getGroupIds('../data/vistaCohorts.csv.gz')

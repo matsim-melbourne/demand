@@ -4,9 +4,12 @@ make_groups<-function(vista18PersonsCsv,
                       filterCsv, 
                       setupDir,
                       out_weekday_persons_csv_gz, 
-                      out_weekend_persons_csv_gz,
                       out_weekday_groups_csv_prefix,
-                      out_weekday_trips_csv_prefix) {
+                      out_weekday_trips_csv_prefix,
+                      out_weekend_persons_csv_gz,
+                      out_weekend_groups_csv_prefix, # not implemented yet
+                      out_weekend_trips_csv_prefix # not implemented yet
+                      ) {
   
   suppressPackageStartupMessages(library(dplyr))
   
@@ -36,27 +39,33 @@ make_groups<-function(vista18PersonsCsv,
     # Split into weekday/weekend and set the weights (ie counts here) correctly
     week<-orig[,datacols]
     isWeekday<-!(is.na(week$WDPERSWGT) |  week$WDPERSWGT=='')
-    weekdays<-week[isWeekday,]; weekdays$Count<- weekdays$WDPERSWGT
-    weekends<-week[!isWeekday,]; weekends$Count<-weekends$WEPERSWGT
     
-    # Fix any rows where the weights are not defined
-    if(any(is.na(weekends$Count))) {
-      weekends[is.na(weekends$Count),]$Count<-0
+    if(!is.null(out_weekday_persons_csv_gz)) {
+      weekdays<-week[isWeekday,]; weekdays$Count<- weekdays$WDPERSWGT
+      # Fix any rows where the weights are not defined
+      if(any(is.na(weekdays$Count))) {
+        weekdays[is.na(weekdays$Count),]$Count<-0
+      }
+      weekdays$Count<-as.numeric(gsub(",", "", weekdays$Count)) # remove commas from Count
+      # Write them out
+      gz1 <- gzfile(out_weekday_persons_csv_gz, "w")
+      write.csv(weekdays, gz1, row.names=FALSE, quote=TRUE)
+      close(gz1)
+      echo(paste0('Wrote ',out_weekday_persons_csv_gz,'\n'))
     }
-    if(any(is.na(weekdays$Count))) {
-      weekdays[is.na(weekdays$Count),]$Count<-0
+    if(!is.null(out_weekend_persons_csv_gz)) {
+      weekends<-week[!isWeekday,]; weekends$Count<-weekends$WEPERSWGT
+      # Fix any rows where the weights are not defined
+      if(any(is.na(weekends$Count))) {
+        weekends[is.na(weekends$Count),]$Count<-0
+      }
+      weekends$Count<-as.numeric(gsub(",", "", weekends$Count)) # remove commas from Count
+      # Write them out
+      gz1 <- gzfile(out_weekend_persons_csv_gz, "w")
+      write.csv(weekends, gz1, row.names=FALSE, quote=TRUE)
+      close(gz1)
+      echo(paste0('Wrote ',out_weekend_persons_csv_gz,'\n'))
     }
-    
-    weekdays$Count<-as.numeric(gsub(",", "", weekdays$Count)) # remove commas from Count
-    weekends$Count<-as.numeric(gsub(",", "", weekends$Count)) # remove commas from Count
-    
-    # Write them out
-    gz1 <- gzfile(out_weekday_persons_csv_gz, "w")
-    write.csv(weekdays, gz1, row.names=FALSE, quote=TRUE)
-    close(gz1)
-    gz1 <- gzfile(out_weekend_persons_csv_gz, "w")
-    write.csv(weekends, gz1, row.names=FALSE, quote=TRUE)
-    close(gz1)
   }
   
   
@@ -91,7 +100,7 @@ make_groups<-function(vista18PersonsCsv,
     # write csv header in new file first
     for (gid in groups) {
       outfile <- paste0(setupDir,"/",out_weekday_groups_csv_prefix,gid,".csv")
-      echo(paste0('Creating empty file ',outfile,'\n'))
+      echo(paste0('Creating ',outfile,'\n'))
       write.table(orig[0,], outfile, row.names=FALSE, quote=TRUE, sep=",")
     }
     
@@ -143,7 +152,7 @@ make_groups<-function(vista18PersonsCsv,
     
   }
   
-  echo(paste0('Extracting VISTA persons into ',out_weekday_persons_csv_gz,' and ', out_weekend_persons_csv_gz,'\n'))
+  echo(paste0('Extracting VISTA persons from ',vista18PersonsCsv,'\n'))
   extract_persons(vista18PersonsCsv, out_weekday_persons_csv_gz, out_weekend_persons_csv_gz)
   echo(paste0('Extracting VISTA groups based on ',filterCsv,'\n'))
   extract_groups(out_weekday_persons_csv_gz, filterCsv, setupDir, out_weekday_groups_csv_prefix)
