@@ -8,6 +8,8 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
   # writeInterval<-20 # write to file every so many plans
   
   suppressPackageStartupMessages(library(dplyr))
+  # Suppress summarise info
+  options(dplyr.summarise.inform = FALSE)
 
   getActivityGroups <- function(bins) {
     groups<-unique(bins$Activity.Group)
@@ -117,12 +119,17 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
         # all probabilities are zero so make them equally non-zero for bins >= sbin 
         # therefore we will select randomly from them 
         ebins[sbin:length(ebins)]<-1
-      }
+      } 
       ebin<-selectIndexFromProbabilities(ebins)
       
       # save it
       plan[nrow(plan)+1,]<-list(act, sbin, ebin)
       # pick the next time bin
+      if ((sum(ebins==0)==length(ebins)-1) && (ebins[sbin]==1)) {
+        # the activity always finishes in the start bin so will get an endless loop
+        # so adding a small proabability that it can finishes sometime later too
+        ebin<-ebin+1
+      }
       bin<-ebin
     }
     # if we did not make a plan then just stay at home
@@ -456,4 +463,55 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
   echo(paste0("Padding generated plans with Home activity to make them MATSim-ready (can take a while)\n"))
   padWithHomeActivity(inplansfile, outplansfile, numOfBins)
   echo(paste0("Wrote ",outplansfile,"\n"))
+}
+
+
+generatePlansByGroup <- function(groupIds, 
+                                 matched_persons_csv_prefix, 
+                                 csv_gz_prefix, 
+                                 endcsv_gz_prefix, 
+                                 binCols, 
+                                 outdir_prefix, 
+                                 writeInterval
+                                 ) {
+  # example inputs
+  # groupIds <- getGroupIds('../data/vistaCohorts.csv.gz')
+  # matched_persons_csv_prefix <- '../output/3.match/match_'
+  # csv_gz_prefix <- '../output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins_'
+  # endcsv_gz_prefix <- '../output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins_'
+  # binCols <- 3:50 # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
+  # outdir_prefix <- '../output/4.plan/'
+  # writeInterval <- 500 # write to file every 1000 plans
+  
+  for (gid in groupIds) {
+    matched_persons_csv <- paste0(matched_persons_csv_prefix, gid, ".csv")
+    gz1<-gzfile(matched_persons_csv, 'rt')
+    all<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T )
+    close(gz1)
+    N <- nrow(all)
+    csv_gz <- paste0(csv_gz_prefix, gid, ".csv.gz")
+    endcsv_gz <- paste0(endcsv_gz_prefix, gid, ".csv.gz")
+    outdir <- paste0(outdir_prefix, gid)
+    echo(paste0('Generating groups plans in directory ', outdir, '\n'))
+    generatePlans(N, csv_gz, endcsv_gz, binCols, outdir, writeInterval)
+  }
+}
+
+combinePlans <- function(groupIds,
+                         outdir_prefix,
+                         out_csv) {
+  echo(paste0('Combining groups plans into ', out_csv, '\n'))
+  nextId <- 0
+  allplans <- data.frame()
+  for (gid in groupIds) {
+    infile <- paste0(outdir_prefix, gid, '/plan.csv')
+    gz1<-gzfile(infile, 'rt')
+    all<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T )
+    close(gz1)
+    all$PlanId <- all$PlanId + nextId # increment plan id for each group by an appropriate offset
+    all$GroupId <- gid # add group id column
+    allplans <- rbind(allplans, all)
+    nextId <- nextId + length(unique(all$PlanId))
+  }
+  write.table(allplans, out_csv, row.names=FALSE, col.names=TRUE, quote=TRUE, sep=",", append=FALSE)
 }
