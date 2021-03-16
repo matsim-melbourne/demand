@@ -515,3 +515,37 @@ combinePlans <- function(groupIds,
   }
   write.table(allplans, out_csv, row.names=FALSE, col.names=TRUE, quote=TRUE, sep=",", append=FALSE)
 }
+
+
+writePlan2Agent2GroupMap <- function(groupIds,
+                               matched_persons_csv_prefix, 
+                               plans_csv,
+                               out_csv) {
+  # example inputs
+  # groupIds <- getGroupIds('../data/vistaCohorts.csv.gz')
+  # matched_persons_csv_prefix <- '../output/3.match/match_'
+  # plans_csv <- '../output/4.plan/plan.csv'
+  # out_csv <- '../output/4.plan/plan2agent2group.csv'
+  
+  echo(paste0('Creating map of PlanID to AgentId in ', out_csv, '\n'))
+  plans<-read.csv(plans_csv, header=T, stringsAsFactors=F, strip.white=T)
+  plan2agent <- data.frame()
+  for (gid in groupIds) {
+    cohort<-read.csv(paste0(matched_persons_csv_prefix, gid, ".csv"), header=T, stringsAsFactors=F, strip.white=T)
+    cohortAgentIds <- unique(cohort$AgentId)
+    cohortPlans <- plans %>% filter(GroupId == gid)
+    cohortPlanIds <- unique(cohortPlans$PlanId)
+    if (length(cohortAgentIds) != length(cohortPlanIds)) {
+      echo(paste0("For Group ", gid, 
+                  ", the number of generated vista-like plans (", length(cohortPlanIds), 
+                  ") is not the same as the number of sampled census agents (", length(cohortAgentIds), 
+                  "). Skipping this group." ))
+      next
+    }
+    df <- data.frame(PlanId=cohortPlanIds, AgentId=cohortAgentIds)
+    df$GroupId <- gid
+    plan2agent <- rbind(plan2agent, df)
+  }
+  write.table(plan2agent, out_csv, row.names=FALSE, col.names=TRUE, quote=TRUE, sep=",", append=FALSE)
+  
+}

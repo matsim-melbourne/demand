@@ -25,7 +25,13 @@ test_that("VISTA-like plans generation works", {
       '../actual/4.plan/plan.csv'
     )
   )
-
+  capture_output(
+    writePlan2AgentMap(getGroupIds('../data/vistaCohorts.csv.gz'),
+                       '../expected/3.match/match_',
+                       '../expected/4.plan/plan.csv',
+                       '../actual/4.plan/plan2agent2group.csv'
+    )
+  )
   files<-c(
     'analysis-start-times-by-activity-qq.pdf',
     'analysis-end-times-by-activity-qq.pdf',
@@ -46,5 +52,9 @@ test_that("VISTA-like plans generation works", {
   
   expect_true(file.exists('../actual/4.plan/plan.csv'))
   expect_true(md5sum('../actual/4.plan/plan.csv') == md5sum('../expected/4.plan/plan.csv'))
+  
+  expect_true(file.exists('../actual/4.plan/plan2agent2group.csv'))
+  expect_true(md5sum('../actual/4.plan/plan2agent2group.csv') == md5sum('../expected/4.plan/plan2agent2group.csv'))
+  
 })
   
