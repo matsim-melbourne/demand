@@ -451,6 +451,9 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     if (i%%writeInterval==0 || i==N) {
       write.table(plans, file=outfile, append=TRUE, row.names=FALSE, col.names=FALSE, sep = ',')
       plans<-plans[FALSE,] # remove all rows
+      if (i==N) {
+        cat('\n')
+      }
     }
   }
   # write out the analyses PDFs
