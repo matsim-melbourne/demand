@@ -26,7 +26,7 @@ test_that("VISTA-like plans generation works", {
     )
   )
   capture_output(
-    writePlan2AgentMap(getGroupIds('../data/vistaCohorts.csv.gz'),
+    writePlan2Agent2GroupMap(getGroupIds('../data/vistaCohorts.csv.gz'),
                        '../expected/3.match/match_',
                        '../expected/4.plan/plan.csv',
                        '../actual/4.plan/plan2agent2group.csv'
