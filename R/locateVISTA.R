@@ -2,7 +2,6 @@
 
 # Libraries and functions -------------------------------------------------
 suppressPackageStartupMessages(library(sf)) # for spatial things
-suppressPackageStartupMessages(library(lwgeom)) # for advanced spatial things
 suppressPackageStartupMessages(library(dplyr)) # for manipulating data
 suppressPackageStartupMessages(library(tidyr)) # for pivoting data
 suppressPackageStartupMessages(library(haven)) # for spss reading
@@ -13,6 +12,7 @@ suppressPackageStartupMessages(library(purrr)) # for nested dataframes
 # Actual: VP(virtual population)
 
 analyseLocate <- function(outdir) {
+  # outdir='../output/5.locate'
   
   # Functions ---------------------------------------------------------------
   lognormal_fun <- function(df) {
@@ -107,7 +107,7 @@ analyseLocate <- function(outdir) {
     dplyr::select(transport_mode,type,binwidth,max_dist,logmean,logsd) %>%
     distinct()%>%ungroup()%>%rowwise()%>% 
     dplyr::mutate(test_var = list(makeLine(binwidth,max_dist,logmean,logsd))) %>% 
-    unnest()
+    unnest(cols=test_var)
   
   
   ggplot(combinedAll,
