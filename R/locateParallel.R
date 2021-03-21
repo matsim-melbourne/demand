@@ -1,8 +1,8 @@
 locatePlans <- function(censuscsv, vistacsv, matchcsv, outdir, outcsv, rseed = NULL) {
   # example inputs
   # censuscsv<-'../output/2.sample/sample.csv.gz'
-  # vistacsv<-'../output/3.plan/plan.csv'
-  # matchcsv<-'../output/4.match/match.csv.gz'
+  # vistacsv<-'../output/4.plan/plan.csv'
+  # matchcsv<-'../output/4.plan/plan2agent2group.csv'
   # outdir<-'../output/5.locate'
   # outcsv<-'../output/5.locate/plan.csv'
   # planGroup=1
@@ -206,7 +206,7 @@ matches<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)
 close(gz1)
 
 # set.seed(20200406) # for when we want to have the same LocationType each time
-plans<-origplans %>%
+plans<-origplans[,c("PlanId","Activity","StartBin","EndBin")] %>%
   # Remove all plans that are not matched
   filter(PlanId %in% matches$PlanId) %>% 
   # Assign matched PersonId (very fast since we assume row number equals Id number)

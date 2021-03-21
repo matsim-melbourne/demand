@@ -8,6 +8,7 @@ checksum <- function() {
     '../data/SA1attributed.csv.gz' = '980faffc7c90996510123ce4d69f140e', 
     '../data/SA1centroids.csv.gz' = 'b7f27ff1e176b70cee71723f528f800a', 
     '../data/addresses.csv.gz' = 'ed761018dfdf4e00fdf2054aa25fe3ba',
+    '../data/vistaCohorts.csv.gz' = 'd9f0c9ad76fc31513afbc9348b747e32',
     '../data/expectedDistances.rds' = '91e137c02459e21a2fabf541e8cc36de',
     '../data/vistaSummaries/destinationProbabilitiesSA3.rds' = '7dbacc829b312d608b6f24df7235b028',
     '../data/vistaSummaries/distanceDistributionsSA3.rds' = '9ded1a901e720c3f670b5ecda6c105f8',
@@ -21,12 +22,15 @@ checksum <- function() {
   for (file in names(expected)) {
     e <- expected[file]
     a <- actual[file]
-    if (a != e) {
-      cat("MD5 hash of input data file did not match expectation. File may be outdated.\n")
-      cat(paste0("File:          ", file, "\n"))
-      cat(paste0("Expected hash: ", e, "\n"))
-      cat(paste0("Actual hash:   ", a, "\n"))
+    cat(paste0("Checking for ", file, ": "))
+    if (!file.exists(file)) {
+      cat("NOT FOUND\n")
       result <- FALSE
+    } else if (a != e) {
+      cat(paste0("MISMATCH\n!!! expected ", e, ", actual ", a, "\n"))
+      result <- FALSE
+    } else {
+      cat("OK\n")
     }
   }
   return(result)

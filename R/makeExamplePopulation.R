@@ -31,8 +31,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     outdirs <- c(
       '../output/1.setup',
       '../output/2.sample',
-      '../output/3.plan',
-      '../output/4.match',
+      '../output/3.match',
+      '../output/4.plan',
       '../output/5.locate',
       '../output/6.place',
       '../output/7.time',
@@ -44,11 +44,29 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     
     # Step 1: pre-process VISTA and locations data
     if(do.steps[1]) {
+      source("group.R", local=TRUE)
       source("vista.R", local=TRUE)
       source('setup.R', local=TRUE); 
       source('locations.R', local=TRUE);
-      demand_setup('../output/1.setup', 
-                   '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv')
+      make_groups(
+        '../data/VISTA_12_18_CSV.zip.dir/P_VISTA1218_V1.csv',
+        '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv',
+        '../data/vistaCohorts.csv.gz',
+        '../output/1.setup', 
+        '../output/1.setup/vista_2012_18_extracted_persons_weekday.csv.gz',
+        'vista_2012_18_extracted_group_weekday_',
+        'vista_2012_18_extracted_trips_weekday_',
+        NULL, NULL, NULL # ignoring weekends
+      )
+      demand_setup_groups(
+        getGroupIds('../data/vistaCohorts.csv.gz'),
+        '../output/1.setup', 
+        'vista_2012_18_extracted_trips_weekday_',
+        'vista_2012_18_extracted_activities_weekday_',
+        'vista_2012_18_extracted_activities_weekday_time_bins_',
+        'vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins_',
+        NULL, NULL # ignoring weekends
+      )
       locations_setup(
         '../output/1.setup', 
         '../data/distanceMatrix.rds', 
@@ -70,29 +88,39 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       )
     }
 
-    # Step 3: generate the VISTA-like trip chains
+    # Step 3: match the census persons to VISTA groups
     if(do.steps[3]) {
-      source('sample.R', local=TRUE); 
+      source('match.R', local=TRUE); 
+      matchPersons(
+        getGroups('../data/vistaCohorts.csv.gz'),
+        '../output/2.sample/sample.csv.gz', 
+        '../output/3.match/match_'
+      )
+    }
+
+    # Step 4: generate the VISTA-like trip chains
+    if(do.steps[4]) {
       source('plan.R', local=TRUE);
-      numPlans<-ceiling((samplePercent/100)* countMelbourne2016Population('../data')) + 100 # generate a few extra
-      generatePlans(
-        numPlans, 
-        '../output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins.csv.gz', 
-        '../output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins.csv.gz', 
+      generatePlansByGroup(
+        getGroupIds('../data/vistaCohorts.csv.gz'),
+        '../output/3.match/match_',
+        '../output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins_',
+        '../output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins_',
         3:50, # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
-        '../output/3.plan', 
+        '../output/4.plan/',
         500 # write to file every 1000 plans
+      )
+      combinePlans(getGroupIds('../data/vistaCohorts.csv.gz'),
+                   '../output/4.plan/',
+                   '../output/4.plan/plan.csv'
+      )
+      writePlan2Agent2GroupMap(getGroupIds('../data/vistaCohorts.csv.gz'),
+                         '../output/3.match/match_',
+                         '../output/4.plan/plan.csv',
+                         '../output/4.plan/plan2agent2group.csv'
       )
     }
     
-    if(do.steps[4]) {
-      source('match.R', local=TRUE); 
-      matchPersons(
-        '../output/2.sample/sample.csv.gz', 
-        '../output/3.plan/plan.csv', 
-        '../output/4.match/match.csv.gz'
-      )
-    }
     if(do.steps[5]) {
       source('locations.R')
       loadLocationsData(
@@ -111,8 +139,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       setwd("..")
       locatePlans(
         './output/2.sample/sample.csv.gz',
-        './output/3.plan/plan.csv',
-        './output/4.match/match.csv.gz',
+        './output/4.plan/plan.csv',
+        './output/4.plan/plan2agent2group.csv',
         './output/5.locate',
         './output/5.locate/plan.csv'
       )
@@ -121,8 +149,13 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         read.csv("../output/5.locate/plan.csv"),
         '../output/5.locate/plan.sqlite'
       )
-      source('locateVISTA.R', local=TRUE); 
-      analyseLocate('../output/5.locate')
+      
+      # !!!
+      # FIXME: Disabled due to missing packages in packrat (Dhi, 16/03/21)
+      # source('locateVISTA.R', local=TRUE); 
+      # analyseLocate('../output/5.locate') 
+      # !!!
+      
     }
     if(do.steps[6]) {
       if(!do.steps[5]) { # if not already loaded in the last step
@@ -132,7 +165,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
           '../output/1.setup/locDistanceMatrixIndex.rds',
           '../output/1.setup/locSa1Aattributed.rds', 
           '../output/1.setup/locSa1Centroids.rds', 
-          '../output/1.setup/locAddresses.rds'
+          '../output/1.setup/locAddresses.rds',
+          '../output/1.setup/expectedDistances.rds'
         )
       }
       source('placeParallel.R')

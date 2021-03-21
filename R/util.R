@@ -1,3 +1,7 @@
+suppressPackageStartupMessages(library(dplyr))
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+
 # Probabilistically selects an index from the vector of probabilities
 selectIndexFromProbabilities <-function(vv) {
   if(is.null(vv) || is.na(vv)) return(vv)
@@ -21,4 +25,27 @@ printProgress<-function(row, char, majorInterval=100, minorInterval=10) {
   cat(char)
   if(row%%minorInterval==0) cat('|')
   if(row%%majorInterval==0) cat(paste0(' ', row,'\n'))
+}
+
+getGroupIds<-function(filterCsv) {
+  groups<- getGroups(filterCsv)
+  groupIds <- unique(groups$cluster_id_5)
+  return(groupIds)
+}
+
+getGroups<-function(filterCsv) {
+  gz1 <- gzfile(filterCsv,'rt')
+  data<-read.csv(gz1,header = T,sep=',',stringsAsFactors = F,strip.white = T)
+  close(gz1)
+  
+  datacols<-c("sex",
+              "min_age",
+              "max_age",
+              "cluster_id_5")
+  
+  filters <- data[,datacols] %>%
+    group_by(cluster_id_5,sex) %>%
+    summarise(age_start=min(min_age), age_end=max(max_age)) 
+  
+  return(filters)
 }

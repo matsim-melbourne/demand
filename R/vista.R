@@ -153,31 +153,37 @@ extract_and_write_activities_from<-function(in_vista_csv, out_weekday_activities
   # Split into weekday/weekend and set the weights (ie counts here) correctly
   week<-orig[,datacols]
   isWeekday<-!(is.na(week$WDTRIPWGT) |  week$WDTRIPWGT=='')
-  weekdays<-week[isWeekday,]; weekdays$Count<- weekdays$WDTRIPWGT
-  weekends<-week[!isWeekday,]; weekends$Count<-weekends$WETRIPWGT
-
-  # Fix any rows where the weights are not defined
-  if(any(is.na(weekends$Count))) {
-    weekends[is.na(weekends$Count),]$Count<-0
+  
+  if(!is.null(out_weekday_activities_csv_gz)) {
+    weekdays<-week[isWeekday,]; weekdays$Count<- weekdays$WDTRIPWGT
+    # Fix any rows where the weights are not defined
+    if(any(is.na(weekdays$Count))) {
+      weekdays[is.na(weekdays$Count),]$Count<-0
+    }
+    weekdays$Count<-as.numeric(gsub(",", "", weekdays$Count)) # remove commas from Count
+    # Get the activities for each set
+    weekday_activities<-get_activities(weekdays)
+    # Write them out
+    gz1 <- gzfile(out_weekday_activities_csv_gz, "w")
+    write.csv(weekday_activities, gz1, row.names=FALSE, quote=TRUE)
+    close(gz1)
+    echo(paste0('Wrote ',out_weekday_activities_csv_gz,'\n'))
   }
-  if(any(is.na(weekdays$Count))) {
-    weekdays[is.na(weekdays$Count),]$Count<-0
-  }
-  
-  weekdays$Count<-as.numeric(gsub(",", "", weekdays$Count)) # remove commas from Count
-  weekends$Count<-as.numeric(gsub(",", "", weekends$Count)) # remove commas from Count
-  
-  # Get the activities for each set
-  weekday_activities<-get_activities(weekdays)
-  weekend_activities<-get_activities(weekends)
-  
-  # Write them out
-  gz1 <- gzfile(out_weekday_activities_csv_gz, "w")
-  write.csv(weekday_activities, gz1, row.names=FALSE, quote=TRUE)
-  close(gz1)
-  gz1 <- gzfile(out_weekend_activities_csv_gz, "w")
-  write.csv(weekend_activities, gz1, row.names=FALSE, quote=TRUE)
-  close(gz1)
+  if(!is.null(out_weekend_activities_csv_gz)) {
+    weekends<-week[!isWeekday,]; weekends$Count<-weekends$WETRIPWGT
+    # Fix any rows where the weights are not defined
+    if(any(is.na(weekends$Count))) {
+      weekends[is.na(weekends$Count),]$Count<-0
+    }
+    weekends$Count<-as.numeric(gsub(",", "", weekends$Count)) # remove commas from Count
+    # Get the activities for each set
+    weekend_activities<-get_activities(weekends)
+    # Write them out
+    gz1 <- gzfile(out_weekend_activities_csv_gz, "w")
+    write.csv(weekend_activities, gz1, row.names=FALSE, quote=TRUE)
+    close(gz1)
+    echo(paste0('Wrote ',out_weekend_activities_csv_gz,'\n'))
+  }   
 }
 
 simplify_activities_and_create_groups<-function(gzfile) {

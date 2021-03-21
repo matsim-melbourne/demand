@@ -1,0 +1,311 @@
+"PERSID","ORIGPURP1","DESTPURP1","STARTIME","ARRTIME","WDTRIPWGT","WETRIPWGT"
+"Y12H0000101P02","At Home","Pick-up or Drop-off Someone",500,520,92.98,NA
+"Y12H0000101P02","Pick-up or Drop-off Someone","Buy Something",540,550,92.98,NA
+"Y12H0000101P02","Buy Something","Go Home",600,610,92.98,NA
+"Y12H0000101P02","At Home","Pick-up or Drop-off Someone",890,910,92.98,NA
+"Y12H0000101P02","Pick-up or Drop-off Someone","Go Home",940,950,92.98,NA
+"Y12H0000103P02","At Home","Pick-up or Drop-off Someone",480,500,94.41,NA
+"Y12H0000103P02","Pick-up or Drop-off Someone","Go Home",501,515,94.41,NA
+"Y12H0000103P02","At Home","Work Related",710,720,94.41,NA
+"Y12H0000103P02","Work Related","Go Home",1310,1320,94.41,NA
+"Y12H0000104P01","At Home","Work Related",420,485,83.77,NA
+"Y12H0000104P01","Work Related","Go Home",990,1065,83.77,NA
+"Y12H0000111P02","At Home","Pick-up or Drop-off Someone",465,470,120.38,NA
+"Y12H0000111P02","Pick-up or Drop-off Someone","Work Related",470,530,120.38,NA
+"Y12H0000111P02","Work Related","Pick-up or Drop-off Someone",1080,1120,120.38,NA
+"Y12H0000111P02","Pick-up or Drop-off Someone","Go Home",1130,1140,120.38,NA
+"Y12H0000116P02","At Home","Buy Something",585,635,82.61,NA
+"Y12H0000116P02","Buy Something","Go Home",780,800,82.61,NA
+"Y12H0000116P02","At Home","Personal Business",900,915,82.61,NA
+"Y12H0000116P02","Personal Business","Go Home",915,930,82.61,NA
+"Y12H0000117P01","At Home","Work Related",450,460,94.41,NA
+"Y12H0000117P01","Work Related","Go Home",1020,1030,94.41,NA
+"Y12H0000122P03","At Home","Work Related",555,570,82.09,NA
+"Y12H0000122P03","Work Related","Social",1055,1075,82.09,NA
+"Y12H0000122P03","Social","Go Home",1140,1150,82.09,NA
+"Y12H0000126P02","At Home","Pick-up or Drop-off Someone",500,510,83.75,NA
+"Y12H0000126P02","Pick-up or Drop-off Someone","Education",510,535,83.75,NA
+"Y12H0000126P02","Education","Go Home",750,765,83.75,NA
+"Y12H0000126P02","At Home","Pick-up or Drop-off Someone",915,922,83.75,NA
+"Y12H0000126P02","Pick-up or Drop-off Someone","Go Home",925,935,83.75,NA
+"Y12H0000130P02","At Home","Work Related",390,435,93.58,NA
+"Y12H0000130P02","Work Related","Go Home",995,1050,93.58,NA
+"Y12H0000138P02","At Home","Work Related",435,475,83.35,NA
+"Y12H0000138P02","Work Related","Go Home",960,1020,83.35,NA
+"Y12H0000224P02","At Home","Pick-up or Deliver Something",490,501,140.66,NA
+"Y12H0000224P02","Pick-up or Deliver Something","Pick-up or Drop-off Someone",502,507,140.66,NA
+"Y12H0000224P02","Pick-up or Drop-off Someone","Work Related",525,538,140.66,NA
+"Y12H0000224P02","Work Related","Pick-up or Drop-off Someone",910,917,140.66,NA
+"Y12H0000224P02","Pick-up or Drop-off Someone","Pick-up or Drop-off Someone",918,923,140.66,NA
+"Y12H0000224P02","Pick-up or Drop-off Someone","Buy Something",935,946,140.66,NA
+"Y12H0000224P02","Buy Something","Go Home",993,1001,140.66,NA
+"Y12H0000224P02","At Home","Personal Business",1015,1025,140.66,NA
+"Y12H0000224P02","Personal Business","Go Home",1025,1037,140.66,NA
+"Y12H0000224P02","At Home","Other Purpose",1220,1226,140.66,NA
+"Y12H0000224P02","Other Purpose","Go Home",1275,1281,140.66,NA
+"Y12H0000231P02","At Home","Buy Something",495,500,127.53,NA
+"Y12H0000231P02","Buy Something","Work Related",505,515,127.53,NA
+"Y12H0000231P02","Work Related","Go Home",990,1005,127.53,NA
+"Y12H0000232P01","At Home","Pick-up or Drop-off Someone",525,530,128.17,NA
+"Y12H0000232P01","Pick-up or Drop-off Someone","Go Home",540,545,128.17,NA
+"Y12H0000232P01","At Home","Pick-up or Drop-off Someone",910,915,128.17,NA
+"Y12H0000232P01","Pick-up or Drop-off Someone","Go Home",935,945,128.17,NA
+"Y12H0000301P01","At Home","Work Related",480,510,76.41,NA
+"Y12H0000301P01","Work Related","Go Home",1060,1090,76.41,NA
+"Y12H0000303P01","At Home","Work Related",430,460,63.09,NA
+"Y12H0000303P01","Work Related","Go Home",840,880,63.09,NA
+"Y12H0000303P01","At Home","Pick-up or Drop-off Someone",925,930,63.09,NA
+"Y12H0000303P01","Pick-up or Drop-off Someone","Go Home",935,940,63.09,NA
+"Y12H0000303P01","At Home","Buy Something",1145,1155,63.09,NA
+"Y12H0000303P01","Buy Something","Go Home",1230,1240,63.09,NA
+"Y12H0000303P02","At Home","Pick-up or Drop-off Someone",520,525,94.45,NA
+"Y12H0000303P02","Pick-up or Drop-off Someone","Go Home",525,535,94.45,NA
+"Y12H0000303P02","At Home","Work Related",535,555,94.45,NA
+"Y12H0000303P02","Work Related","Work Related",570,600,94.45,NA
+"Y12H0000303P02","Work Related","Work Related",645,675,94.45,NA
+"Y12H0000303P02","Work Related","Work Related",721,729,94.45,NA
+"Y12H0000303P02","Work Related","Work Related",809,842,94.45,NA
+"Y12H0000303P02","Work Related","Go Home",960,975,94.45,NA
+"Y12H0000310P02","At Home","Work Related",500,510,75.35,NA
+"Y12H0000310P02","Work Related","Go Home",990,1005,75.35,NA
+"Y12H0000312P02","At Home","Personal Business",570,580,62.4,NA
+"Y12H0000312P02","Personal Business","Go Home",610,620,62.4,NA
+"Y12H0000315P02","At Home","Buy Something",330,350,76.41,NA
+"Y12H0000315P02","Buy Something","Work Related",352,360,76.41,NA
+"Y12H0000315P02","Work Related","Work Related",510,525,76.41,NA
+"Y12H0000315P02","Work Related","Work Related",720,735,76.41,NA
+"Y12H0000315P02","Work Related","Go Home",930,975,76.41,NA
+"Y12H0000316P01","At Home","Accompany Someone",330,360,61.56,NA
+"Y12H0000316P01","Accompany Someone","Go Home",440,510,61.56,NA
+"Y12H0000316P01","At Home","Pick-up or Drop-off Someone",600,605,61.56,NA
+"Y12H0000316P01","Pick-up or Drop-off Someone","Personal Business",630,650,61.56,NA
+"Y12H0000316P01","Personal Business","Personal Business",660,678,61.56,NA
+"Y12H0000316P01","Personal Business","Personal Business",690,710,61.56,NA
+"Y12H0000316P01","Personal Business","Pick-up or Drop-off Someone",735,740,61.56,NA
+"Y12H0000316P01","Pick-up or Drop-off Someone","Go Home",765,780,61.56,NA
+"Y12H0000316P01","At Home","Work Related",885,900,61.56,NA
+"Y12H0000316P01","Work Related","Go Home",1220,1235,61.56,NA
+"Y12H0000317P01","At Home","Work Related",435,450,62.11,NA
+"Y12H0000317P01","Work Related","Go Home",940,960,62.11,NA
+"Y12H0000317P01","At Home","Recreational",1020,1065,62.11,NA
+"Y12H0000317P01","Recreational","Go Home",1080,1110,62.11,NA
+"Y12H0000318P02","At Home","Work Related",480,500,77.98,NA
+"Y12H0000318P02","Work Related","Go Home",1065,1095,77.98,NA
+"Y12H0000326P01","At Home","Work Related",435,480,72.74,NA
+"Y12H0000326P01","Work Related","Go Home",962,995,72.74,NA
+"Y12H0000326P02","At Home","Pick-up or Drop-off Someone",480,500,71.61,NA
+"Y12H0000326P02","Pick-up or Drop-off Someone","Go Home",501,530,71.61,NA
+"Y12H0000326P02","At Home","Social",600,615,71.61,NA
+"Y12H0000326P02","Social","Work Related",735,750,71.61,NA
+"Y12H0000326P02","Work Related","Pick-up or Drop-off Someone",1005,1025,71.61,NA
+"Y12H0000326P02","Pick-up or Drop-off Someone","Go Home",1030,1055,71.61,NA
+"Y12H0000326P02","At Home","Social",1120,1140,71.61,NA
+"Y12H0000326P02","Social","Go Home",1350,1365,71.61,NA
+"Y12H0000329P01","At Home","Work Related",425,460,87.69,NA
+"Y12H0000329P01","Work Related","Go Home",1035,1080,87.69,NA
+"Y12H0000336P02","At Home","Work Related",460,477,79.5,NA
+"Y12H0000336P02","Work Related","Go Home",1000,1025,79.5,NA
+"Y12H0000401P02","At Home","Social",570,585,105.09,NA
+"Y12H0000401P02","Social","Recreational",660,665,105.09,NA
+"Y12H0000401P02","Recreational","Buy Something",720,725,105.09,NA
+"Y12H0000401P02","Buy Something","Go Home",740,745,105.09,NA
+"Y12H0000401P02","At Home","Pick-up or Drop-off Someone",940,950,105.09,NA
+"Y12H0000401P02","Pick-up or Drop-off Someone","Recreational",950,960,105.09,NA
+"Y12H0000401P02","Recreational","Pick-up or Drop-off Someone",960,1005,105.09,NA
+"Y12H0000401P02","Pick-up or Drop-off Someone","Go Home",1005,1015,105.09,NA
+"Y12H0000405P01","At Home","Work Related",500,520,107.21,NA
+"Y12H0000405P01","Work Related","Go Home",1150,1170,107.21,NA
+"Y12H0000417P01","At Home","Social",502,505,96.75,NA
+"Y12H0000417P01","Social","Pick-up or Drop-off Someone",530,535,96.75,NA
+"Y12H0000417P01","Pick-up or Drop-off Someone","Work Related",560,595,96.75,NA
+"Y12H0000417P01","Work Related","Work Related",690,695,96.75,NA
+"Y12H0000417P01","Work Related","Work Related",735,740,96.75,NA
+"Y12H0000417P01","Work Related","Social",780,790,96.75,NA
+"Y12H0000417P01","Social","Work Related",850,860,96.75,NA
+"Y12H0000417P01","Work Related","Recreational",885,930,96.75,NA
+"Y12H0000417P01","Recreational","Go Home",1050,1060,96.75,NA
+"Y12H0000417P01","At Home","Pick-up or Drop-off Someone",1140,1141,96.75,NA
+"Y12H0000417P01","Pick-up or Drop-off Someone","Go Home",1151,1152,96.75,NA
+"Y12H0000419P02","At Home","Buy Something",880,950,107.21,NA
+"Y12H0000419P02","Buy Something","Go Home",1020,1067,107.21,NA
+"Y12H0000422P01","At Home","Work Related",465,485,143.27,NA
+"Y12H0000422P01","Work Related","Recreational",980,985,143.27,NA
+"Y12H0000422P01","Recreational","Buy Something",1050,1052,143.27,NA
+"Y12H0000422P01","Buy Something","Work Related",1065,1075,143.27,NA
+"Y12H0000422P01","Work Related","Buy Something",1230,1245,143.27,NA
+"Y12H0000422P01","Buy Something","Go Home",1255,1260,143.27,NA
+"Y12H0000422P02","At Home","Work Related",570,590,143.27,NA
+"Y12H0000422P02","Work Related","Social",785,790,143.27,NA
+"Y12H0000422P02","Social","Work Related",805,810,143.27,NA
+"Y12H0000422P02","Work Related","Work Related",940,955,143.27,NA
+"Y12H0000422P02","Work Related","Go Home",1085,1110,143.27,NA
+"Y12H0000422P02","At Home","Recreational",1140,1150,143.27,NA
+"Y12H0000422P02","Recreational","Go Home",1160,1170,143.27,NA
+"Y12H0000423P01","At Home","Work Related",555,570,144.19,NA
+"Y12H0000423P01","Work Related","Go Home",930,940,144.19,NA
+"Y12H0000425P02","At Home","Work Related",495,548,165.61,NA
+"Y12H0000425P02","Work Related","Work Related",750,765,165.61,NA
+"Y12H0000425P02","Work Related","Work Related",770,785,165.61,NA
+"Y12H0000425P02","Work Related","Buy Something",795,797,165.61,NA
+"Y12H0000425P02","Buy Something","Work Related",802,804,165.61,NA
+"Y12H0000425P02","Work Related","Go Home",990,1035,165.61,NA
+"Y12H0000425P02","At Home","Social",1155,1160,165.61,NA
+"Y12H0000425P02","Social","Go Home",1290,1295,165.61,NA
+"Y12H0000433P02","At Home","Social",450,455,165.56,NA
+"Y12H0000433P02","Social","Work Related",460,480,165.56,NA
+"Y12H0000433P02","Work Related","Go Home",1020,1050,165.56,NA
+"Y12H0000433P02","At Home","Buy Something",1160,1165,165.56,NA
+"Y12H0000433P02","Buy Something","Go Home",1170,1175,165.56,NA
+"Y12H0000436P02","At Home","Work Related",540,555,178.98,NA
+"Y12H0000436P02","Work Related","Go Home",1050,1094,178.98,NA
+"Y12H0000437P01","At Home","Work Related",450,480,146.47,NA
+"Y12H0000437P01","Work Related","Go Home",1095,1125,146.47,NA
+"Y12H0000439P02","At Home","Work Related",480,520,182.65,NA
+"Y12H0000439P02","Work Related","Go Home",1065,1115,182.65,NA
+"Y12H0001001P01","At Home","Personal Business",585,593,81.35,NA
+"Y12H0001001P01","Personal Business","Go Home",615,640,81.35,NA
+"Y12H0001001P01","At Home","Social",680,695,81.35,NA
+"Y12H0001001P01","Social","Personal Business",870,900,81.35,NA
+"Y12H0001001P01","Personal Business","Other Purpose",1040,1110,81.35,NA
+"Y12H0001001P01","Other Purpose","Go Home",1185,1210,81.35,NA
+"Y12H0001002P01","At Home","Work Related",480,515,102.27,NA
+"Y12H0001002P01","Work Related","Work Related",555,615,102.27,NA
+"Y12H0001002P01","Work Related","Work Related",840,900,102.27,NA
+"Y12H0001002P01","Work Related","Pick-up or Drop-off Someone",930,960,102.27,NA
+"Y12H0001002P01","Pick-up or Drop-off Someone","Pick-up or Drop-off Someone",975,990,102.27,NA
+"Y12H0001002P01","Pick-up or Drop-off Someone","Buy Something",995,1010,102.27,NA
+"Y12H0001002P01","Buy Something","Buy Something",1035,1040,102.27,NA
+"Y12H0001002P01","Buy Something","Go Home",1050,1055,102.27,NA
+"Y12H0001003P01","At Home","Work Related",580,595,82.6,NA
+"Y12H0001003P01","Work Related","Go Home",870,880,82.6,NA
+"Y12H0001003P02","At Home","Buy Something",675,690,82.6,NA
+"Y12H0001003P02","Buy Something","Personal Business",725,730,82.6,NA
+"Y12H0001003P02","Personal Business","Buy Something",780,795,82.6,NA
+"Y12H0001003P02","Buy Something","Go Home",810,825,82.6,NA
+"Y12H0001004P01","At Home","Social",600,625,83.01,NA
+"Y12H0001004P01","Social","Buy Something",840,850,83.01,NA
+"Y12H0001004P01","Buy Something","Buy Something",890,900,83.01,NA
+"Y12H0001004P01","Buy Something","Go Home",925,932,83.01,NA
+"Y12H0001015P02","At Home","Buy Something",795,805,81.35,NA
+"Y12H0001015P02","Buy Something","Go Home",865,870,81.35,NA
+"Y12H0001031P02","At Home","Pick-up or Drop-off Someone",530,540,103.18,NA
+"Y12H0001031P02","Pick-up or Drop-off Someone","Go Home",540,550,103.18,NA
+"Y12H0001031P02","At Home","Pick-up or Drop-off Someone",960,975,103.18,NA
+"Y12H0001031P02","Pick-up or Drop-off Someone","Go Home",990,1005,103.18,NA
+"Y12H0001032P01","At Home","Pick-up or Drop-off Someone",480,495,94.03,NA
+"Y12H0001032P01","Pick-up or Drop-off Someone","Work Related",495,502,94.03,NA
+"Y12H0001032P01","Work Related","Go Home",870,885,94.03,NA
+"Y12H0001032P01","At Home","Buy Something",960,965,94.03,NA
+"Y12H0001032P01","Buy Something","Go Home",1000,1005,94.03,NA
+"Y12H0001033P02","At Home","Work Related",480,510,94,NA
+"Y12H0001033P02","Work Related","Buy Something",1020,1040,94,NA
+"Y12H0001033P02","Buy Something","Go Home",1050,1055,94,NA
+"Y12H0001036P01","At Home","Pick-up or Drop-off Someone",300,315,82.63,NA
+"Y12H0001036P01","Pick-up or Drop-off Someone","Buy Something",325,355,82.63,NA
+"Y12H0001036P01","Buy Something","Work Related",360,385,82.63,NA
+"Y12H0001036P01","Work Related","Go Home",930,1020,82.63,NA
+"Y12H0001037P01","At Home","Work Related",450,470,102.27,NA
+"Y12H0001037P01","Work Related","Pick-up or Drop-off Someone",915,930,102.27,NA
+"Y12H0001037P01","Pick-up or Drop-off Someone","Pick-up or Drop-off Someone",935,940,102.27,NA
+"Y12H0001037P01","Pick-up or Drop-off Someone","Social",945,955,102.27,NA
+"Y12H0001037P01","Social","Personal Business",960,970,102.27,NA
+"Y12H0001037P01","Personal Business","Go Home",1055,1080,102.27,NA
+"Y12H0010201P02","At Home","Work Related",435,465,98.14,NA
+"Y12H0010201P02","Work Related","Go Home",1035,1055,98.14,NA
+"Y12H0010201P02","At Home","Personal Business",1230,1260,98.14,NA
+"Y12H0010201P02","Personal Business","Go Home",1260,1290,98.14,NA
+"Y12H0010202P03","At Home","Personal Business",560,585,108.93,NA
+"Y12H0010202P03","Personal Business","Personal Business",690,695,108.93,NA
+"Y12H0010202P03","Personal Business","Go Home",810,830,108.93,NA
+"Y12H0010202P03","At Home","Pick-up or Drop-off Someone",865,870,108.93,NA
+"Y12H0010202P03","Pick-up or Drop-off Someone","Go Home",880,885,108.93,NA
+"Y12H0010202P03","At Home","Pick-up or Drop-off Someone",985,990,108.93,NA
+"Y12H0010202P03","Pick-up or Drop-off Someone","Go Home",995,1000,108.93,NA
+"Y12H0010202P03","At Home","Pick-up or Drop-off Someone",1080,1090,108.93,NA
+"Y12H0010202P03","Pick-up or Drop-off Someone","Go Home",1095,1105,108.93,NA
+"Y12H0010202P03","At Home","Work Related",1150,1170,108.93,NA
+"Y12H0010202P03","Work Related","Go Home",1440,1480,108.93,NA
+"Y12H0010212P02","At Home","Pick-up or Drop-off Someone",495,510,110.42,NA
+"Y12H0010212P02","Pick-up or Drop-off Someone","Work Related",510,525,110.42,NA
+"Y12H0010212P02","Work Related","Pick-up or Drop-off Someone",900,915,110.42,NA
+"Y12H0010212P02","Pick-up or Drop-off Someone","Buy Something",930,945,110.42,NA
+"Y12H0010212P02","Buy Something","Go Home",970,975,110.42,NA
+"Y12H0010215P02","At Home","Buy Something",405,415,106.21,NA
+"Y12H0010215P02","Buy Something","Work Related",420,422,106.21,NA
+"Y12H0010215P02","Work Related","Social",750,755,106.21,NA
+"Y12H0010215P02","Social","Work Related",765,770,106.21,NA
+"Y12H0010215P02","Work Related","Go Home",960,980,106.21,NA
+"Y12H0010217P02","At Home","Buy Something",735,747,109.9,NA
+"Y12H0010217P02","Buy Something","Go Home",795,807,109.9,NA
+"Y12H0010226P02","At Home","Work Related",615,655,107.96,NA
+"Y12H0010226P02","Work Related","Go Home",700,720,107.96,NA
+"Y12H0010226P02","At Home","Buy Something",741,750,107.96,NA
+"Y12H0010226P02","Buy Something","Social",810,815,107.96,NA
+"Y12H0010226P02","Social","Go Home",855,865,107.96,NA
+"Y12H0010226P02","At Home","Pick-up or Drop-off Someone",915,930,107.96,NA
+"Y12H0010226P02","Pick-up or Drop-off Someone","Go Home",940,945,107.96,NA
+"Y12H0010226P02","At Home","Personal Business",960,970,107.96,NA
+"Y12H0010226P02","Personal Business","Go Home",970,980,107.96,NA
+"Y12H0010226P02","At Home","Social",1080,1095,107.96,NA
+"Y12H0010226P02","Social","Go Home",1140,1155,107.96,NA
+"Y12H0010232P02","At Home","Pick-up or Drop-off Someone",510,525,121.76,NA
+"Y12H0010232P02","Pick-up or Drop-off Someone","Pick-up or Drop-off Someone",525,530,121.76,NA
+"Y12H0010232P02","Pick-up or Drop-off Someone","Go Home",530,545,121.76,NA
+"Y12H0010240P02","At Home","Work Related",535,550,107.96,NA
+"Y12H0010240P02","Work Related","Go Home",990,1020,107.96,NA
+"Y12H0010401P01","At Home","Work Related",480,510,209.12,NA
+"Y12H0010401P01","Work Related","Go Home",1050,1092,209.12,NA
+"Y12H0010401P01","At Home","Personal Business",1100,1110,209.12,NA
+"Y12H0010401P01","Personal Business","Go Home",1120,1130,209.12,NA
+"Y12H0010401P02","At Home","Personal Business",360,375,165.73,NA
+"Y12H0010401P02","Personal Business","Go Home",375,390,165.73,NA
+"Y12H0010401P02","At Home","Pick-up or Drop-off Someone",455,463,165.73,NA
+"Y12H0010401P02","Pick-up or Drop-off Someone","Go Home",463,475,165.73,NA
+"Y12H0010401P02","At Home","Personal Business",530,550,165.73,NA
+"Y12H0010401P02","Personal Business","Work Related",590,620,165.73,NA
+"Y12H0010401P02","Work Related","Work Related",935,970,165.73,NA
+"Y12H0010401P02","Work Related","Go Home",1045,1075,165.73,NA
+"Y12H0010401P02","At Home","Pick-up or Drop-off Someone",1110,1115,165.73,NA
+"Y12H0010401P02","Pick-up or Drop-off Someone","Go Home",1116,1120,165.73,NA
+"Y12H0010408P02","At Home","Work Related",585,605,207.03,NA
+"Y12H0010408P02","Work Related","Go Home",1110,1125,207.03,NA
+"Y12H0010415P01","At Home","Work Related",435,465,207.03,NA
+"Y12H0010415P01","Work Related","Personal Business",810,820,207.03,NA
+"Y12H0010415P01","Personal Business","Work Related",840,845,207.03,NA
+"Y12H0010415P01","Work Related","Go Home",980,1018,207.03,NA
+"Y12H0010415P01","At Home","Social",1170,1180,207.03,NA
+"Y12H0010415P01","Social","Go Home",1200,1210,207.03,NA
+"Y12H0010422P02","At Home","Social",540,600,138.79,NA
+"Y12H0010422P02","Social","Accompany Someone",660,680,138.79,NA
+"Y12H0010422P02","Accompany Someone","Go Home",785,840,138.79,NA
+"Y12H0010422P02","At Home","Pick-up or Drop-off Someone",890,900,138.79,NA
+"Y12H0010422P02","Pick-up or Drop-off Someone","Go Home",905,920,138.79,NA
+"Y12H0010424P02","At Home","Pick-up or Drop-off Someone",510,520,140.92,NA
+"Y12H0010424P02","Pick-up or Drop-off Someone","Go Home",522,535,140.92,NA
+"Y12H0010424P02","At Home","Buy Something",900,905,140.92,NA
+"Y12H0010424P02","Buy Something","Pick-up or Drop-off Someone",915,925,140.92,NA
+"Y12H0010424P02","Pick-up or Drop-off Someone","Go Home",927,935,140.92,NA
+"Y12H0010424P02","At Home","Personal Business",1020,1030,140.92,NA
+"Y12H0010424P02","Personal Business","Go Home",1070,1080,140.92,NA
+"Y12H0010430P01","At Home","Recreational",350,360,139.67,NA
+"Y12H0010430P01","Recreational","Go Home",410,420,139.67,NA
+"Y12H0010430P01","At Home","Work Related",480,500,139.67,NA
+"Y12H0010430P01","Work Related","Go Home",1125,1140,139.67,NA
+"Y12H0010432P01","At Home","Work Related",450,470,141.63,NA
+"Y12H0010432P01","Work Related","Go Home",1000,1025,141.63,NA
+"Y12H0010432P01","At Home","Social",1110,1145,141.63,NA
+"Y12H0010432P01","Social","Go Home",1260,1280,141.63,NA
+"Y12H0010437P02","At Home","Pick-up or Drop-off Someone",510,515,126.64,NA
+"Y12H0010437P02","Pick-up or Drop-off Someone","Recreational",525,540,126.64,NA
+"Y12H0010437P02","Recreational","Go Home",690,705,126.64,NA
+"Y12H0010437P02","At Home","Pick-up or Drop-off Someone",780,795,126.64,NA
+"Y12H0010437P02","Pick-up or Drop-off Someone","Go Home",805,815,126.64,NA
+"Y12H0010437P02","At Home","Pick-up or Drop-off Someone",880,890,126.64,NA
+"Y12H0010437P02","Pick-up or Drop-off Someone","Pick-up or Drop-off Someone",900,905,126.64,NA
+"Y12H0010437P02","Pick-up or Drop-off Someone","Go Home",920,940,126.64,NA
+"Y12H0010439P01","At Home","Work Related",465,495,141.63,NA
+"Y12H0010439P01","Work Related","Work Related",525,540,141.63,NA
+"Y12H0010439P01","Work Related","Work Related",730,745,141.63,NA
+"Y12H0010439P01","Work Related","Go Home",1100,1130,141.63,NA
+"Y12H0010503P02","At Home","Work Related",450,525,99.35,NA
+"Y12H0010503P02","Work Related","Go Home",1050,1125,99.35,NA

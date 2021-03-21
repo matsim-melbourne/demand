@@ -1,6 +1,6 @@
 distanceMatrix.rds
 distanceMatrixIndex.csv
-expectedDistances.gz
+expectedDistances.rds
 melbourne-2016-population.zip*
 sa1_2016_aust.csv.gz
 SA1attributed.csv.gz
@@ -8,3 +8,5 @@ SA1centroids.csv.gz
 addresses.csv.gz
 vista_2012_16_v1_sa1_csv.zip*
 VISTA_12_18_CSV.zip*
+vistaCohorts.csv.gz
+vistaSummaries/
