@@ -572,7 +572,7 @@ Requires: MatrixModels, SparseM, conquer
 Package: readr
 Source: CRAN
 Version: 1.4.0
-Hash: f8f4dfe44917defc48711cd8395ec9ed
+Hash: 18b5823ea915dcb371ed38407391aff3
 Requires: BH, R6, cli, clipr, cpp11, crayon, hms, lifecycle, rlang,
     tibble
 
@@ -684,7 +684,7 @@ Requires: cli, crayon, ellipsis, fansi, lifecycle, magrittr, pillar,
 Package: tidyr
 Source: CRAN
 Version: 1.1.2
-Hash: e5e645a4f251c64929ed4f2b0b65952f
+Hash: a59ba4c032bcdf9d36887d19d9bb7205
 Requires: cpp11, dplyr, ellipsis, glue, lifecycle, magrittr, purrr,
     rlang, tibble, tidyselect, vctrs
 

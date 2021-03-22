@@ -149,13 +149,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         read.csv("../output/5.locate/plan.csv"),
         '../output/5.locate/plan.sqlite'
       )
-      
-      # !!!
-      # FIXME: Disabled due to missing packages in packrat (Dhi, 16/03/21)
-      # source('locateVISTA.R', local=TRUE); 
-      # analyseLocate('../output/5.locate') 
-      # !!!
-      
+      source('locateVISTA.R', local=TRUE);
+      analyseLocate('../output/5.locate')
     }
     if(do.steps[6]) {
       if(!do.steps[5]) { # if not already loaded in the last step

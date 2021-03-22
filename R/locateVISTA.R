@@ -160,10 +160,10 @@ analyseLocate <- function(outdir) {
   expectedVsActualSA3Cor
   
   ggplot(expectedVsActualSA3, aes(x=meanExpected,y=meanActual)) +
-    geom_point(aes(x=meanExpected,y=meanActual,color='#009B95'),size=0.5,alpha=0.25) +
-    geom_point(aes(x=sdExpected,y=sdActual,color='#FF7100'),size=0.5,alpha=0.25) +
-    scale_color_manual(values=c('#009B95', '#FF7100'),labels=c('log-mean','log-sd')) +
     geom_abline(aes(slope = 1, intercept=0),size=0.2) +
+    geom_point(aes(x=meanExpected,y=meanActual,color='#009B95'),size=1.5,alpha=0.4) +
+    geom_point(aes(x=sdExpected,y=sdActual,color='#FF7100'),size=1.5,alpha=0.4) +
+    scale_color_manual(values=c('#009B95', '#FF7100'),labels=c('log-mean','log-sd')) +
     facet_wrap(~transport_mode, scales="free", ncol=2) +
     labs(x="Expected distance", y="Actual distance") + 
     # ggtitle('Expected versus actual distances by SA3 region') +
@@ -175,7 +175,7 @@ analyseLocate <- function(outdir) {
       legend.position="bottom",
       legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,0,5,0))
-  ggsave(paste0(outdir,"/analysis-expected-versus-actual-distances-SA3.pdf"), width=210, height=160, units = "mm")
+  ggsave(paste0(outdir,"/analysis-expected-versus-actual-distances-SA3.pdf"),width=6,height=4)
   
   
   
@@ -210,8 +210,8 @@ analyseLocate <- function(outdir) {
   
   
   ggplot(expectedVsActualProbabilities, aes(x=prob_expected,y=prob_actual)) +
-    geom_point(color='#009B95',size=0.5,alpha=0.5) +
     geom_abline(aes(slope = 1, intercept=0),size=0.2) +
+    geom_point(color='#009B95',size=1,alpha=0.5) +
     facet_wrap(~location_type, scales="free", ncol=2) +
     labs(x="Expected probability", y="Actual probability") + 
     # ggtitle('Expected versus actual destination likelihood by SA3 region') +
@@ -225,7 +225,7 @@ analyseLocate <- function(outdir) {
       legend.position="bottom",
       legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,0,5,0))
-  ggsave(paste0(outdir,"/analysis-destination-attraction-sa3.pdf"), width=210, height=160, units = "mm")
+  ggsave(paste0(outdir,"/analysis-destination-attraction-sa3.pdf"), width=6, height=4)
   
   
   
@@ -252,7 +252,7 @@ analyseLocate <- function(outdir) {
                                  labels=c("Walking","Cycling","Public transport","Driving")))
   
   ggplot(expectedVsActualModeSA3, aes(x=prob_expected,y=prob_actual)) +
-    geom_point(color='#009B95',size=0.5,alpha=0.5) +
+    geom_point(color='#009B95',size=1,alpha=0.5) +
     geom_abline(aes(slope = 1, intercept=0),size=0.2) +
     facet_wrap(~transport_mode, scales="free", ncol=2) +
     labs(x="Expected probability", y="Actual probability") + 
@@ -267,5 +267,5 @@ analyseLocate <- function(outdir) {
       legend.position="bottom",
       legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,0,5,0))
-  ggsave(paste0(outdir,"/analysis-mode-choice-sa3.pdf"), width=210, height=160, units = "mm")
+  ggsave(paste0(outdir,"/analysis-mode-choice-sa3.pdf"), width=6, height=4)
 }
