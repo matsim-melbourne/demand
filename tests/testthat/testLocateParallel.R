@@ -8,7 +8,7 @@ source("../../R/locateParallel.R")
 
 test_that("Assigning SA1s to activities works", {
   
-  skip("FIXME: skipping because the test run produces errors")
+  # skip("FIXME: skipping because the test run produces errors")
   rseed<-12345
   set.seed(rseed)
   censuscsv<-'./tests/expected/2.sample/sample.csv.gz'
