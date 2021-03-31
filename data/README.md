@@ -11,6 +11,7 @@ Due to its size this data is stored outside this Git repository.
 
 When you are all done, the current directory should contain the following new files and sub-directories.
 ```
+absRegionsReprojected.sqlite
 addresses.csv.gz
 distanceMatrix.rds
 distanceMatrixIndex.csv

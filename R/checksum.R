@@ -3,6 +3,7 @@ library(tools) # for md5sum
 checksum <- function() {
   expected<- list(
     '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv' = 'f16040c1a12c96df8ba1b18d9e6cabf0',
+    '../data/absRegionsReprojected.sqlite' = '43a51bb3dbd5cfdabad23645d7a0dc87', 
     '../data/distanceMatrix.rds' = 'cafb401785b656f3be660f387a2c3be2', 
     '../data/distanceMatrixIndex.csv' = 'ae0bc43e02033bc2df150e665dd43134', 
     '../data/SA1attributed.csv.gz' = '980faffc7c90996510123ce4d69f140e', 
