@@ -1,6 +1,6 @@
 library(data.table)
 
-sampleMelbourne2016Population <- function(dataDir, samplePercentage, outcsvgz, plansFile = NULL) {
+sampleMelbourne2016Population <- function(dataDir, samplePercentage, outcsvgz, plansFile=NA) {
   
   assignSa1Maincode <- function(persons_csv_gz, out_persons_csv_gz, sa1_csv_gz) {
     # read in the SA1s file
@@ -72,7 +72,7 @@ sampleMelbourne2016Population <- function(dataDir, samplePercentage, outcsvgz, p
   
   # read in the list of SA1s we want to keep
   sa1s <- NULL
-  if(!is.null(plansFile)) {
+  if(!is.na(plansFile)) {
     sa1s<-read.csv(plansFile)
     sa1s<-sa1s$SA1_7DIGCODE
   }
@@ -97,27 +97,4 @@ sampleMelbourne2016Population <- function(dataDir, samplePercentage, outcsvgz, p
   
 }
 
-countMelbourne2016Population <- function(dataDir, plansFile=NULL) {
-  # read in the list of SA1s we want to keep
-  sa1s <- NULL
-  if(!is.null(plansFile)) {
-    sa1s<-read.csv(plansFile)
-    sa1s<-sa1s$SA1_7DIGCODE
-  }
-  
-  # get all the Melbourne 2016 persons files by SA2
-  df<-data.frame(SA2=list.files(path=dataDir, pattern = "\\persons.csv.gz$", recursive = TRUE, full.names = TRUE), stringsAsFactors=FALSE)
-  persons<-0
-  for(row in 1:nrow(df)) {
-    # read in the population
-    gz1<-gzfile(df$SA2[row], 'rt')
-    all<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T )
-    close(gz1)
-    
-    # if we're restricting to a subset of nodes
-    if (!is.null(sa1s)) all<-all%>%filter(SA1_7DIGCODE%in%sa1s)
-    
-    persons<- persons + as.numeric(nrow(all))
-  }
- return(persons) 
-}
+

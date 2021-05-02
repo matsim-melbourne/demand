@@ -52,8 +52,8 @@ loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
 #                  lot more spread out.
 # calculateProbabilities(20604112202,"commercial","car")
 calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=NULL) {
-  # SA1_id=20604112202;destination_category="commercial";mode="walk"
-  # allowedSA1<-getValidRegions(20604112202,"walk",1)
+  # SA1_id=20607113907;destination_category="work";mode="walk"
+  # allowedSA1<-getValidRegions(20607113907,"walk",1)
   # if you don't include allowedSA1, then we assume all regions are allowed
   if(is.null(allowedSA1)) allowedSA1<-rep(1,nrow(distanceMatrix))
   index <- distanceMatrixIndex_dt[.(as.numeric(SA1_id))] %>%
@@ -61,6 +61,7 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
   distances <-data.frame(index=1:nrow(distanceMatrix),
                          distance=distanceMatrix[index,]) %>%
     inner_join(distanceMatrixIndex, by=c("index"="index")) %>%
+    arrange(sa1_maincode_2016) %>%
     pull(distance)
   
   modeMean <- NULL
@@ -98,7 +99,11 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
                            expected_prop=diff_prop)
   
   expectedProbability <- rep(0,length(distances))
-  attractionProbability <- SA1_attributed[,match(destination_category,colnames(SA1_attributed))]
+  attractionProbability <- SA1_attributed[,match(destination_category,colnames(SA1_attributed))] %>%
+    unlist() %>% as.vector()
+  
+  attractionProbability<-attractionProbability/sum(attractionProbability,na.rm=T) # normalise
+  
   # alternative way to compute distance probabilities for SA1s clipped to a much smaller set
   # within 2 standard deviations of the mode mean - Dhi, 21/Feb/20
   dd <- distances 
@@ -137,14 +142,18 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
     distProbability<-distProportion/sum(distProportion,na.rm=T) # normalise
   }
   
-  # I've set distance probability to 4x more important than destination 
+  # I've set distance probability to 4x more important than destination
   # attraction. This is arbitrary.
-  multiplier=1 #  changed this from 4 to 1 - Dhi, 21/Feb/20
-  combinedDensity <- multiplier*distProbability+expectedProbability
-  # combinedDensity <- multiplier*distProbability+attractionProbability+expectedProbability
+  multiplier=1 #  changed this from 4 to 1 - Dhi, 2020/02/21
+  attractionMultiplier<-1
+  if(destination_category=="commercial"|destination_category=="park") attractionMultiplier<-5
+  if(destination_category=="work") attractionMultiplier<-10
+  # combinedDensity <- multiplier*distProbability+expectedProbability
+  combinedDensity <- distProbability+attractionMultiplier*attractionProbability+expectedProbability*5
+  # combinedDensity <- attractionProbability
   # combinedDensity <- expectedProbability # this won't work on its own, sometimes all probs are 0.
   combinedProbability <- combinedDensity/sum(combinedDensity, na.rm=TRUE) # normalising here so the sum of the probabilities equals 1
-  probabilityDF <- data.frame(sa1_maincode_2016=SA1_attributed$sa1_maincode_2016,
+  probabilityDF <- data.frame(sa1_maincode_2016=sort(SA1_attributed$sa1_maincode_2016),
                               # distProb=distProbability,
                               # attractProb=attractionProbability,
                               combinedProb=combinedProbability) %>%
@@ -156,7 +165,7 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
 
 
 getValidRegions <- function(SA1_id,mode,stops) {
-  # SA1_id=20604112202
+  # SA1_id=20607113907
   # mode="walk"
   # stops=1
   
@@ -165,6 +174,7 @@ getValidRegions <- function(SA1_id,mode,stops) {
   distances <-data.frame(index=1:nrow(distanceMatrix),
                          distance=distanceMatrix[index,]) %>% # look down columns
     inner_join(distanceMatrixIndex, by=c("index"="index")) %>%
+    arrange(sa1_maincode_2016) %>%
     pull(distance)
   distances[distances<1] <- 1 # don't want to divide by 0
   
@@ -190,6 +200,7 @@ getReturnTripLength <- function(SA1_id,mode) {
   distances <-data.frame(index=1:nrow(distanceMatrix),
                          distance=distanceMatrix[index,]) %>% # look down columns
     inner_join(distanceMatrixIndex, by=c("index"="index")) %>%
+    arrange(sa1_maincode_2016) %>%
     pull(distance)
   distances[distances<1] <- 1 # don't want to divide by 0
   
@@ -211,7 +222,7 @@ chooseMode <- function(SA1_id, primary_mode=NA, anchor_region=FALSE) {
 
   if(is.na(primary_mode)) primary_mode<-''
   # a list of the four mode probabilities for this SA1
-  modeProbability <- SA1_attributed_dt[.(SA1_id),11:14] %>%
+  modeProbability <- SA1_attributed_dt[.(SA1_id),walk_proportion:car_proportion] %>%
     unlist()
   
   modeProbabilityDF <- data.table(mode=c("walk","bike","pt","car"),
@@ -317,11 +328,8 @@ getAddressCoordinates <- function(SA1_id,destination_category) {
 
 # Returns the distance between two regions
 calcDistance <- function(from_sa1,to_sa1) {
-  index1 <- distanceMatrixIndex_dt[.(as.numeric(from_sa1))] %>%
-    pull(index)
-  index2 <- distanceMatrixIndex_dt[.(as.numeric(to_sa1))] %>%
-    pull(index)
-  return(distanceMatrix[index1,index2])
+  distanceMatrix[distanceMatrixIndex_dt[.(as.numeric(from_sa1))]$index,
+                 distanceMatrixIndex_dt[.(as.numeric(to_sa1))]$index]
 }
 
 # Takes a plan with completed SA1 locations and turns them into a series of

@@ -92,12 +92,12 @@ locations_setup<-function(setupDir,
                           sa1CentroidsFile,
                           addressesFile,
                           distancesFile,
-                          plansFile=NULL) {
+                          plansFile=NA) {
   
   dir.create(setupDir, showWarnings=FALSE, recursive=TRUE)
   
   # check if we want to keep only known SA1s from plans file (useful for testing)
-  filterSa1s <- !is.null(plansFile)
+  filterSa1s <- !is.na(plansFile)
   
   # read in the list of SA1s we want to keep
   sa1s <- vector()
