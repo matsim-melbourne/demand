@@ -84,6 +84,7 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
         '../data/SA1centroids.csv.gz', 
         '../data/addresses.csv.gz',
         '../data/expectedDistances.rds',
+        '../data/vistaSummaries/destinationProbabilitiesSA3.rds',
         plansFile=ifelse(allDestinations,NA,sa1Subset)
       )
     }
@@ -139,7 +140,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
         paste0('../',outputDir,'/1.setup/locSa1Aattributed.rds'),
         paste0('../',outputDir,'/1.setup/locSa1Centroids.rds'),
         paste0('../',outputDir,'/1.setup/locAddresses.rds'),
-        paste0('../',outputDir,'/1.setup/expectedDistances.rds')
+        paste0('../',outputDir,'/1.setup/expectedDistances.rds'),
+        paste0('../',outputDir,'/1.setup/destinationProbabilitiesSA3.rds')
       )
       source('locateParallel.R')
       # uses doParallel which must be run from the project root 
@@ -171,7 +173,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
           paste0('../',outputDir,'/1.setup/locSa1Aattributed.rds'),
           paste0('../',outputDir,'/1.setup/locSa1Centroids.rds'),
           paste0('../',outputDir,'/1.setup/locAddresses.rds'),
-          paste0('../',outputDir,'/1.setup/expectedDistances.rds')
+          paste0('../',outputDir,'/1.setup/expectedDistances.rds'),
+          paste0('../',outputDir,'/1.setup/destinationProbabilitiesSA3.rds')
         )
       }
       source('placeParallel.R')

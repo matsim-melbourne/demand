@@ -92,6 +92,7 @@ locations_setup<-function(setupDir,
                           sa1CentroidsFile,
                           addressesFile,
                           distancesFile,
+                          destinationsFile,
                           plansFile=NA) {
   
   dir.create(setupDir, showWarnings=FALSE, recursive=TRUE)
@@ -167,5 +168,10 @@ locations_setup<-function(setupDir,
   echo(paste0("Writing ", outfile, "\n"))
   saveRDS(expectedDistances, outfile)
   
-}
+  echo(paste0("Reading ", destinationsFile, "\n"))
+  expectedDestinations <- readRDS(destinationsFile)
+  outfile<-paste0(setupDir,"/destinationProbabilitiesSA3.rds")
+  echo(paste0("Writing ", outfile, "\n"))
+  saveRDS(expectedDestinations, outfile)
+  }
 

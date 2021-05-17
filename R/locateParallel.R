@@ -13,6 +13,11 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
   distanceCounts<<-readDistanceDistributions(outdir) # needs to be global
   distanceCountsCurrent<-data.frame(distance=seq(250,163250,500),
                                     walk_count=0,bike_count=0,pt_count=0,car_count=0)
+  destinationCounts<<-readDestinationDistributions(outdir) # needs to be global
+  destinationCountsCurrent<-data.frame(sa3_code_2016=c(20601:20607,20701:20703,20801:20804,20901:20904,21001:21005,
+                                                    21101:21105,21201:21205,21301:21305,21401,21402),
+                                    commercial_count=0,education_count=0,park_count=0,work_count=0)
+  
   
   wplans<-NULL
   pp<-plans%>%filter(ceiling(PlanId/1000)==planGroup)#%>%dplyr::mutate(Activity=0,AgentId=0)
@@ -33,6 +38,16 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
   # while(i<100) {
   while(i<nrow(pp)-1) {
     i<-i+1
+
+    if(pp[i,"LocationType"] != "home") {
+                                                # the sa3 number is just the first 5 digits of the sa1 number
+      currentSA3<-which(destinationCountsCurrent$sa3_code_2016==as.integer(substr(pp[i,"SA1_MAINCODE_2016"],1,5)))
+      currentDestination<-which(colnames(destinationCountsCurrent)==paste0(pp[i,"LocationType"],"_count"))
+      destinationCountsCurrent[currentSA3,currentDestination]<-destinationCountsCurrent[currentSA3,currentDestination]+1
+      destinationCounts[currentSA3,currentDestination]<-destinationCounts[currentSA3,currentDestination]+1
+    }
+    
+    
     # if at home
     # if LocationType_{i}==home and LocationType_{i+1}!=home
     if(pp[i,"LocationType"] == "home" & pp[i+1,"LocationType"] != "home") {
@@ -158,6 +173,7 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
   # removing discarded plans
   wplans<-wplans%>%filter(ArrivingMode!='x'|is.na(ArrivingMode))
   saveRDS(distanceCountsCurrent,file=paste0(outdir,'/distanceCounts/',planGroup,'.rds'))
+  saveRDS(destinationCountsCurrent,file=paste0(outdir,'/destinationCounts/',planGroup,'.rds'))
   write.table(wplans, file=paste0(outdir,'/plan/',planGroup,'.csv'),
               append=FALSE, row.names=FALSE, col.names=FALSE, sep = ',')
   write.table(discarded, file=paste0(outdir,'/discarded/',planGroup,'.csv'),
@@ -251,13 +267,22 @@ echo('Assigning activities\' SA1s and travel modes (can take a while)\n')
 planGroups <- 1:ceiling(max(plans$PlanId,na.rm=T)/1000)
 
 dir.create(paste0(outdir,'/plan'), showWarnings = FALSE, recursive=TRUE)
+unlink(paste0(outdir,"/plan/*"))
 dir.create(paste0(outdir,'/discarded'), showWarnings = FALSE, recursive=TRUE)
+unlink(paste0(outdir,"/discarded/*"))
 
 dir.create(paste0(outdir,"/distanceCounts"), showWarnings = FALSE, recursive=TRUE)
 unlink(paste0(outdir,"/distanceCounts/*"))
 saveRDS(data.frame(distance=seq(250,163250,500),
                    walk_count=0,bike_count=0,pt_count=0,car_count=0),
         paste0(outdir,"/distanceCounts/0.rds"))
+
+dir.create(paste0(outdir,"/destinationCounts"), showWarnings = FALSE, recursive=TRUE)
+unlink(paste0(outdir,"/destinationCounts/*"))
+saveRDS(data.frame(sa3_code_2016=c(20601:20607,20701:20703,20801:20804,20901:20904,21001:21005,
+                                   21101:21105,21201:21205,21301:21305,21401,21402),
+                   commercial_count=0,education_count=0,park_count=0,work_count=0),
+        paste0(outdir,"/destinationCounts/0.rds"))
 
 number_cores <- max(1,floor(as.integer(detectCores())*0.8))
 cl <- makeCluster(number_cores)
@@ -273,11 +298,13 @@ results <- foreach(planGroup=planGroups,
                    .combine=rbind,
                    .verbose=FALSE,
                    .packages=c("doParallel", "sf","dplyr","scales","data.table"),
+                   # export functions and dataframes,variables,etc
                    .export = c("calcDistance", "calculateProbabilities", "chooseMode", 
                                "findLocationKnownMode", "getReturnTripLength", 
                                "SA1_attributed", "SA1_attributed_dt", 
                                "distanceMatrix", "distanceMatrixIndex", "distanceMatrixIndex_dt",
-                               "getValidRegions", "readDistanceDistributions", "expectedDistances")
+                               "getValidRegions", "readDistanceDistributions", "expectedDistances",
+                               "readDestinationDistributions", "expectedDestinations_dt")
 ) %dopar% 
   calculatePlanSubset(outdir,planGroup,plans)
 end_time = Sys.time()
