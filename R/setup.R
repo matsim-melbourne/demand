@@ -92,12 +92,13 @@ locations_setup<-function(setupDir,
                           sa1CentroidsFile,
                           addressesFile,
                           distancesFile,
-                          plansFile=NULL) {
+                          destinationsFile,
+                          plansFile=NA) {
   
   dir.create(setupDir, showWarnings=FALSE, recursive=TRUE)
   
   # check if we want to keep only known SA1s from plans file (useful for testing)
-  filterSa1s <- !is.null(plansFile)
+  filterSa1s <- !is.na(plansFile)
   
   # read in the list of SA1s we want to keep
   sa1s <- vector()
@@ -167,5 +168,10 @@ locations_setup<-function(setupDir,
   echo(paste0("Writing ", outfile, "\n"))
   saveRDS(expectedDistances, outfile)
   
-}
+  echo(paste0("Reading ", destinationsFile, "\n"))
+  expectedDestinations <- readRDS(destinationsFile)
+  outfile<-paste0(setupDir,"/destinationProbabilitiesSA3.rds")
+  echo(paste0("Writing ", outfile, "\n"))
+  saveRDS(expectedDestinations, outfile)
+  }
 

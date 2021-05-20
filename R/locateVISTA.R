@@ -92,7 +92,8 @@ analyseLocate <- function(outdir) {
     unnest(cols=c('data_aggregated','model')) %>%
     mutate(distance=distance+binwidth*0.2) %>%
     mutate(type='vp')
-  vistaDistanceHistograms <- readRDS("../data/vistaSummaries/distanceHistograms.rds")
+  vistaDistanceHistograms <- readRDS("../data/vistaSummaries/distanceHistograms.rds") %>%
+    mutate(distance=distance+binwidth*0.5-binwidth*0.2)
   
   combinedAll <- bind_rows(vistaDistanceHistograms,
                            vpDistanceHistograms) %>%
@@ -180,16 +181,20 @@ analyseLocate <- function(outdir) {
   
   
   # Destination probabilities -----------------------------------------------
-  vpStartLocations <- vpTripsSA1 %>%
-    group_by(planid) %>%
-    slice(1) %>%
-    ungroup() %>%
-    dplyr::select(location_type=origin_type,weight,sa3_code_2016)
-  vpLocations <- bind_rows(
-    vpStartLocations,
-    vpTripsSA1 %>%
-      dplyr::select(location_type=destination_type,weight,sa3_code_2016)) %>%
-    filter(location_type!='home')
+  # vpEndLocations <- vpTripsSA1 %>%
+  #   group_by(planid) %>%
+  #   slice_tail() %>%
+  #   ungroup() %>%
+  #   dplyr::select(location_type=origin_type,weight,sa3_code_2016)
+  # vpLocations <- bind_rows(
+  #   vpStartLocations,
+  #   vpTripsSA1 %>%
+  #     dplyr::select(location_type=destination_type,weight,sa3_code_2016)) %>%
+  #   filter(location_type!='home')
+
+  vpLocations <- vpTripsSA1 %>%
+    dplyr::select(location_type=origin_type,weight,sa3_code_2016) %>%
+      filter(location_type!='home')
   vpDestinationProbabilitiesSA3 <- vpLocations %>%
     group_by(location_type,sa3_code_2016) %>%
     summarise(weight=sum(weight,na.rm=T)) %>%
@@ -216,9 +221,9 @@ analyseLocate <- function(outdir) {
     labs(x="Expected probability", y="Actual probability") + 
     # ggtitle('Expected versus actual destination likelihood by SA3 region') +
     guides(colour = guide_legend(override.aes = list(alpha = 1,size=2))) +
-    scale_x_continuous(expand=c(0,0),limits=c(0,0.105), breaks=seq(0,0.1,0.02),
+    scale_x_continuous(expand=c(0,0),limits=c(0,0.25), breaks=seq(0,1,0.05),
                        labels=scales::percent_format(accuracy=1)) +
-    scale_y_continuous(expand=c(0,0),limits=c(0,0.105), breaks=seq(0,0.1,0.02),
+    scale_y_continuous(expand=c(0,0),limits=c(0,0.25), breaks=seq(0,1,0.05),
                        labels=scales::percent_format(accuracy=1)) +
     theme(
       legend.title=element_blank(),

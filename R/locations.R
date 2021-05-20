@@ -4,7 +4,7 @@ suppressPackageStartupMessages(library(scales)) # for scaling datasets
 suppressPackageStartupMessages(library(data.table)) # for sa1_main16 indexing for faster lookups
 
 loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
-                             sa1AttributedFile, sa1CentroidsFile, addressesFile, distancesFile) {
+                             sa1AttributedFile, sa1CentroidsFile, addressesFile, distancesFile, destinationFile) {
   # Read in the distance matrix. This matrix is symmetric so it doesn't matter if
   # you do lookups by column or row.
   echo(paste0("Reading ", distanceMatrixFile, "\n"))
@@ -39,6 +39,8 @@ loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
   setkey(sa1_centroids_dt, sa1_maincode_2016)
   
   expectedDistances <<- readRDS(file=distancesFile)
+  expectedDestinations <<- readRDS(file=destinationFile)
+  expectedDestinations_dt <<- data.table(expectedDestinations)  # note '<<' to make it global
 }
 
 # This returns a dataframe with possible SA1_ids and their probabilities.
@@ -52,8 +54,10 @@ loadLocationsData <- function(distanceMatrixFile, distanceMatrixIndexFile,
 #                  lot more spread out.
 # calculateProbabilities(20604112202,"commercial","car")
 calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=NULL) {
-  # SA1_id=20604112202;destination_category="commercial";mode="walk"
-  # allowedSA1<-getValidRegions(20604112202,"walk",1)
+  # SA1_id=20607113907;destination_category="work";mode="walk"
+  # allowedSA1<-getValidRegions(20607113907,"walk",1)
+  # SA1_id=20607113907;destination_category="work";mode="car"
+  # allowedSA1<-getValidRegions(20607113907,"car",1)
   # if you don't include allowedSA1, then we assume all regions are allowed
   if(is.null(allowedSA1)) allowedSA1<-rep(1,nrow(distanceMatrix))
   index <- distanceMatrixIndex_dt[.(as.numeric(SA1_id))] %>%
@@ -61,9 +65,12 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
   distances <-data.frame(index=1:nrow(distanceMatrix),
                          distance=distanceMatrix[index,]) %>%
     inner_join(distanceMatrixIndex, by=c("index"="index")) %>%
+    arrange(sa1_maincode_2016) %>%
     pull(distance)
   
   modeMean <- NULL
+  # modeMean <- SA1_attributed[which(SA1_attributed$sa1_maincode_2016==as.numeric(SA1_id)),
+  #                            which(colnames(SA1_attributed_dt)==paste0("meanlog_",mode))]
   modeSD <- NULL
   expected_prop <- NULL
   actual_count <- NULL
@@ -90,15 +97,42 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
     actual_count <- distanceCounts$pt_count
   }
   
-  actual_prop=actual_count*0
+  # calculating global distance distribution probabilities
+  actual_prop=actual_count*0 # default to 0
   if(sum(actual_count,na.rm=T)>0) actual_prop=actual_count/sum(actual_count,na.rm=T)
   diff_prop=expected_prop-actual_prop
   diff_prop[diff_prop<0]<-0 # negative values could break things
   globalProb <- data.frame(interval=expectedDistances$distance,
                            expected_prop=diff_prop)
-  
   expectedProbability <- rep(0,length(distances))
-  attractionProbability <- SA1_attributed[,match(destination_category,colnames(SA1_attributed))]
+  attractionProbability <- SA1_attributed[,match(destination_category,colnames(SA1_attributed))] %>%
+    unlist() %>% as.vector()
+    
+  attractionProbability<-attractionProbability/sum(attractionProbability,na.rm=T) # normalise
+  
+  # calculating global destination attraction probabilities
+  expected_prob_dest <- expectedDestinations_dt[location_type == destination_category, .(prob_expected)][[1]]
+  actual_count_dest <- destinationCounts[,which(colnames(destinationCounts)==paste0(destination_category,"_count"))]
+  actual_prop_dest=actual_count_dest*0 # default to 0
+  if(sum(actual_count_dest,na.rm=T)>0) actual_prop_dest=actual_count_dest/sum(actual_count_dest,na.rm=T)
+  diff_prop_dest=expected_prob_dest-actual_prop_dest
+  diff_prop_dest[diff_prop_dest<0]<-0 # negative values could break things
+  expectedDestinationsSA1 <- merge(
+    data.table(sa1_maincode_2016=distanceMatrixIndex_dt$sa1_maincode_2016,
+               # the sa3 number is just the first 5 digits of the sa1 number
+               sa3_code_2016=as.integer(substr(distanceMatrixIndex_dt$sa1_maincode_2016,1,5))),
+    data.table(sa3_code_2016=destinationCounts$sa3_code_2016,
+               expected_prob=diff_prop_dest),
+    # discard regions with no valid destination types
+    all=FALSE)[order(sa1_maincode_2016),][,valid := ifelse(is.na(attractionProbability),NA,1)][,expected_prob := expected_prob*valid]
+  expectedDestinationsSA1weighted <- merge(
+    expectedDestinationsSA1,
+    expectedDestinationsSA1[, .(countValid=sum(valid,na.rm=T)), by = sa3_code_2016],
+    all=FALSE
+  )[,expected_prob := expected_prob/countValid]
+  globalAttraction <- expectedDestinationsSA1weighted$expected_prob
+  if(sum(globalAttraction,na.rm=T)>0) globalAttraction<-globalAttraction/sum(globalAttraction,na.rm=T) # normalise
+  
   # alternative way to compute distance probabilities for SA1s clipped to a much smaller set
   # within 2 standard deviations of the mode mean - Dhi, 21/Feb/20
   dd <- distances 
@@ -131,20 +165,29 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
       mutate(corrected_proportion=group_proportion*group_prob,
              global_proportion=expected_prop/group_count)
     distProportion<-proportionDF$corrected_proportion
+    # expected distance probability
     expectedProbability<-proportionDF$global_proportion
     if(sum(expectedProbability,na.rm=T)>0) expectedProbability<-expectedProbability/sum(expectedProbability,na.rm=T) # normalising
 
     distProbability<-distProportion/sum(distProportion,na.rm=T) # normalise
   }
   
-  # I've set distance probability to 4x more important than destination 
+  # I've set distance probability to 4x more important than destination
   # attraction. This is arbitrary.
-  multiplier=1 #  changed this from 4 to 1 - Dhi, 21/Feb/20
-  combinedDensity <- multiplier*distProbability+expectedProbability
-  # combinedDensity <- multiplier*distProbability+attractionProbability+expectedProbability
+  # multiplier=1 #  changed this from 4 to 1 - Dhi, 2020/02/21
+  # attractionMultiplier<-1
+  # if(destination_category=="commercial"|destination_category=="park") attractionMultiplier<-5
+  # if(destination_category=="work") attractionMultiplier<-10
+  # # combinedDensity <- multiplier*distProbability+expectedProbability
+  # combinedDensity <- distProbability+attractionMultiplier*attractionProbability+expectedProbability*5
+  # combinedDensity <- distProbability+attractionProbability+expectedProbability*2+globalAttraction*4
+  # combinedDensity <- attractionProbability*2+globalAttraction*4
+  combinedDensity <- distProbability+expectedProbability*2 + attractionProbability*2+globalAttraction*5
+  # combinedDensity <- attractionProbability
   # combinedDensity <- expectedProbability # this won't work on its own, sometimes all probs are 0.
-  combinedProbability <- combinedDensity/sum(combinedDensity, na.rm=TRUE) # normalising here so the sum of the probabilities equals 1
-  probabilityDF <- data.frame(sa1_maincode_2016=SA1_attributed$sa1_maincode_2016,
+  combinedProbability <- combinedDensity
+  if(sum(combinedDensity,na.rm=T)>0) combinedProbability <- combinedDensity/sum(combinedDensity, na.rm=TRUE) # normalising here so the sum of the probabilities equals 1
+  probabilityDF <- data.frame(sa1_maincode_2016=sort(SA1_attributed$sa1_maincode_2016),
                               # distProb=distProbability,
                               # attractProb=attractionProbability,
                               combinedProb=combinedProbability) %>%
@@ -156,7 +199,7 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
 
 
 getValidRegions <- function(SA1_id,mode,stops) {
-  # SA1_id=20604112202
+  # SA1_id=20607113907
   # mode="walk"
   # stops=1
   
@@ -165,6 +208,7 @@ getValidRegions <- function(SA1_id,mode,stops) {
   distances <-data.frame(index=1:nrow(distanceMatrix),
                          distance=distanceMatrix[index,]) %>% # look down columns
     inner_join(distanceMatrixIndex, by=c("index"="index")) %>%
+    arrange(sa1_maincode_2016) %>%
     pull(distance)
   distances[distances<1] <- 1 # don't want to divide by 0
   
@@ -190,6 +234,7 @@ getReturnTripLength <- function(SA1_id,mode) {
   distances <-data.frame(index=1:nrow(distanceMatrix),
                          distance=distanceMatrix[index,]) %>% # look down columns
     inner_join(distanceMatrixIndex, by=c("index"="index")) %>%
+    arrange(sa1_maincode_2016) %>%
     pull(distance)
   distances[distances<1] <- 1 # don't want to divide by 0
   
@@ -211,7 +256,7 @@ chooseMode <- function(SA1_id, primary_mode=NA, anchor_region=FALSE) {
 
   if(is.na(primary_mode)) primary_mode<-''
   # a list of the four mode probabilities for this SA1
-  modeProbability <- SA1_attributed_dt[.(SA1_id),11:14] %>%
+  modeProbability <- SA1_attributed_dt[.(SA1_id),walk_proportion:car_proportion] %>%
     unlist()
   
   modeProbabilityDF <- data.table(mode=c("walk","bike","pt","car"),
@@ -317,12 +362,13 @@ getAddressCoordinates <- function(SA1_id,destination_category) {
 
 # Returns the distance between two regions
 calcDistance <- function(from_sa1,to_sa1) {
-  index1 <- distanceMatrixIndex_dt[.(as.numeric(from_sa1))] %>%
-    pull(index)
-  index2 <- distanceMatrixIndex_dt[.(as.numeric(to_sa1))] %>%
-    pull(index)
-  return(distanceMatrix[index1,index2])
+  distanceMatrix[distanceMatrixIndex_dt[.(as.numeric(from_sa1))]$index,
+                 distanceMatrixIndex_dt[.(as.numeric(to_sa1))]$index]
 }
+
+# converts an SA1 id to an SA3 id
+toSA3 <- function(id) as.integer(substr(id,1,5))
+
 
 # Takes a plan with completed SA1 locations and turns them into a series of
 # lines where the non-spatial data is for the destination.
@@ -451,6 +497,22 @@ readDistanceDistributions <- function(outdir) {
   return(distanceCounts)
 }
 
+readDestinationDistributions <- function(outdir) {
+  # outdir<-'../output/5.locate'
+  distCountDir<-paste0(outdir,"/destinationCounts")
+  
+  distFiles<-list.files(distCountDir,pattern="*.rds",full.names=T)
+  Sys.sleep(2)
+  destinationCounts<-lapply(distFiles,readRDS) %>%
+    bind_rows() %>%
+    group_by(sa3_code_2016) %>%
+    summarise(commercial_count=sum(commercial_count,na.rm=T),
+              education_count=sum(education_count,na.rm=T),
+              park_count=sum(park_count,na.rm=T),
+              work_count=sum(work_count,na.rm=T)) %>%
+    as.data.frame()
+  return(destinationCounts)
+}
 # EXAMPLES
 
 # A dataframe of suitable homes for each SA1 along with the total number of 

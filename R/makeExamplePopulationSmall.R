@@ -31,8 +31,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     outdirs <- c(
       '../outputSmall/1.setup',
       '../outputSmall/2.sample',
-      '../outputSmall/3.plan',
-      '../outputSmall/4.match',
+      '../outputSmall/3.match',
+      '../outputSmall/4.plan',
       '../outputSmall/5.locate',
       '../outputSmall/6.place',
       '../outputSmall/7.time',
@@ -44,18 +44,37 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     
     # Step 1: pre-process VISTA and locations data
     if(do.steps[1]) {
+      source("group.R", local=TRUE)
       source("vista.R", local=TRUE)
       source('setup.R', local=TRUE); 
       source('locations.R', local=TRUE);
-      demand_setup('../outputSmall/1.setup', 
-                   '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv')
-      locations_setup(
+      make_groups(
+        '../data/VISTA_12_18_CSV.zip.dir/P_VISTA1218_V1.csv',
+        '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv',
+        '../data/vistaCohorts.csv.gz',
         '../outputSmall/1.setup', 
+        '../outputSmall/1.setup/vista_2012_18_extracted_persons_weekday.csv.gz',
+        'vista_2012_18_extracted_group_weekday_',
+        'vista_2012_18_extracted_trips_weekday_',
+        NULL, NULL, NULL # ignoring weekends
+      )
+      demand_setup_groups(
+        getGroupIds('../data/vistaCohorts.csv.gz'),
+        '../outputSmall/1.setup', 
+        'vista_2012_18_extracted_trips_weekday_',
+        'vista_2012_18_extracted_activities_weekday_',
+        'vista_2012_18_extracted_activities_weekday_time_bins_',
+        'vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins_',
+        NULL, NULL # ignoring weekends
+      )
+      locations_setup(
+        '../output/1.setup', 
         '../data/distanceMatrix.rds', 
         '../data/distanceMatrixIndex.csv', 
         '../data/SA1attributed.csv.gz', 
         '../data/SA1centroids.csv.gz', 
         '../data/addresses.csv.gz',
+        '../data/expectedDistances.rds',
         plansFile="../../small-region/filteredRegions.csv"
       )
     }

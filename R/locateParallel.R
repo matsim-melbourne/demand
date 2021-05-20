@@ -1,10 +1,10 @@
 locatePlans <- function(censuscsv, vistacsv, matchcsv, outdir, outcsv, rseed = NULL) {
   # example inputs
-  # censuscsv<-'../output/2.sample/sample.csv.gz'
-  # vistacsv<-'../output/4.plan/plan.csv'
-  # matchcsv<-'../output/4.plan/plan2agent2group.csv'
-  # outdir<-'../output/5.locate'
-  # outcsv<-'../output/5.locate/plan.csv'
+  # censuscsv <- '../output/2.sample/sample.csv.gz'
+  # vistacsv  <- '../output/4.plan/plan.csv'
+  # matchcsv  <- '../output/4.plan/plan2agent2group.csv'
+  # outdir    <- '../output/5.locate'
+  # outcsv    <- '../output/5.locate/plan.csv'
   # planGroup=1
   
 calculatePlanSubset <- function(outdir,planGroup,plans) {
@@ -13,6 +13,11 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
   distanceCounts<<-readDistanceDistributions(outdir) # needs to be global
   distanceCountsCurrent<-data.frame(distance=seq(250,163250,500),
                                     walk_count=0,bike_count=0,pt_count=0,car_count=0)
+  destinationCounts<<-readDestinationDistributions(outdir) # needs to be global
+  destinationCountsCurrent<-data.frame(sa3_code_2016=c(20601:20607,20701:20703,20801:20804,20901:20904,21001:21005,
+                                                    21101:21105,21201:21205,21301:21305,21401,21402),
+                                    commercial_count=0,education_count=0,park_count=0,work_count=0)
+  
   
   wplans<-NULL
   pp<-plans%>%filter(ceiling(PlanId/1000)==planGroup)#%>%dplyr::mutate(Activity=0,AgentId=0)
@@ -33,38 +38,52 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
   # while(i<100) {
   while(i<nrow(pp)-1) {
     i<-i+1
+
+    if(pp[i,"LocationType"] != "home") {
+                                                # the sa3 number is just the first 5 digits of the sa1 number
+      currentSA3<-which(destinationCountsCurrent$sa3_code_2016==as.integer(substr(pp[i,"SA1_MAINCODE_2016"],1,5)))
+      currentDestination<-which(colnames(destinationCountsCurrent)==paste0(pp[i,"LocationType"],"_count"))
+      destinationCountsCurrent[currentSA3,currentDestination]<-destinationCountsCurrent[currentSA3,currentDestination]+1
+      destinationCounts[currentSA3,currentDestination]<-destinationCounts[currentSA3,currentDestination]+1
+    }
+    
+    
     # if at home
     # if LocationType_{i}==home and LocationType_{i+1}!=home
-    if(pp[i,7] == "home" & pp[i+1,7] != "home") {
+    if(pp[i,"LocationType"] == "home" & pp[i+1,"LocationType"] != "home") {
       nextHome<-which(pp$LocationType[(i+1):nrow(pp)]=="home")%>%first()+i # find next home
       anchor_region<-FALSE
       # primary_mode <- chooseMode( SA1_MAINCODE_2016_{i} )
-      primary_mode<-chooseMode(pp[i,6]) # SA1_MAINCODE_2016_{i} choose a new mode
+      primary_mode<-chooseMode(pp[i,"SA1_MAINCODE_2016"]) # SA1_MAINCODE_2016_{i} choose a new mode
       
       # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome}, primary_mode, nextHome-i)
       validRegions<-getValidRegions(pp[nextHome,6], primary_mode, nextHome-i)
+      #validProportion=sum(validRegions,na.rm=T)/length(validRegions)
 
       # ArrivingMode_{i+1} <- primary_mode
-      pp[i+1,8] <- primary_mode
+      pp[i+1,"ArrivingMode"] <- primary_mode
       # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
-      pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], primary_mode, validRegions)
+      pp[i+1,"SA1_MAINCODE_2016"] <- findLocationKnownMode(pp[i,"SA1_MAINCODE_2016"], # SA1_MAINCODE_2016_{i}
+                                                           pp[i+1,"LocationType"],    # LocationType_{i+1}
+                                                           primary_mode,              # primary_mode
+                                                           validRegions)              # allowedSA1
       
       # ArrivingMode_{nextHome} <- primary_mode i.e. set the arriving mode of the next home region
-      pp[nextHome,8] <- primary_mode
+      pp[nextHome,"ArrivingMode"] <- primary_mode
     }
     # if it is possible to change modes
-    if( pp[i,7] != "home" & (nextHome-i>2 | (nextHome-i==2 & primary_mode%in%c('walk','pt'))) ) {
+    if( pp[i,"LocationType"] != "home" & (nextHome-i>2 | (nextHome-i==2 & primary_mode%in%c('walk','pt'))) ) {
       # ArrivingMode_{i+1} <- chooseMode( SA1_MAINCODE_2016_{i}, primary_mode, anchor_region )
-      pp[i+1,8] <- chooseMode(pp[i,6], primary_mode, anchor_region)
+      pp[i+1,"ArrivingMode"] <- chooseMode(pp[i,"SA1_MAINCODE_2016"], primary_mode, anchor_region)
       
       # setting anchor region and mode needed to get there
-      if(anchor_region==FALSE & primary_mode%in%c('bike','car') & primary_mode!=pp[i+1,8]) {
+      if(anchor_region==FALSE & primary_mode%in%c('bike','car') & primary_mode!=pp[i+1,"ArrivingMode"]) {
         # set the region before home to the current region
         # SA1_MAINCODE_2016_{nextHome-1} <- SA1_MAINCODE_2016_{i}
-        pp[nextHome-1,6] <- pp[i,6]
+        pp[nextHome-1,"SA1_MAINCODE_2016"] <- pp[i,"SA1_MAINCODE_2016"]
         # set the region before home's arriving mode to the next arriving mode
         # ArrivingMode_{nextHome-1} <- ArrivingMode_{i+1}
-        pp[nextHome-1,8] <- pp[i+1,8]
+        pp[nextHome-1,"ArrivingMode"] <- pp[i+1,"ArrivingMode"]
         anchor_region <- TRUE
       }
       # if a walker has switched to pt, then the home region's arriving mode must be pt
@@ -78,45 +97,60 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
         # anchor region (the one before the next home region) using the anchor
         # region's arriving mode.
         # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome-1}, ArrivingMode_{nextHome-i-1}, nextHome-i-1)
-        validRegions<-getValidRegions(pp[nextHome-1,6], pp[nextHome-1,8], nextHome-i-2)
+        validRegions<-getValidRegions(pp[nextHome-1,"SA1_MAINCODE_2016"],
+                                      pp[nextHome-1,"ArrivingMode"],
+                                      nextHome-i-2)
         # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
-        pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], pp[i+1,8], validRegions)
+        pp[i+1,"SA1_MAINCODE_2016"] <- findLocationKnownMode(pp[i,"SA1_MAINCODE_2016"],
+                                                             pp[i+1,"LocationType"],
+                                                             pp[i+1,"ArrivingMode"],
+                                                             validRegions)
       }
       if(anchor_region==FALSE) {
         # valid regions are the ones reachable within the remaining steps to the
         # home region using its arriving mode.
         # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome}, ArrivingMode_{nextHome-i-1}, nextHome-i-1)
-        validRegions<-getValidRegions(pp[nextHome,6], pp[nextHome,8], nextHome-i-1)
+        validRegions<-getValidRegions(pp[nextHome,"SA1_MAINCODE_2016"],
+                                      pp[nextHome,"ArrivingMode"],
+                                      nextHome-i-1)
         # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
-        pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], pp[i+1,8], validRegions)
-      }      
+        pp[i+1,"SA1_MAINCODE_2016"] <- findLocationKnownMode(pp[i,"SA1_MAINCODE_2016"],
+                                                             pp[i+1,"LocationType"],
+                                                             pp[i+1,"ArrivingMode"],
+                                                             validRegions)
+      }
     }
-    if( pp[i,7] != "home" & nextHome-i==2 & primary_mode%in%c('bike','car') & anchor_region==FALSE ) {
+    if( pp[i,"LocationType"] != "home" & nextHome-i==2 & primary_mode%in%c('bike','car') & anchor_region==FALSE ) {
       # ArrivingMode_{i+1} <- ArrivingMode_{i}
-      pp[i+1,8] <- pp[i,8]
+      pp[i+1,"ArrivingMode"] <- pp[i,"ArrivingMode"]
       # valid regions are the ones reachable within the remaining steps to the
       # home region using its arriving mode.
       # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome}, ArrivingMode_{nextHome-i-1}, nextHome-i-1)
-      validRegions<-getValidRegions(pp[nextHome,6], pp[nextHome,8], nextHome-i-1)
+      validRegions<-getValidRegions(pp[nextHome,"SA1_MAINCODE_2016"],
+                                    pp[nextHome,"ArrivingMode"],
+                                    nextHome-i-1)
       # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
-      pp[i+1,6] <- findLocationKnownMode(pp[i,6], pp[i+1,7], primary_mode, validRegions)
+      pp[i+1,"SA1_MAINCODE_2016"] <- findLocationKnownMode(pp[i,"SA1_MAINCODE_2016"],
+                                                           pp[i+1,"LocationType"],
+                                                           primary_mode,
+                                                           validRegions)
     }
       
     # if the next LocationType isn't home, calculate distance
-    if( pp[i,7] != 'home' | (pp[i,7] == 'home' & pp[i+1,7] != 'home') ) {
+    if( pp[i,"LocationType"] != 'home' | (pp[i,"LocationType"] == 'home' & pp[i+1,"LocationType"] != 'home') ) {
       # Distance_{i+1} <- calcDistance( Distance_{i}, Distance_{i+1} )
-      currentDistance <- calcDistance(pp[i,6],pp[i+1,6])
+      currentDistance <- calcDistance(pp[i,"SA1_MAINCODE_2016"],pp[i+1,"SA1_MAINCODE_2016"])
       if(!is.na(currentDistance)) {
-        currentCol<-which(colnames(distanceCounts)==paste0(pp[i+1,8],"_count"))
+        currentCol<-which(colnames(distanceCounts)==paste0(pp[i+1,"ArrivingMode"],"_count"))
         currentRow<-findInterval(currentDistance,seq(0,163500,500))
         distanceCounts[currentRow,currentCol]<-distanceCounts[currentRow,currentCol]+1
         distanceCountsCurrent[currentRow,currentCol]<-distanceCountsCurrent[currentRow,currentCol]+1
-        pp[i,9] <- currentDistance
+        pp[i,"Distance"] <- currentDistance
       }
     }
     
     # if SA1_MAINCODE_2016_{i+1} is null
-    if(pp[i+1,6]==-1) {
+    if(pp[i+1,"SA1_MAINCODE_2016"]==-1) {
       # failed to find a suitable SA1/mode for this activity, so will just discard this person
       person<-persons[persons$AgentId==pp[i,]$AgentId,]
       discarded<-rbind(discarded,person)
@@ -132,13 +166,14 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
     }
     
     # if SA1_MAINCODE_2016_{i} is not null
-    if(pp[i,6]!=-1) {
+    if(pp[i,"SA1_MAINCODE_2016"]!=-1) {
       wplans<-rbind(wplans, pp[i,])
     }
   }
   # removing discarded plans
   wplans<-wplans%>%filter(ArrivingMode!='x'|is.na(ArrivingMode))
   saveRDS(distanceCountsCurrent,file=paste0(outdir,'/distanceCounts/',planGroup,'.rds'))
+  saveRDS(destinationCountsCurrent,file=paste0(outdir,'/destinationCounts/',planGroup,'.rds'))
   write.table(wplans, file=paste0(outdir,'/plan/',planGroup,'.csv'),
               append=FALSE, row.names=FALSE, col.names=FALSE, sep = ',')
   write.table(discarded, file=paste0(outdir,'/discarded/',planGroup,'.csv'),
@@ -232,13 +267,22 @@ echo('Assigning activities\' SA1s and travel modes (can take a while)\n')
 planGroups <- 1:ceiling(max(plans$PlanId,na.rm=T)/1000)
 
 dir.create(paste0(outdir,'/plan'), showWarnings = FALSE, recursive=TRUE)
+unlink(paste0(outdir,"/plan/*"))
 dir.create(paste0(outdir,'/discarded'), showWarnings = FALSE, recursive=TRUE)
+unlink(paste0(outdir,"/discarded/*"))
 
 dir.create(paste0(outdir,"/distanceCounts"), showWarnings = FALSE, recursive=TRUE)
 unlink(paste0(outdir,"/distanceCounts/*"))
 saveRDS(data.frame(distance=seq(250,163250,500),
                    walk_count=0,bike_count=0,pt_count=0,car_count=0),
         paste0(outdir,"/distanceCounts/0.rds"))
+
+dir.create(paste0(outdir,"/destinationCounts"), showWarnings = FALSE, recursive=TRUE)
+unlink(paste0(outdir,"/destinationCounts/*"))
+saveRDS(data.frame(sa3_code_2016=c(20601:20607,20701:20703,20801:20804,20901:20904,21001:21005,
+                                   21101:21105,21201:21205,21301:21305,21401,21402),
+                   commercial_count=0,education_count=0,park_count=0,work_count=0),
+        paste0(outdir,"/destinationCounts/0.rds"))
 
 number_cores <- max(1,floor(as.integer(detectCores())*0.8))
 cl <- makeCluster(number_cores)
@@ -254,11 +298,13 @@ results <- foreach(planGroup=planGroups,
                    .combine=rbind,
                    .verbose=FALSE,
                    .packages=c("doParallel", "sf","dplyr","scales","data.table"),
+                   # export functions and dataframes,variables,etc
                    .export = c("calcDistance", "calculateProbabilities", "chooseMode", 
                                "findLocationKnownMode", "getReturnTripLength", 
                                "SA1_attributed", "SA1_attributed_dt", 
                                "distanceMatrix", "distanceMatrixIndex", "distanceMatrixIndex_dt",
-                               "getValidRegions", "readDistanceDistributions", "expectedDistances")
+                               "getValidRegions", "readDistanceDistributions", "expectedDistances",
+                               "readDestinationDistributions", "expectedDestinations_dt")
 ) %dopar% 
   calculatePlanSubset(outdir,planGroup,plans)
 end_time = Sys.time()

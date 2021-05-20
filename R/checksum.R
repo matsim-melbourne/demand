@@ -6,16 +6,15 @@ checksum <- function() {
     '../data/absRegionsReprojected.sqlite' = '43a51bb3dbd5cfdabad23645d7a0dc87', 
     '../data/distanceMatrix.rds' = 'cafb401785b656f3be660f387a2c3be2', 
     '../data/distanceMatrixIndex.csv' = 'ae0bc43e02033bc2df150e665dd43134', 
-    '../data/SA1attributed.csv.gz' = '980faffc7c90996510123ce4d69f140e', 
+    '../data/SA1attributed.csv.gz' = '64d2031ff63d5496def5ff06784b8697', 
     '../data/SA1centroids.csv.gz' = 'b7f27ff1e176b70cee71723f528f800a', 
     '../data/addresses.csv.gz' = 'ed761018dfdf4e00fdf2054aa25fe3ba',
     '../data/vistaCohorts.csv.gz' = 'd9f0c9ad76fc31513afbc9348b747e32',
-    '../data/expectedDistances.rds' = '91e137c02459e21a2fabf541e8cc36de',
-    '../data/vistaSummaries/destinationProbabilitiesSA3.rds' = '7dbacc829b312d608b6f24df7235b028',
-    '../data/vistaSummaries/distanceDistributionsSA3.rds' = '9ded1a901e720c3f670b5ecda6c105f8',
-    '../data/vistaSummaries/distanceHistograms.rds' = '7b4a6f836c56e53be5a9409a4886d42a',
-    '../data/vistaSummaries/modeChoiceProbabilitiesSA3.rds' = 'ef6c190af7e1ee7f5c474811a5bf0dee',
-    '../data/vistaSummaries/vistaDistanceHistograms.rds' = '2243e27a7ac46e64f2c0f2a68751606b'
+    '../data/expectedDistances.rds' = '0d725dcfc2603a94399b78523fecc078',
+    '../data/vistaSummaries/destinationProbabilitiesSA3.rds' = '938309b079c9bdeae46254d9c6dae321',
+    '../data/vistaSummaries/distanceDistributionsSA3.rds' = '94bfe1ebb96a0703bfc712d4e0ab5639',
+    '../data/vistaSummaries/distanceHistograms.rds' = '947647e3d342628983c0bcf7506cff9c',
+    '../data/vistaSummaries/modeChoiceProbabilitiesSA3.rds' = 'c25809d0f3fd0653320a06c50eff4a82'
   )
   actual<-md5sum(names(expected))
   

@@ -1,8 +1,17 @@
-makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,T,T)) {
+makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
+                                sa1Subset=NA, allDestinations=TRUE,
+                                do.steps=c(T,T,T,T,T,T,T,T)) {
   # samplePercent:
   #   percent of the 2016 census-based Melbourne synthetic population to sample
   # numPlans:
   #   number of 2012-2018 VISTA-like trip chains (plans) to generate
+  # sa1Subset:
+  #   a csv with the subset of SA1 regions the population should be generated
+  #   for. Expects SA1_MAINCODE_2016 and SA1_7DIGCODE columns to be present. If
+  #   ignored, all regions will be used.
+  # allDestinations:
+  #   should all destinations be reachable in locate stage or just those in the
+  #   sa1Subset file. If ignored, all destinations will be reachable.
   # do.steps:
   #   can be used to disable some plan steps such as when re-running the process 
   #   and we want to resume from where the previous run stopped/failed.
@@ -16,8 +25,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
   source("util.R")
   
   
-  dir.create('../output', showWarnings = FALSE, recursive=TRUE)
-  sink('../output/makeExamplePopulation.log', append=FALSE, split=TRUE) # sink to both console and log file
+  dir.create(paste0('../',outputDir), showWarnings = FALSE, recursive=TRUE)
+  sink(paste0('../',outputDir,'/makeExamplePopulation.log'), append=FALSE, split=TRUE) # sink to both console and log file
 
   tryCatch({
   
@@ -25,18 +34,18 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     source("checksum.R", local=TRUE)
     if(!checksum()) {
       cat("Input data files did not match expectation so will stop here.\n")
-      do.steps <- c(F,F,F,F,F,F,F,F) 
+      do.steps <- c(F,F,F,F,F,F,F,F)
     }
     
     outdirs <- c(
-      '../output/1.setup',
-      '../output/2.sample',
-      '../output/3.match',
-      '../output/4.plan',
-      '../output/5.locate',
-      '../output/6.place',
-      '../output/7.time',
-      '../output/8.xml'
+      paste0('../',outputDir,'/1.setup'),
+      paste0('../',outputDir,'/2.sample'),
+      paste0('../',outputDir,'/3.match'),
+      paste0('../',outputDir,'/4.plan'),
+      paste0('../',outputDir,'/5.locate'),
+      paste0('../',outputDir,'/6.place'),
+      paste0('../',outputDir,'/7.time'),
+      paste0('../',outputDir,'/8.xml')
     )
     for (outdir in outdirs) {
       dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
@@ -52,15 +61,15 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         '../data/VISTA_12_18_CSV.zip.dir/P_VISTA1218_V1.csv',
         '../data/VISTA_12_18_CSV.zip.dir/T_VISTA1218_V1.csv',
         '../data/vistaCohorts.csv.gz',
-        '../output/1.setup', 
-        '../output/1.setup/vista_2012_18_extracted_persons_weekday.csv.gz',
+        paste0('../',outputDir,'/1.setup'), 
+        paste0('../',outputDir,'/1.setup/vista_2012_18_extracted_persons_weekday.csv.gz'),
         'vista_2012_18_extracted_group_weekday_',
         'vista_2012_18_extracted_trips_weekday_',
         NULL, NULL, NULL # ignoring weekends
       )
       demand_setup_groups(
         getGroupIds('../data/vistaCohorts.csv.gz'),
-        '../output/1.setup', 
+        paste0('../',outputDir,'/1.setup'), 
         'vista_2012_18_extracted_trips_weekday_',
         'vista_2012_18_extracted_activities_weekday_',
         'vista_2012_18_extracted_activities_weekday_time_bins_',
@@ -68,13 +77,15 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         NULL, NULL # ignoring weekends
       )
       locations_setup(
-        '../output/1.setup', 
+        paste0('../',outputDir,'/1.setup'), 
         '../data/distanceMatrix.rds', 
         '../data/distanceMatrixIndex.csv', 
         '../data/SA1attributed.csv.gz', 
         '../data/SA1centroids.csv.gz', 
         '../data/addresses.csv.gz',
-        '../data/expectedDistances.rds'
+        '../data/expectedDistances.rds',
+        '../data/vistaSummaries/destinationProbabilitiesSA3.rds',
+        plansFile=ifelse(allDestinations,NA,sa1Subset)
       )
     }
     
@@ -84,7 +95,7 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       sampleMelbourne2016Population(
         '../data', 
         samplePercent, 
-        '../output/2.sample/sample.csv.gz'
+        paste0('../',outputDir,'/2.sample/sample.csv.gz')
       )
     }
 
@@ -93,8 +104,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       source('match.R', local=TRUE); 
       matchPersons(
         getGroups('../data/vistaCohorts.csv.gz'),
-        '../output/2.sample/sample.csv.gz', 
-        '../output/3.match/match_'
+        paste0('../',outputDir,'/2.sample/sample.csv.gz'), 
+        paste0('../',outputDir,'/3.match/match_')
       )
     }
 
@@ -103,33 +114,34 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       source('plan.R', local=TRUE);
       generatePlansByGroup(
         getGroupIds('../data/vistaCohorts.csv.gz'),
-        '../output/3.match/match_',
-        '../output/1.setup/vista_2012_18_extracted_activities_weekday_time_bins_',
-        '../output/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins_',
+        paste0('../',outputDir,'/3.match/match_'),
+        paste0('../',outputDir,'/1.setup/vista_2012_18_extracted_activities_weekday_time_bins_'),
+        paste0('../',outputDir,'/1.setup/vista_2012_18_extracted_activities_weekday_end_dist_for_start_bins_'),
         3:50, # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
-        '../output/4.plan/',
+        paste0('../',outputDir,'/4.plan/'),
         500 # write to file every 1000 plans
       )
       combinePlans(getGroupIds('../data/vistaCohorts.csv.gz'),
-                   '../output/4.plan/',
-                   '../output/4.plan/plan.csv'
+                   paste0('../',outputDir,'/4.plan/'),
+                   paste0('../',outputDir,'/4.plan/plan.csv')
       )
       writePlan2Agent2GroupMap(getGroupIds('../data/vistaCohorts.csv.gz'),
-                         '../output/3.match/match_',
-                         '../output/4.plan/plan.csv',
-                         '../output/4.plan/plan2agent2group.csv'
+                               paste0('../',outputDir,'/3.match/match_'),
+                               paste0('../',outputDir,'/4.plan/plan.csv'),
+                               paste0('../',outputDir,'/4.plan/plan2agent2group.csv')
       )
     }
     
     if(do.steps[5]) {
       source('locations.R')
       loadLocationsData(
-        '../output/1.setup/locDistanceMatrix.rds',
-        '../output/1.setup/locDistanceMatrixIndex.rds',
-        '../output/1.setup/locSa1Aattributed.rds',
-        '../output/1.setup/locSa1Centroids.rds',
-        '../output/1.setup/locAddresses.rds',
-        '../output/1.setup/expectedDistances.rds'
+        paste0('../',outputDir,'/1.setup/locDistanceMatrix.rds'),
+        paste0('../',outputDir,'/1.setup/locDistanceMatrixIndex.rds'),
+        paste0('../',outputDir,'/1.setup/locSa1Aattributed.rds'),
+        paste0('../',outputDir,'/1.setup/locSa1Centroids.rds'),
+        paste0('../',outputDir,'/1.setup/locAddresses.rds'),
+        paste0('../',outputDir,'/1.setup/expectedDistances.rds'),
+        paste0('../',outputDir,'/1.setup/destinationProbabilitiesSA3.rds')
       )
       source('locateParallel.R')
       # uses doParallel which must be run from the project root 
@@ -138,30 +150,31 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       wd<-getwd()
       setwd("..")
       locatePlans(
-        './output/2.sample/sample.csv.gz',
-        './output/4.plan/plan.csv',
-        './output/4.plan/plan2agent2group.csv',
-        './output/5.locate',
-        './output/5.locate/plan.csv'
+        paste0('./',outputDir,'/2.sample/sample.csv.gz'),
+        paste0('./',outputDir,'/4.plan/plan.csv'),
+        paste0('./',outputDir,'/4.plan/plan2agent2group.csv'),
+        paste0('./',outputDir,'/5.locate'),
+        paste0('./',outputDir,'/5.locate/plan.csv')
       )
       setwd(wd)
       planToSpatial(
-        read.csv("../output/5.locate/plan.csv"),
-        '../output/5.locate/plan.sqlite'
+        read.csv(paste0('../',outputDir,'/5.locate/plan.csv')),
+        paste0('../',outputDir,'/5.locate/plan.sqlite')
       )
       source('locateVISTA.R', local=TRUE);
-      analyseLocate('../output/5.locate')
+      analyseLocate(paste0('../',outputDir,'/5.locate'))
     }
     if(do.steps[6]) {
       if(!do.steps[5]) { # if not already loaded in the last step
         source("locations.R")
         loadLocationsData(
-          '../output/1.setup/locDistanceMatrix.rds', 
-          '../output/1.setup/locDistanceMatrixIndex.rds',
-          '../output/1.setup/locSa1Aattributed.rds', 
-          '../output/1.setup/locSa1Centroids.rds', 
-          '../output/1.setup/locAddresses.rds',
-          '../output/1.setup/expectedDistances.rds'
+          paste0('../',outputDir,'/1.setup/locDistanceMatrix.rds'),
+          paste0('../',outputDir,'/1.setup/locDistanceMatrixIndex.rds'),
+          paste0('../',outputDir,'/1.setup/locSa1Aattributed.rds'),
+          paste0('../',outputDir,'/1.setup/locSa1Centroids.rds'),
+          paste0('../',outputDir,'/1.setup/locAddresses.rds'),
+          paste0('../',outputDir,'/1.setup/expectedDistances.rds'),
+          paste0('../',outputDir,'/1.setup/destinationProbabilitiesSA3.rds')
         )
       }
       source('placeParallel.R')
@@ -171,13 +184,13 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       wd<-getwd()
       setwd("..")
       assignLocationsToActivities(
-        './output/5.locate/plan.csv', 
-        './output/6.place'
+        paste0('./',outputDir,'/5.locate/plan.csv'), 
+        paste0('./',outputDir,'/6.place')
       )
       setwd(wd)
       placeToSpatial(
-        read.csv("../output/6.place/plan.csv"),
-        '../output/6.place/plan.sqlite'
+        read.csv(paste0('../',outputDir,'/6.place/plan.csv')),
+        paste0('../',outputDir,'/6.place/plan.sqlite')
       )
     }
     if(do.steps[7]) {
@@ -188,10 +201,10 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       wd<-getwd()
       setwd("..")
       assignTimesToActivities(
-        './output/6.place/plan.csv', 
+        paste0('./',outputDir,'/6.place/plan.csv'), 
         30, # bin size in minutes 
-        './output/7.time', 
-        './output/7.time/plan.csv', 
+        paste0('./',outputDir,'/7.time'), 
+        paste0('./',outputDir,'/7.time/plan.csv'), 
         500 # write to file every so many plans
       )
       setwd(wd)
@@ -200,8 +213,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
     if(do.steps[8]) {
       source('xml.R', local=TRUE)
       writePlanAsMATSimXML(
-        '../output/7.time/plan.csv', 
-        '../output/8.xml/plan.xml', 
+        paste0('../',outputDir,'/7.time/plan.csv'), 
+        paste0('../',outputDir,'/8.xml/plan.xml'), 
         500 # write to file in blocks of this size
       )
     }
