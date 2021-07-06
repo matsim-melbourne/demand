@@ -19,11 +19,11 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
                                     commercial_count=0,education_count=0,park_count=0,work_count=0)
   
   
-  wplans<-NULL
+  # wplans<-NULL
   pp<-plans%>%filter(ceiling(PlanId/1000)==planGroup)#%>%dplyr::mutate(Activity=0,AgentId=0)
   # plans with 1 or 2 entries are automatically discarded.
   discarded<-pp%>%group_by(AgentId)%>%filter(n()<3)%>%slice_head()%>%dplyr::select(AgentId,SA1_MAINCODE_2016)%>%as.data.frame()
-  pp<-pp%>%group_by(AgentId)%>%filter(n()>2)%>%ungroup()%>%as.data.frame()
+  pp<-pp%>%group_by(AgentId)%>%filter(n()>=3)%>%ungroup()%>%as.data.frame()
   i<-0
   homeSA1<-NA
   nextHome<-NA
@@ -165,16 +165,17 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
       processed<-processed+1
     }
     
-    # if SA1_MAINCODE_2016_{i} is not null
-    if(pp[i,"SA1_MAINCODE_2016"]!=-1) {
-      wplans<-rbind(wplans, pp[i,])
-    }
+    # # if SA1_MAINCODE_2016_{i} is not null
+    # if(pp[i,"SA1_MAINCODE_2016"]!=-1) {
+    #   wplans<-rbind(wplans, pp[i,])
+    # }
   }
   # removing discarded plans
-  wplans<-wplans%>%filter(ArrivingMode!='x'|is.na(ArrivingMode))
+  pp<-pp%>%filter(ArrivingMode!='x'|is.na(ArrivingMode))
+  # wplans<-wplans%>%filter(ArrivingMode!='x'|is.na(ArrivingMode))
   saveRDS(distanceCountsCurrent,file=paste0(outdir,'/distanceCounts/',planGroup,'.rds'))
   saveRDS(destinationCountsCurrent,file=paste0(outdir,'/destinationCounts/',planGroup,'.rds'))
-  write.table(wplans, file=paste0(outdir,'/plan/',planGroup,'.csv'),
+  write.table(pp, file=paste0(outdir,'/plan/',planGroup,'.csv'),
               append=FALSE, row.names=FALSE, col.names=FALSE, sep = ',')
   write.table(discarded, file=paste0(outdir,'/discarded/',planGroup,'.csv'),
               append=FALSE, row.names=FALSE, col.names=FALSE, sep = ',')

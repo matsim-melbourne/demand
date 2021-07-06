@@ -221,10 +221,12 @@ analyseLocate <- function(outdir) {
     labs(x="Expected probability", y="Actual probability") + 
     # ggtitle('Expected versus actual destination likelihood by SA3 region') +
     guides(colour = guide_legend(override.aes = list(alpha = 1,size=2))) +
-    scale_x_continuous(expand=c(0,0),limits=c(0,0.25), breaks=seq(0,1,0.05),
-                       labels=scales::percent_format(accuracy=1)) +
-    scale_y_continuous(expand=c(0,0),limits=c(0,0.25), breaks=seq(0,1,0.05),
-                       labels=scales::percent_format(accuracy=1)) +
+    scale_x_continuous(labels=scales::percent_format(accuracy=1)) +
+    scale_y_continuous(labels=scales::percent_format(accuracy=1)) +
+    # scale_x_continuous(expand=c(0,0),limits=c(0,0.25), breaks=seq(0,1,0.05),
+    #                    labels=scales::percent_format(accuracy=1)) +
+    # scale_y_continuous(expand=c(0,0),limits=c(0,0.25), breaks=seq(0,1,0.05),
+    #                    labels=scales::percent_format(accuracy=1)) +
     theme(
       legend.title=element_blank(),
       legend.position="bottom",
@@ -263,10 +265,12 @@ analyseLocate <- function(outdir) {
     labs(x="Expected probability", y="Actual probability") + 
     # ggtitle('Expected versus actual destination likelihood by SA3 region') +
     guides(colour = guide_legend(override.aes = list(alpha = 1,size=2))) +
-    scale_x_continuous(expand=c(0,0),limits=c(0,1), breaks=seq(0,1,0.2),
-                       labels=scales::percent_format(accuracy=1)) +
-    scale_y_continuous(expand=c(0,0),limits=c(0,1), breaks=seq(0,1,0.2),
-                       labels=scales::percent_format(accuracy=1)) +
+    scale_x_continuous(labels=scales::percent_format(accuracy=1)) +
+    scale_y_continuous(labels=scales::percent_format(accuracy=1)) +
+    # scale_x_continuous(expand=c(0,0),limits=c(0,1), breaks=seq(0,1,0.2),
+    #                    labels=scales::percent_format(accuracy=1)) +
+    # scale_y_continuous(expand=c(0,0),limits=c(0,1), breaks=seq(0,1,0.2),
+    #                    labels=scales::percent_format(accuracy=1)) +
     theme(
       legend.title=element_blank(),
       legend.position="bottom",

@@ -8,7 +8,7 @@ checksum <- function() {
     '../data/distanceMatrixIndex.csv' = 'ae0bc43e02033bc2df150e665dd43134', 
     '../data/SA1attributed.csv.gz' = '64d2031ff63d5496def5ff06784b8697', 
     '../data/SA1centroids.csv.gz' = 'b7f27ff1e176b70cee71723f528f800a', 
-    '../data/addresses.csv.gz' = 'ed761018dfdf4e00fdf2054aa25fe3ba',
+    '../data/addresses.csv.gz' = 'f12d95af85eecacf56e7c9b7839c2221',
     '../data/vistaCohorts.csv.gz' = 'd9f0c9ad76fc31513afbc9348b747e32',
     '../data/expectedDistances.rds' = '0d725dcfc2603a94399b78523fecc078',
     '../data/vistaSummaries/destinationProbabilitiesSA3.rds' = '938309b079c9bdeae46254d9c6dae321',
