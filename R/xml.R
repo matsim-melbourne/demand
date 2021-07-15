@@ -34,6 +34,15 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
       processed<-processed+1
       # create a new person
       str<-paste0('<person id="',processed-1,'">\n')
+      # check if the person has work trips
+      acts<-pp[which(pp$AgentId==pp[i,]$AgentId),"Activity"]
+      # categorizing into worker and non-worker
+      subPopulation <- "NonWorker"
+      if("Work"%in%acts) subPopulation <- "Worker"
+      # creating the sub-population attribute
+      str<-paste0(str, '  <attributes>\n')
+      str<-paste0(str, '    <attribute name="subpopulation" class="java.lang.String" >',subPopulation,'</attribute>\n')
+      str<-paste0(str, '  </attributes>\n')
       # create a new plan
       str<-paste0(str, '  <plan selected="yes">\n')
     } else {
