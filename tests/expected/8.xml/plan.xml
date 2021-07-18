@@ -2,6 +2,9 @@
 <!DOCTYPE population SYSTEM "http://www.matsim.org/files/dtd/population_v6.dtd">
 <population>
 <person id="0">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305035" y="5806288" end_time="08:39:30"/>
     <leg mode="car"/>
@@ -11,6 +14,9 @@
   </plan>
 </person>
 <person id="1">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305023" y="5804881" end_time="07:39:00"/>
     <leg mode="car"/>
@@ -30,6 +36,9 @@
   </plan>
 </person>
 <person id="2">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305266" y="5804184" end_time="07:38:00"/>
     <leg mode="car"/>
@@ -39,6 +48,9 @@
   </plan>
 </person>
 <person id="3">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303959" y="5806402" end_time="08:39:30"/>
     <leg mode="car"/>
@@ -50,6 +62,9 @@
   </plan>
 </person>
 <person id="4">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305376" y="5806569" end_time="00:16:30"/>
     <leg mode="walk"/>
@@ -59,6 +74,9 @@
   </plan>
 </person>
 <person id="5">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305376" y="5806569" end_time="07:34:30"/>
     <leg mode="car"/>
@@ -72,6 +90,9 @@
   </plan>
 </person>
 <person id="6">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="302770" y="5806175" end_time="08:32:30"/>
     <leg mode="car"/>
@@ -85,6 +106,9 @@
   </plan>
 </person>
 <person id="7">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304852" y="5806491" end_time="07:51:30"/>
     <leg mode="car"/>
@@ -98,6 +122,9 @@
   </plan>
 </person>
 <person id="8">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304200" y="5805833" end_time="00:26:30"/>
     <leg mode="car"/>
@@ -107,6 +134,9 @@
   </plan>
 </person>
 <person id="9">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304208" y="5804857" end_time="08:46:30"/>
     <leg mode="car"/>
@@ -122,6 +152,9 @@
   </plan>
 </person>
 <person id="10">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305244" y="5805124" end_time="07:39:30"/>
     <leg mode="car"/>
@@ -135,11 +168,17 @@
   </plan>
 </person>
 <person id="11">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305574" y="5805750" end_time="08:03:30"/>
   </plan>
 </person>
 <person id="12">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305639" y="5805036" end_time="07:31:30"/>
     <leg mode="car"/>
@@ -151,6 +190,9 @@
   </plan>
 </person>
 <person id="13">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304256" y="5805281" end_time="08:21:30"/>
     <leg mode="car"/>
@@ -164,6 +206,9 @@
   </plan>
 </person>
 <person id="14">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304552" y="5806530" end_time="08:38:30"/>
     <leg mode="car"/>
@@ -173,6 +218,9 @@
   </plan>
 </person>
 <person id="15">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305350" y="5805256" end_time="08:43:00"/>
     <leg mode="pt"/>
@@ -188,6 +236,9 @@
   </plan>
 </person>
 <person id="16">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303977" y="5805544" end_time="07:48:00"/>
     <leg mode="car"/>
@@ -205,6 +256,9 @@
   </plan>
 </person>
 <person id="17">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305508" y="5806494" end_time="00:14:30"/>
     <leg mode="car"/>
@@ -214,6 +268,9 @@
   </plan>
 </person>
 <person id="18">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305559" y="5806551" end_time="07:38:00"/>
     <leg mode="walk"/>
@@ -225,6 +282,9 @@
   </plan>
 </person>
 <person id="19">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313173" y="5814580" end_time="08:31:30"/>
     <leg mode="car"/>
@@ -234,6 +294,9 @@
   </plan>
 </person>
 <person id="20">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313201" y="5815170" end_time="08:42:30"/>
     <leg mode="car"/>
@@ -245,6 +308,9 @@
   </plan>
 </person>
 <person id="21">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312660" y="5815018" end_time="07:36:30"/>
     <leg mode="car"/>
@@ -260,6 +326,9 @@
   </plan>
 </person>
 <person id="22">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312314" y="5815059" end_time="14:28:30"/>
     <leg mode="car"/>
@@ -271,6 +340,9 @@
   </plan>
 </person>
 <person id="23">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312697" y="5815299" end_time="07:30:30"/>
     <leg mode="car"/>
@@ -282,6 +354,9 @@
   </plan>
 </person>
 <person id="24">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312660" y="5815018" end_time="08:47:30"/>
     <leg mode="car"/>
@@ -293,6 +368,9 @@
   </plan>
 </person>
 <person id="25">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312350" y="5812843" end_time="08:44:30"/>
     <leg mode="car"/>
@@ -306,11 +384,17 @@
   </plan>
 </person>
 <person id="26">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312583" y="5812135" end_time="08:07:00"/>
   </plan>
 </person>
 <person id="27">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311948" y="5812532" end_time="07:30:30"/>
     <leg mode="car"/>
@@ -326,6 +410,9 @@
   </plan>
 </person>
 <person id="28">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311961" y="5812637" end_time="08:43:00"/>
     <leg mode="pt"/>
@@ -337,6 +424,9 @@
   </plan>
 </person>
 <person id="29">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312920" y="5812790" end_time="07:50:00"/>
     <leg mode="car"/>
@@ -348,6 +438,9 @@
   </plan>
 </person>
 <person id="30">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312941" y="5811795" end_time="08:02:00"/>
     <leg mode="car"/>
@@ -361,6 +454,9 @@
   </plan>
 </person>
 <person id="31">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314330" y="5812209" end_time="08:32:30"/>
     <leg mode="walk"/>
@@ -368,6 +464,9 @@
   </plan>
 </person>
 <person id="32">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314040" y="5812801" end_time="07:45:00"/>
     <leg mode="walk"/>
@@ -381,6 +480,9 @@
   </plan>
 </person>
 <person id="33">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314063" y="5812574" end_time="07:39:00"/>
     <leg mode="car"/>
@@ -394,6 +496,9 @@
   </plan>
 </person>
 <person id="34">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313958" y="5812811" end_time="08:31:30"/>
     <leg mode="car"/>
@@ -409,6 +514,9 @@
   </plan>
 </person>
 <person id="35">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313346" y="5812317" end_time="00:25:30"/>
     <leg mode="pt"/>
@@ -424,6 +532,9 @@
   </plan>
 </person>
 <person id="36">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313602" y="5811971" end_time="07:41:00"/>
     <leg mode="car"/>
@@ -437,6 +548,9 @@
   </plan>
 </person>
 <person id="37">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313434" y="5812034" end_time="08:40:00"/>
     <leg mode="car"/>
@@ -450,6 +564,9 @@
   </plan>
 </person>
 <person id="38">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305295" y="5805748" end_time="07:38:30"/>
     <leg mode="walk"/>
@@ -463,6 +580,9 @@
   </plan>
 </person>
 <person id="39">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303977" y="5805544" end_time="08:12:00"/>
     <leg mode="car"/>
@@ -472,6 +592,9 @@
   </plan>
 </person>
 <person id="40">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304640" y="5806338" end_time="08:36:00"/>
     <leg mode="car"/>
@@ -485,6 +608,9 @@
   </plan>
 </person>
 <person id="41">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304665" y="5805408" end_time="07:39:30"/>
     <leg mode="car"/>
@@ -500,6 +626,9 @@
   </plan>
 </person>
 <person id="42">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304604" y="5804241" end_time="08:32:00"/>
     <leg mode="car"/>
@@ -513,6 +642,9 @@
   </plan>
 </person>
 <person id="43">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304678" y="5805563" end_time="00:14:00"/>
     <leg mode="car"/>
@@ -526,6 +658,9 @@
   </plan>
 </person>
 <person id="44">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305049" y="5804252" end_time="07:33:30"/>
     <leg mode="bike"/>
@@ -545,6 +680,9 @@
   </plan>
 </person>
 <person id="45">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303625" y="5805337" end_time="07:33:00"/>
     <leg mode="car"/>
@@ -556,6 +694,9 @@
   </plan>
 </person>
 <person id="46">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305360" y="5806361" end_time="08:37:30"/>
     <leg mode="car"/>
@@ -569,6 +710,9 @@
   </plan>
 </person>
 <person id="47">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305264" y="5806634" end_time="00:21:00"/>
     <leg mode="car"/>
@@ -576,6 +720,9 @@
   </plan>
 </person>
 <person id="48">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304394" y="5805741" end_time="07:31:30"/>
     <leg mode="car"/>
@@ -591,6 +738,9 @@
   </plan>
 </person>
 <person id="49">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305411" y="5806896" end_time="07:49:30"/>
     <leg mode="car"/>
@@ -602,6 +752,9 @@
   </plan>
 </person>
 <person id="50">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303984" y="5805620" end_time="08:42:30"/>
     <leg mode="car"/>
@@ -613,6 +766,9 @@
   </plan>
 </person>
 <person id="51">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304348" y="5805082" end_time="07:39:30"/>
     <leg mode="car"/>
@@ -624,6 +780,9 @@
   </plan>
 </person>
 <person id="52">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303835" y="5804894" end_time="08:26:00"/>
     <leg mode="car"/>
@@ -635,6 +794,9 @@
   </plan>
 </person>
 <person id="53">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304834" y="5805026" end_time="07:33:30"/>
     <leg mode="car"/>
@@ -652,11 +814,17 @@
   </plan>
 </person>
 <person id="54">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305474" y="5806632" end_time="08:45:30"/>
   </plan>
 </person>
 <person id="55">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305505" y="5804932" end_time="00:24:00"/>
     <leg mode="bike"/>
@@ -670,6 +838,9 @@
   </plan>
 </person>
 <person id="56">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305741" y="5805012" end_time="07:35:30"/>
     <leg mode="car"/>
@@ -685,6 +856,9 @@
   </plan>
 </person>
 <person id="57">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305017" y="5803960" end_time="07:37:30"/>
     <leg mode="car"/>
@@ -698,6 +872,9 @@
   </plan>
 </person>
 <person id="58">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303968" y="5806480" end_time="08:46:30"/>
     <leg mode="car"/>
@@ -709,6 +886,9 @@
   </plan>
 </person>
 <person id="59">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305020" y="5806090" end_time="08:11:30"/>
     <leg mode="car"/>
@@ -720,6 +900,9 @@
   </plan>
 </person>
 <person id="60">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305088" y="5805759" end_time="07:33:30"/>
     <leg mode="car"/>
@@ -737,6 +920,9 @@
   </plan>
 </person>
 <person id="61">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304492" y="5805732" end_time="07:39:30"/>
     <leg mode="walk"/>
@@ -748,6 +934,9 @@
   </plan>
 </person>
 <person id="62">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312585" y="5815026" end_time="08:30:30"/>
     <leg mode="car"/>
@@ -763,6 +952,9 @@
   </plan>
 </person>
 <person id="63">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313289" y="5814659" end_time="00:13:00"/>
     <leg mode="car"/>
@@ -776,6 +968,9 @@
   </plan>
 </person>
 <person id="64">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312509" y="5813267" end_time="07:45:30"/>
     <leg mode="car"/>
@@ -789,6 +984,9 @@
   </plan>
 </person>
 <person id="65">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312020" y="5815380" end_time="08:32:00"/>
     <leg mode="pt"/>
@@ -804,6 +1002,9 @@
   </plan>
 </person>
 <person id="66">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313104" y="5814963" end_time="07:34:00"/>
     <leg mode="car"/>
@@ -819,6 +1020,9 @@
   </plan>
 </person>
 <person id="67">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312613" y="5814872" end_time="08:05:00"/>
     <leg mode="car"/>
@@ -834,6 +1038,9 @@
   </plan>
 </person>
 <person id="68">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311887" y="5815192" end_time="07:39:00"/>
     <leg mode="car"/>
@@ -851,11 +1058,17 @@
   </plan>
 </person>
 <person id="69">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312459" y="5813737" end_time="08:57:00"/>
   </plan>
 </person>
 <person id="70">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312509" y="5813267" end_time="08:37:00"/>
     <leg mode="car"/>
@@ -869,6 +1082,9 @@
   </plan>
 </person>
 <person id="71">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312509" y="5813267" end_time="07:30:30"/>
     <leg mode="walk"/>
@@ -882,6 +1098,9 @@
   </plan>
 </person>
 <person id="72">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312583" y="5812135" end_time="07:32:00"/>
     <leg mode="pt"/>
@@ -897,6 +1116,9 @@
   </plan>
 </person>
 <person id="73">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314156" y="5812398" end_time="08:09:00"/>
     <leg mode="pt"/>
@@ -912,6 +1134,9 @@
   </plan>
 </person>
 <person id="74">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314411" y="5812751" end_time="00:19:00"/>
     <leg mode="car"/>
@@ -923,6 +1148,9 @@
   </plan>
 </person>
 <person id="75">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313936" y="5813181" end_time="07:40:30"/>
     <leg mode="walk"/>
@@ -934,6 +1162,9 @@
   </plan>
 </person>
 <person id="76">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312104" y="5812300" end_time="08:39:30"/>
     <leg mode="car"/>
@@ -947,6 +1178,9 @@
   </plan>
 </person>
 <person id="77">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313958" y="5812811" end_time="08:51:00"/>
     <leg mode="car"/>
@@ -958,6 +1192,9 @@
   </plan>
 </person>
 <person id="78">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314040" y="5812801" end_time="07:36:00"/>
     <leg mode="car"/>
@@ -971,6 +1208,9 @@
   </plan>
 </person>
 <person id="79">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314590" y="5812233" end_time="08:34:00"/>
     <leg mode="car"/>
@@ -984,6 +1224,9 @@
   </plan>
 </person>
 <person id="80">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314049" y="5812466" end_time="07:44:30"/>
     <leg mode="car"/>
@@ -997,6 +1240,9 @@
   </plan>
 </person>
 <person id="81">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313338" y="5812254" end_time="08:38:00"/>
     <leg mode="walk"/>
@@ -1010,6 +1256,9 @@
   </plan>
 </person>
 <person id="82">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314606" y="5813030" end_time="08:12:00"/>
     <leg mode="car"/>
@@ -1021,6 +1270,9 @@
   </plan>
 </person>
 <person id="83">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313735" y="5813159" end_time="08:36:00"/>
     <leg mode="walk"/>
@@ -1032,6 +1284,9 @@
   </plan>
 </person>
 <person id="84">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313598" y="5811925" end_time="07:37:30"/>
     <leg mode="car"/>
@@ -1039,6 +1294,9 @@
   </plan>
 </person>
 <person id="85">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313724" y="5813075" end_time="07:35:30"/>
     <leg mode="pt"/>
@@ -1050,6 +1308,9 @@
   </plan>
 </person>
 <person id="86">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312439" y="5812758" end_time="08:39:30"/>
     <leg mode="car"/>
@@ -1061,6 +1322,9 @@
   </plan>
 </person>
 <person id="87">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312791" y="5812356" end_time="08:20:00"/>
     <leg mode="car"/>
@@ -1070,6 +1334,9 @@
   </plan>
 </person>
 <person id="88">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314227" y="5813002" end_time="08:49:30"/>
     <leg mode="car"/>
@@ -1089,6 +1356,9 @@
   </plan>
 </person>
 <person id="89">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314156" y="5812398" end_time="12:11:00"/>
     <leg mode="car"/>
@@ -1102,6 +1372,9 @@
   </plan>
 </person>
 <person id="90">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313294" y="5811902" end_time="07:34:30"/>
     <leg mode="car"/>
@@ -1121,6 +1394,9 @@
   </plan>
 </person>
 <person id="91">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313878" y="5811981" end_time="00:23:30"/>
     <leg mode="car"/>
@@ -1136,6 +1412,9 @@
   </plan>
 </person>
 <person id="92">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313501" y="5811515" end_time="07:39:00"/>
     <leg mode="car"/>
@@ -1149,6 +1428,9 @@
   </plan>
 </person>
 <person id="93">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313512" y="5812130" end_time="07:31:00"/>
     <leg mode="walk"/>
@@ -1162,6 +1444,9 @@
   </plan>
 </person>
 <person id="94">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305474" y="5806632" end_time="08:46:30"/>
     <leg mode="car"/>
@@ -1175,6 +1460,9 @@
   </plan>
 </person>
 <person id="95">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304783" y="5804012" end_time="06:32:00"/>
     <leg mode="car"/>
@@ -1190,6 +1478,9 @@
   </plan>
 </person>
 <person id="96">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304937" y="5806300" end_time="07:55:30"/>
     <leg mode="car"/>
@@ -1199,6 +1490,9 @@
   </plan>
 </person>
 <person id="97">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304806" y="5805912" end_time="08:16:00"/>
     <leg mode="car"/>
@@ -1208,6 +1502,9 @@
   </plan>
 </person>
 <person id="98">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305511" y="5804711" end_time="07:37:00"/>
     <leg mode="car"/>
@@ -1223,6 +1520,9 @@
   </plan>
 </person>
 <person id="99">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305150" y="5806466" end_time="08:46:30"/>
     <leg mode="car"/>
@@ -1236,6 +1536,9 @@
   </plan>
 </person>
 <person id="100">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304426" y="5804930" end_time="08:26:30"/>
     <leg mode="car"/>
@@ -1249,6 +1552,9 @@
   </plan>
 </person>
 <person id="101">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303835" y="5804894" end_time="07:31:00"/>
     <leg mode="walk"/>
@@ -1256,6 +1562,9 @@
   </plan>
 </person>
 <person id="102">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304250" y="5805202" end_time="08:50:00"/>
     <leg mode="car"/>
@@ -1269,6 +1578,9 @@
   </plan>
 </person>
 <person id="103">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303194" y="5806356" end_time="08:54:30"/>
     <leg mode="car"/>
@@ -1282,6 +1594,9 @@
   </plan>
 </person>
 <person id="104">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313483" y="5815159" end_time="10:10:30"/>
     <leg mode="car"/>
@@ -1293,6 +1608,9 @@
   </plan>
 </person>
 <person id="105">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312261" y="5814642" end_time="07:40:00"/>
     <leg mode="car"/>
@@ -1306,6 +1624,9 @@
   </plan>
 </person>
 <person id="106">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314174" y="5812613" end_time="08:45:00"/>
     <leg mode="car"/>
@@ -1321,6 +1642,9 @@
   </plan>
 </person>
 <person id="107">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314523" y="5812912" end_time="06:11:30"/>
     <leg mode="car"/>
@@ -1334,6 +1658,9 @@
   </plan>
 </person>
 <person id="108">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314380" y="5812787" end_time="07:33:30"/>
     <leg mode="walk"/>
@@ -1345,6 +1672,9 @@
   </plan>
 </person>
 <person id="109">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303834" y="5806312" end_time="08:06:30"/>
     <leg mode="walk"/>
@@ -1358,6 +1688,9 @@
   </plan>
 </person>
 <person id="110">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304506" y="5805883" end_time="08:41:30"/>
     <leg mode="car"/>
@@ -1367,6 +1700,9 @@
   </plan>
 </person>
 <person id="111">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304660" y="5804180" end_time="08:42:30"/>
     <leg mode="car"/>
@@ -1376,6 +1712,9 @@
   </plan>
 </person>
 <person id="112">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304535" y="5806190" end_time="08:36:00"/>
     <leg mode="pt"/>
@@ -1387,6 +1726,9 @@
   </plan>
 </person>
 <person id="113">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303836" y="5805009" end_time="08:24:00"/>
     <leg mode="car"/>
@@ -1404,6 +1746,9 @@
   </plan>
 </person>
 <person id="114">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303316" y="5806219" end_time="06:32:00"/>
     <leg mode="car"/>
@@ -1419,6 +1764,9 @@
   </plan>
 </person>
 <person id="115">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313273" y="5814522" end_time="07:44:30"/>
     <leg mode="car"/>
@@ -1430,6 +1778,9 @@
   </plan>
 </person>
 <person id="116">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313367" y="5814956" end_time="16:07:00"/>
     <leg mode="walk"/>
@@ -1439,6 +1790,9 @@
   </plan>
 </person>
 <person id="117">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313232" y="5815026" end_time="08:49:30"/>
     <leg mode="car"/>
@@ -1452,6 +1806,9 @@
   </plan>
 </person>
 <person id="118">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312874" y="5813579" end_time="07:34:30"/>
     <leg mode="car"/>
@@ -1465,6 +1822,9 @@
   </plan>
 </person>
 <person id="119">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312144" y="5814656" end_time="08:42:00"/>
     <leg mode="car"/>
@@ -1474,6 +1834,9 @@
   </plan>
 </person>
 <person id="120">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314472" y="5812919" end_time="08:35:30"/>
     <leg mode="car"/>
@@ -1487,6 +1850,9 @@
   </plan>
 </person>
 <person id="121">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313766" y="5811837" end_time="06:53:00"/>
     <leg mode="car"/>
@@ -1496,6 +1862,9 @@
   </plan>
 </person>
 <person id="122">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305574" y="5805750" end_time="08:56:00"/>
     <leg mode="car"/>
@@ -1509,6 +1878,9 @@
   </plan>
 </person>
 <person id="123">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304894" y="5805775" end_time="05:22:30"/>
     <leg mode="walk"/>
@@ -1520,6 +1892,9 @@
   </plan>
 </person>
 <person id="124">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303902" y="5805858" end_time="06:37:30"/>
     <leg mode="car"/>
@@ -1543,6 +1918,9 @@
   </plan>
 </person>
 <person id="125">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304246" y="5806456" end_time="05:27:00"/>
     <leg mode="car"/>
@@ -1558,6 +1936,9 @@
   </plan>
 </person>
 <person id="126">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304426" y="5804930" end_time="07:15:30"/>
     <leg mode="bike"/>
@@ -1575,6 +1956,9 @@
   </plan>
 </person>
 <person id="127">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305134" y="5806275" end_time="09:55:30"/>
     <leg mode="car"/>
@@ -1588,6 +1972,9 @@
   </plan>
 </person>
 <person id="128">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304942" y="5805142" end_time="07:31:00"/>
     <leg mode="car"/>
@@ -1597,6 +1984,9 @@
   </plan>
 </person>
 <person id="129">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303835" y="5804894" end_time="08:50:00"/>
     <leg mode="car"/>
@@ -1612,6 +2002,9 @@
   </plan>
 </person>
 <person id="130">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304912" y="5804714" end_time="09:05:30"/>
     <leg mode="car"/>
@@ -1629,6 +2022,9 @@
   </plan>
 </person>
 <person id="131">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="302869" y="5806094" end_time="13:35:00"/>
     <leg mode="car"/>
@@ -1642,6 +2038,9 @@
   </plan>
 </person>
 <person id="132">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313313" y="5814990" end_time="05:40:30"/>
     <leg mode="walk"/>
@@ -1659,6 +2058,9 @@
   </plan>
 </person>
 <person id="133">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313024" y="5814444" end_time="06:17:30"/>
     <leg mode="car"/>
@@ -1676,6 +2078,9 @@
   </plan>
 </person>
 <person id="134">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311952" y="5814679" end_time="06:36:00"/>
     <leg mode="car"/>
@@ -1687,6 +2092,9 @@
   </plan>
 </person>
 <person id="135">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313207" y="5815299" end_time="08:39:30"/>
     <leg mode="pt"/>
@@ -1698,6 +2106,9 @@
   </plan>
 </person>
 <person id="136">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311897" y="5814260" end_time="07:04:00"/>
     <leg mode="car"/>
@@ -1707,6 +2118,9 @@
   </plan>
 </person>
 <person id="137">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312514" y="5814505" end_time="08:44:30"/>
     <leg mode="car"/>
@@ -1718,6 +2132,9 @@
   </plan>
 </person>
 <person id="138">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312777" y="5814580" end_time="08:34:30"/>
     <leg mode="walk"/>
@@ -1729,6 +2146,9 @@
   </plan>
 </person>
 <person id="139">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312452" y="5815204" end_time="06:46:30"/>
     <leg mode="walk"/>
@@ -1742,6 +2162,9 @@
   </plan>
 </person>
 <person id="140">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312596" y="5814724" end_time="06:33:30"/>
     <leg mode="car"/>
@@ -1759,6 +2182,9 @@
   </plan>
 </person>
 <person id="141">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312314" y="5815059" end_time="07:42:00"/>
     <leg mode="car"/>
@@ -1768,6 +2194,9 @@
   </plan>
 </person>
 <person id="142">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312183" y="5813023" end_time="09:02:30"/>
     <leg mode="car"/>
@@ -1783,6 +2212,9 @@
   </plan>
 </person>
 <person id="143">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314464" y="5812084" end_time="06:11:30"/>
     <leg mode="pt"/>
@@ -1800,6 +2232,9 @@
   </plan>
 </person>
 <person id="144">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314828" y="5812903" end_time="05:41:30"/>
     <leg mode="walk"/>
@@ -1813,6 +2248,9 @@
   </plan>
 </person>
 <person id="145">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312926" y="5811680" end_time="08:45:00"/>
     <leg mode="car"/>
@@ -1826,6 +2264,9 @@
   </plan>
 </person>
 <person id="146">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313039" y="5812173" end_time="09:01:00"/>
     <leg mode="pt"/>
@@ -1839,6 +2280,9 @@
   </plan>
 </person>
 <person id="147">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305048" y="5806475" end_time="09:27:30"/>
     <leg mode="car"/>
@@ -1848,6 +2292,9 @@
   </plan>
 </person>
 <person id="148">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303959" y="5806402" end_time="08:37:30"/>
     <leg mode="car"/>
@@ -1863,6 +2310,9 @@
   </plan>
 </person>
 <person id="149">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304742" y="5804330" end_time="07:33:00"/>
     <leg mode="car"/>
@@ -1880,6 +2330,9 @@
   </plan>
 </person>
 <person id="150">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305234" y="5805008" end_time="07:22:30"/>
     <leg mode="car"/>
@@ -1891,6 +2344,9 @@
   </plan>
 </person>
 <person id="151">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304750" y="5804726" end_time="07:45:00"/>
     <leg mode="car"/>
@@ -1902,6 +2358,9 @@
   </plan>
 </person>
 <person id="152">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304670" y="5806683" end_time="08:40:30"/>
     <leg mode="car"/>
@@ -1915,6 +2374,9 @@
   </plan>
 </person>
 <person id="153">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304915" y="5803830" end_time="09:34:00"/>
     <leg mode="car"/>
@@ -1930,6 +2392,9 @@
   </plan>
 </person>
 <person id="154">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305533" y="5805589" end_time="09:07:30"/>
     <leg mode="car"/>
@@ -1947,6 +2412,9 @@
   </plan>
 </person>
 <person id="155">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304081" y="5805612" end_time="06:16:00"/>
     <leg mode="car"/>
@@ -1960,6 +2428,9 @@
   </plan>
 </person>
 <person id="156">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304577" y="5805574" end_time="06:04:00"/>
     <leg mode="car"/>
@@ -1971,6 +2442,9 @@
   </plan>
 </person>
 <person id="157">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304751" y="5805240" end_time="05:36:00"/>
     <leg mode="car"/>
@@ -1984,6 +2458,9 @@
   </plan>
 </person>
 <person id="158">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304034" y="5806237" end_time="08:37:30"/>
     <leg mode="car"/>
@@ -1993,6 +2470,9 @@
   </plan>
 </person>
 <person id="159">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303968" y="5806480" end_time="08:38:00"/>
     <leg mode="car"/>
@@ -2004,6 +2484,9 @@
   </plan>
 </person>
 <person id="160">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305249" y="5804449" end_time="08:04:30"/>
     <leg mode="car"/>
@@ -2017,11 +2500,17 @@
   </plan>
 </person>
 <person id="161">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303821" y="5806005" end_time="10:01:00"/>
   </plan>
 </person>
 <person id="162">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305432" y="5805465" end_time="11:01:00"/>
     <leg mode="pt"/>
@@ -2035,6 +2524,9 @@
   </plan>
 </person>
 <person id="163">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304117" y="5806072" end_time="07:06:00"/>
     <leg mode="car"/>
@@ -2054,6 +2546,9 @@
   </plan>
 </person>
 <person id="164">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304942" y="5805142" end_time="07:36:00"/>
     <leg mode="car"/>
@@ -2071,6 +2566,9 @@
   </plan>
 </person>
 <person id="165">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305134" y="5806275" end_time="08:01:30"/>
     <leg mode="car"/>
@@ -2080,6 +2578,9 @@
   </plan>
 </person>
 <person id="166">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303595" y="5805832" end_time="07:10:00"/>
     <leg mode="pt"/>
@@ -2093,6 +2594,9 @@
   </plan>
 </person>
 <person id="167">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305109" y="5804055" end_time="09:03:30"/>
     <leg mode="pt"/>
@@ -2106,6 +2610,9 @@
   </plan>
 </person>
 <person id="168">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303635" y="5806194" end_time="09:13:30"/>
     <leg mode="walk"/>
@@ -2115,6 +2622,9 @@
   </plan>
 </person>
 <person id="169">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303902" y="5805858" end_time="05:31:00"/>
     <leg mode="car"/>
@@ -2128,6 +2638,9 @@
   </plan>
 </person>
 <person id="170">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303941" y="5806248" end_time="07:26:00"/>
     <leg mode="car"/>
@@ -2139,11 +2652,17 @@
   </plan>
 </person>
 <person id="171">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303835" y="5804894" end_time="08:36:30"/>
   </plan>
 </person>
 <person id="172">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305012" y="5805991" end_time="11:03:30"/>
     <leg mode="car"/>
@@ -2155,6 +2674,9 @@
   </plan>
 </person>
 <person id="173">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305743" y="5805252" end_time="09:05:00"/>
     <leg mode="car"/>
@@ -2166,6 +2688,9 @@
   </plan>
 </person>
 <person id="174">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305165" y="5806641" end_time="07:29:30"/>
     <leg mode="car"/>
@@ -2177,6 +2702,9 @@
   </plan>
 </person>
 <person id="175">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304648" y="5806419" end_time="08:45:30"/>
     <leg mode="pt"/>
@@ -2186,6 +2714,9 @@
   </plan>
 </person>
 <person id="176">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305332" y="5806016" end_time="07:43:30"/>
     <leg mode="car"/>
@@ -2197,6 +2728,9 @@
   </plan>
 </person>
 <person id="177">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304888" y="5805699" end_time="15:40:30"/>
     <leg mode="car"/>
@@ -2210,6 +2744,9 @@
   </plan>
 </person>
 <person id="178">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303701" y="5805798" end_time="07:34:00"/>
     <leg mode="car"/>
@@ -2223,6 +2760,9 @@
   </plan>
 </person>
 <person id="179">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305017" y="5803960" end_time="08:31:00"/>
     <leg mode="car"/>
@@ -2234,6 +2774,9 @@
   </plan>
 </person>
 <person id="180">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304564" y="5805418" end_time="08:19:30"/>
     <leg mode="car"/>
@@ -2245,11 +2788,17 @@
   </plan>
 </person>
 <person id="181">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304523" y="5806035" end_time="06:16:30"/>
   </plan>
 </person>
 <person id="182">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312563" y="5814668" end_time="07:04:00"/>
     <leg mode="car"/>
@@ -2265,6 +2814,9 @@
   </plan>
 </person>
 <person id="183">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313303" y="5814197" end_time="08:43:30"/>
     <leg mode="pt"/>
@@ -2276,6 +2828,9 @@
   </plan>
 </person>
 <person id="184">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311732" y="5814182" end_time="14:57:30"/>
     <leg mode="pt"/>
@@ -2285,6 +2840,9 @@
   </plan>
 </person>
 <person id="185">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312917" y="5814880" end_time="05:34:30"/>
     <leg mode="car"/>
@@ -2302,6 +2860,9 @@
   </plan>
 </person>
 <person id="186">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313282" y="5814599" end_time="07:41:30"/>
     <leg mode="car"/>
@@ -2311,6 +2872,9 @@
   </plan>
 </person>
 <person id="187">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312225" y="5814433" end_time="09:20:30"/>
     <leg mode="walk"/>
@@ -2328,6 +2892,9 @@
   </plan>
 </person>
 <person id="188">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312335" y="5814633" end_time="07:02:30"/>
     <leg mode="car"/>
@@ -2335,6 +2902,9 @@
   </plan>
 </person>
 <person id="189">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312144" y="5814656" end_time="05:50:00"/>
     <leg mode="pt"/>
@@ -2350,6 +2920,9 @@
   </plan>
 </person>
 <person id="190">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313001" y="5813408" end_time="09:07:00"/>
     <leg mode="pt"/>
@@ -2365,6 +2938,9 @@
   </plan>
 </person>
 <person id="191">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312772" y="5814365" end_time="08:39:00"/>
     <leg mode="car"/>
@@ -2376,6 +2952,9 @@
   </plan>
 </person>
 <person id="192">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313076" y="5814545" end_time="12:31:00"/>
     <leg mode="walk"/>
@@ -2385,6 +2964,9 @@
   </plan>
 </person>
 <person id="193">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313012" y="5813722" end_time="07:13:30"/>
     <leg mode="car"/>
@@ -2396,6 +2978,9 @@
   </plan>
 </person>
 <person id="194">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311780" y="5814274" end_time="06:02:30"/>
     <leg mode="car"/>
@@ -2409,6 +2994,9 @@
   </plan>
 </person>
 <person id="195">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312442" y="5814620" end_time="08:32:00"/>
     <leg mode="car"/>
@@ -2426,6 +3014,9 @@
   </plan>
 </person>
 <person id="196">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313115" y="5814219" end_time="11:11:30"/>
     <leg mode="car"/>
@@ -2439,6 +3030,9 @@
   </plan>
 </person>
 <person id="197">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313101" y="5814747" end_time="05:32:30"/>
     <leg mode="walk"/>
@@ -2450,6 +3044,9 @@
   </plan>
 </person>
 <person id="198">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312664" y="5814488" end_time="08:20:00"/>
     <leg mode="car"/>
@@ -2459,6 +3056,9 @@
   </plan>
 </person>
 <person id="199">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312552" y="5813610" end_time="09:19:30"/>
     <leg mode="car"/>
@@ -2470,6 +3070,9 @@
   </plan>
 </person>
 <person id="200">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312195" y="5814996" end_time="08:47:30"/>
     <leg mode="car"/>
@@ -2479,6 +3082,9 @@
   </plan>
 </person>
 <person id="201">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313024" y="5814444" end_time="07:18:00"/>
     <leg mode="car"/>
@@ -2490,6 +3096,9 @@
   </plan>
 </person>
 <person id="202">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313011" y="5814336" end_time="08:32:30"/>
     <leg mode="car"/>
@@ -2501,6 +3110,9 @@
   </plan>
 </person>
 <person id="203">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311748" y="5813893" end_time="07:40:30"/>
     <leg mode="car"/>
@@ -2512,6 +3124,9 @@
   </plan>
 </person>
 <person id="204">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312459" y="5813737" end_time="09:32:00"/>
     <leg mode="car"/>
@@ -2525,6 +3140,9 @@
   </plan>
 </person>
 <person id="205">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312114" y="5815083" end_time="09:04:00"/>
     <leg mode="car"/>
@@ -2538,6 +3156,9 @@
   </plan>
 </person>
 <person id="206">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312335" y="5814633" end_time="08:51:00"/>
     <leg mode="car"/>
@@ -2547,6 +3168,9 @@
   </plan>
 </person>
 <person id="207">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312026" y="5814670" end_time="11:41:00"/>
     <leg mode="car"/>
@@ -2560,6 +3184,9 @@
   </plan>
 </person>
 <person id="208">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311865" y="5813976" end_time="08:57:00"/>
     <leg mode="walk"/>
@@ -2569,6 +3196,9 @@
   </plan>
 </person>
 <person id="209">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313151" y="5813620" end_time="06:31:00"/>
     <leg mode="car"/>
@@ -2580,6 +3210,9 @@
   </plan>
 </person>
 <person id="210">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312892" y="5814672" end_time="07:19:00"/>
     <leg mode="car"/>
@@ -2595,6 +3228,9 @@
   </plan>
 </person>
 <person id="211">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313232" y="5815026" end_time="06:14:00"/>
     <leg mode="walk"/>
@@ -2606,6 +3242,9 @@
   </plan>
 </person>
 <person id="212">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312995" y="5814555" end_time="08:35:30"/>
     <leg mode="walk"/>
@@ -2619,6 +3258,9 @@
   </plan>
 </person>
 <person id="213">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312051" y="5814143" end_time="07:38:30"/>
     <leg mode="walk"/>
@@ -2630,6 +3272,9 @@
   </plan>
 </person>
 <person id="214">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312593" y="5812216" end_time="09:12:00"/>
     <leg mode="car"/>
@@ -2641,6 +3286,9 @@
   </plan>
 </person>
 <person id="215">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314330" y="5812209" end_time="05:50:00"/>
     <leg mode="walk"/>
@@ -2652,6 +3300,9 @@
   </plan>
 </person>
 <person id="216">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314695" y="5812726" end_time="08:23:30"/>
     <leg mode="car"/>
@@ -2665,6 +3316,9 @@
   </plan>
 </person>
 <person id="217">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312209" y="5812396" end_time="08:37:30"/>
     <leg mode="walk"/>
@@ -2680,6 +3334,9 @@
   </plan>
 </person>
 <person id="218">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314590" y="5811896" end_time="05:55:00"/>
     <leg mode="walk"/>
@@ -2693,6 +3350,9 @@
   </plan>
 </person>
 <person id="219">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314464" y="5812248" end_time="09:05:30"/>
     <leg mode="pt"/>
@@ -2706,6 +3366,9 @@
   </plan>
 </person>
 <person id="220">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314143" y="5812291" end_time="08:32:30"/>
     <leg mode="walk"/>
@@ -2715,6 +3378,9 @@
   </plan>
 </person>
 <person id="221">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312832" y="5812017" end_time="07:39:30"/>
     <leg mode="walk"/>
@@ -2724,6 +3390,9 @@
   </plan>
 </person>
 <person id="222">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313958" y="5812811" end_time="17:55:30"/>
     <leg mode="car"/>
@@ -2733,6 +3402,9 @@
   </plan>
 </person>
 <person id="223">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314338" y="5812263" end_time="09:21:00"/>
     <leg mode="car"/>
@@ -2742,6 +3414,9 @@
   </plan>
 </person>
 <person id="224">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314731" y="5813012" end_time="13:31:00"/>
     <leg mode="walk"/>
@@ -2755,6 +3430,9 @@
   </plan>
 </person>
 <person id="225">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313294" y="5811902" end_time="09:02:00"/>
     <leg mode="car"/>
@@ -2768,6 +3446,9 @@
   </plan>
 </person>
 <person id="226">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313832" y="5812275" end_time="06:14:00"/>
     <leg mode="car"/>
@@ -2783,6 +3464,9 @@
   </plan>
 </person>
 <person id="227">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313849" y="5812410" end_time="07:09:30"/>
     <leg mode="car"/>
@@ -2796,6 +3480,9 @@
   </plan>
 </person>
 <person id="228">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313671" y="5812672" end_time="17:34:00"/>
     <leg mode="car"/>
@@ -2805,6 +3492,9 @@
   </plan>
 </person>
 <person id="229">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314351" y="5812373" end_time="19:11:30"/>
     <leg mode="car"/>
@@ -2814,6 +3504,9 @@
   </plan>
 </person>
 <person id="230">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314078" y="5813122" end_time="09:01:30"/>
     <leg mode="car"/>
@@ -2825,6 +3518,9 @@
   </plan>
 </person>
 <person id="231">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313734" y="5811747" end_time="05:32:30"/>
     <leg mode="car"/>
@@ -2838,6 +3534,9 @@
   </plan>
 </person>
 <person id="232">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313000" y="5811881" end_time="07:44:00"/>
     <leg mode="car"/>
@@ -2847,6 +3546,9 @@
   </plan>
 </person>
 <person id="233">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313958" y="5812811" end_time="08:39:30"/>
     <leg mode="car"/>
@@ -2858,6 +3560,9 @@
   </plan>
 </person>
 <person id="234">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314264" y="5812552" end_time="07:05:00"/>
     <leg mode="pt"/>
@@ -2867,6 +3572,9 @@
   </plan>
 </person>
 <person id="235">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314160" y="5813154" end_time="14:58:30"/>
     <leg mode="car"/>
@@ -2876,6 +3584,9 @@
   </plan>
 </person>
 <person id="236">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314668" y="5811887" end_time="09:33:00"/>
     <leg mode="walk"/>
@@ -2889,6 +3600,9 @@
   </plan>
 </person>
 <person id="237">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313878" y="5811981" end_time="08:05:00"/>
     <leg mode="car"/>
@@ -2902,6 +3616,9 @@
   </plan>
 </person>
 <person id="238">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312292" y="5812279" end_time="06:44:00"/>
     <leg mode="car"/>
@@ -2923,6 +3640,9 @@
   </plan>
 </person>
 <person id="239">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313312" y="5812048" end_time="09:19:30"/>
     <leg mode="car"/>
@@ -2934,6 +3654,9 @@
   </plan>
 </person>
 <person id="240">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311977" y="5812208" end_time="07:03:30"/>
     <leg mode="car"/>
@@ -2945,6 +3668,9 @@
   </plan>
 </person>
 <person id="241">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314452" y="5812304" end_time="06:01:30"/>
     <leg mode="bike"/>
@@ -2956,6 +3682,9 @@
   </plan>
 </person>
 <person id="242">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313671" y="5812672" end_time="09:35:00"/>
     <leg mode="car"/>
@@ -2967,6 +3696,9 @@
   </plan>
 </person>
 <person id="243">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313917" y="5813016" end_time="05:02:30"/>
     <leg mode="car"/>
@@ -2978,6 +3710,9 @@
   </plan>
 </person>
 <person id="244">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312662" y="5811752" end_time="09:05:30"/>
     <leg mode="car"/>
@@ -2989,6 +3724,9 @@
   </plan>
 </person>
 <person id="245">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311936" y="5812428" end_time="17:04:00"/>
     <leg mode="car"/>
@@ -3002,6 +3740,9 @@
   </plan>
 </person>
 <person id="246">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313602" y="5811971" end_time="05:33:00"/>
     <leg mode="car"/>
@@ -3013,6 +3754,9 @@
   </plan>
 </person>
 <person id="247">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312454" y="5812882" end_time="15:45:00"/>
     <leg mode="pt"/>
@@ -3024,6 +3768,9 @@
   </plan>
 </person>
 <person id="248">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314962" y="5812235" end_time="06:42:30"/>
     <leg mode="car"/>
@@ -3037,6 +3784,9 @@
   </plan>
 </person>
 <person id="249">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305700" y="5804902" end_time="07:52:30"/>
     <leg mode="car"/>
@@ -3054,6 +3804,9 @@
   </plan>
 </person>
 <person id="250">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305206" y="5805940" end_time="05:19:00"/>
     <leg mode="car"/>
@@ -3079,6 +3832,9 @@
   </plan>
 </person>
 <person id="251">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303690" y="5806316" end_time="06:01:30"/>
     <leg mode="car"/>
@@ -3094,6 +3850,9 @@
   </plan>
 </person>
 <person id="252">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305083" y="5805683" end_time="06:18:00"/>
     <leg mode="car"/>
@@ -3103,6 +3862,9 @@
   </plan>
 </person>
 <person id="253">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304390" y="5804478" end_time="20:11:00"/>
     <leg mode="car"/>
@@ -3112,6 +3874,9 @@
   </plan>
 </person>
 <person id="254">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305028" y="5804044" end_time="08:40:30"/>
     <leg mode="car"/>
@@ -3127,6 +3892,9 @@
   </plan>
 </person>
 <person id="255">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304303" y="5805823" end_time="08:30:30"/>
     <leg mode="car"/>
@@ -3136,6 +3904,9 @@
   </plan>
 </person>
 <person id="256">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304170" y="5805448" end_time="08:32:00"/>
     <leg mode="car"/>
@@ -3147,6 +3918,9 @@
   </plan>
 </person>
 <person id="257">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304838" y="5806313" end_time="08:36:00"/>
     <leg mode="car"/>
@@ -3170,6 +3944,9 @@
   </plan>
 </person>
 <person id="258">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304064" y="5805025" end_time="08:15:00"/>
     <leg mode="car"/>
@@ -3181,6 +3958,9 @@
   </plan>
 </person>
 <person id="259">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305342" y="5804104" end_time="15:01:00"/>
     <leg mode="walk"/>
@@ -3190,6 +3970,9 @@
   </plan>
 </person>
 <person id="260">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304546" y="5805174" end_time="08:32:00"/>
     <leg mode="car"/>
@@ -3203,6 +3986,9 @@
   </plan>
 </person>
 <person id="261">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304426" y="5804930" end_time="10:04:30"/>
     <leg mode="car"/>
@@ -3212,6 +3998,9 @@
   </plan>
 </person>
 <person id="262">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304937" y="5806300" end_time="08:35:00"/>
     <leg mode="car"/>
@@ -3227,6 +4016,9 @@
   </plan>
 </person>
 <person id="263">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303879" y="5805554" end_time="08:05:00"/>
     <leg mode="car"/>
@@ -3240,6 +4032,9 @@
   </plan>
 </person>
 <person id="264">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304592" y="5807014" end_time="08:31:00"/>
     <leg mode="bike"/>
@@ -3257,6 +4052,9 @@
   </plan>
 </person>
 <person id="265">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303977" y="5805544" end_time="08:53:00"/>
     <leg mode="car"/>
@@ -3270,6 +4068,9 @@
   </plan>
 </person>
 <person id="266">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303318" y="5806118" end_time="18:00:30"/>
     <leg mode="car"/>
@@ -3279,6 +4080,9 @@
   </plan>
 </person>
 <person id="267">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303747" y="5805244" end_time="08:16:00"/>
     <leg mode="car"/>
@@ -3290,6 +4094,9 @@
   </plan>
 </person>
 <person id="268">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305298" y="5804731" end_time="06:20:30"/>
     <leg mode="car"/>
@@ -3305,6 +4112,9 @@
   </plan>
 </person>
 <person id="269">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305561" y="5804867" end_time="08:39:00"/>
     <leg mode="car"/>
@@ -3324,6 +4134,9 @@
   </plan>
 </person>
 <person id="270">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304400" y="5804615" end_time="08:15:00"/>
     <leg mode="car"/>
@@ -3341,6 +4154,9 @@
   </plan>
 </person>
 <person id="271">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305574" y="5805750" end_time="08:35:30"/>
     <leg mode="car"/>
@@ -3350,6 +4166,9 @@
   </plan>
 </person>
 <person id="272">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303954" y="5805226" end_time="09:42:00"/>
     <leg mode="car"/>
@@ -3365,6 +4184,9 @@
   </plan>
 </person>
 <person id="273">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304920" y="5804893" end_time="09:52:30"/>
     <leg mode="car"/>
@@ -3384,6 +4206,9 @@
   </plan>
 </person>
 <person id="274">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305559" y="5806551" end_time="07:34:30"/>
     <leg mode="car"/>
@@ -3393,6 +4218,9 @@
   </plan>
 </person>
 <person id="275">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303681" y="5805568" end_time="08:05:00"/>
     <leg mode="car"/>
@@ -3404,6 +4232,9 @@
   </plan>
 </person>
 <person id="276">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="302856" y="5805935" end_time="08:47:00"/>
     <leg mode="car"/>
@@ -3413,6 +4244,9 @@
   </plan>
 </person>
 <person id="277">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304742" y="5804330" end_time="08:37:30"/>
     <leg mode="walk"/>
@@ -3422,6 +4256,9 @@
   </plan>
 </person>
 <person id="278">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303835" y="5804894" end_time="10:11:00"/>
     <leg mode="car"/>
@@ -3437,6 +4274,9 @@
   </plan>
 </person>
 <person id="279">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="302667" y="5806182" end_time="06:43:30"/>
     <leg mode="pt"/>
@@ -3450,6 +4290,9 @@
   </plan>
 </person>
 <person id="280">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304200" y="5805833" end_time="08:34:00"/>
     <leg mode="car"/>
@@ -3467,6 +4310,9 @@
   </plan>
 </person>
 <person id="281">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303050" y="5806124" end_time="08:33:30"/>
     <leg mode="car"/>
@@ -3486,6 +4332,9 @@
   </plan>
 </person>
 <person id="282">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304722" y="5804096" end_time="05:55:30"/>
     <leg mode="car"/>
@@ -3497,6 +4346,9 @@
   </plan>
 </person>
 <person id="283">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303584" y="5805707" end_time="15:12:00"/>
     <leg mode="car"/>
@@ -3508,6 +4360,9 @@
   </plan>
 </person>
 <person id="284">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="302770" y="5806175" end_time="05:02:30"/>
     <leg mode="pt"/>
@@ -3525,6 +4380,9 @@
   </plan>
 </person>
 <person id="285">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312509" y="5813267" end_time="08:56:30"/>
     <leg mode="walk"/>
@@ -3550,6 +4408,9 @@
   </plan>
 </person>
 <person id="286">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312512" y="5815036" end_time="08:02:30"/>
     <leg mode="car"/>
@@ -3565,6 +4426,9 @@
   </plan>
 </person>
 <person id="287">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312189" y="5813772" end_time="06:36:00"/>
     <leg mode="walk"/>
@@ -3578,6 +4442,9 @@
   </plan>
 </person>
 <person id="288">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313278" y="5814565" end_time="07:09:30"/>
     <leg mode="walk"/>
@@ -3593,6 +4460,9 @@
   </plan>
 </person>
 <person id="289">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313367" y="5814956" end_time="08:43:30"/>
     <leg mode="car"/>
@@ -3604,6 +4474,9 @@
   </plan>
 </person>
 <person id="290">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312198" y="5813164" end_time="06:54:00"/>
     <leg mode="car"/>
@@ -3613,6 +4486,9 @@
   </plan>
 </person>
 <person id="291">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312509" y="5813267" end_time="08:09:30"/>
     <leg mode="pt"/>
@@ -3622,6 +4498,9 @@
   </plan>
 </person>
 <person id="292">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312699" y="5814712" end_time="10:10:30"/>
     <leg mode="walk"/>
@@ -3631,6 +4510,9 @@
   </plan>
 </person>
 <person id="293">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313012" y="5813722" end_time="08:51:30"/>
     <leg mode="car"/>
@@ -3646,6 +4528,9 @@
   </plan>
 </person>
 <person id="294">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312442" y="5814620" end_time="12:22:00"/>
     <leg mode="car"/>
@@ -3659,6 +4544,9 @@
   </plan>
 </person>
 <person id="295">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313170" y="5815107" end_time="15:14:00"/>
     <leg mode="car"/>
@@ -3672,6 +4560,9 @@
   </plan>
 </person>
 <person id="296">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313414" y="5815197" end_time="08:47:00"/>
     <leg mode="car"/>
@@ -3695,6 +4586,9 @@
   </plan>
 </person>
 <person id="297">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312076" y="5814450" end_time="07:37:00"/>
     <leg mode="walk"/>
@@ -3706,6 +4600,9 @@
   </plan>
 </person>
 <person id="298">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312509" y="5813267" end_time="08:04:30"/>
     <leg mode="car"/>
@@ -3717,6 +4614,9 @@
   </plan>
 </person>
 <person id="299">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312917" y="5814880" end_time="07:31:00"/>
     <leg mode="car"/>
@@ -3732,6 +4632,9 @@
   </plan>
 </person>
 <person id="300">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312390" y="5814956" end_time="05:38:30"/>
     <leg mode="car"/>
@@ -3745,6 +4648,9 @@
   </plan>
 </person>
 <person id="301">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312892" y="5814672" end_time="08:37:00"/>
     <leg mode="car"/>
@@ -3760,6 +4666,9 @@
   </plan>
 </person>
 <person id="302">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312703" y="5813520" end_time="08:47:00"/>
     <leg mode="car"/>
@@ -3773,6 +4682,9 @@
   </plan>
 </person>
 <person id="303">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312752" y="5813414" end_time="08:09:00"/>
     <leg mode="car"/>
@@ -3790,6 +4702,9 @@
   </plan>
 </person>
 <person id="304">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312526" y="5814610" end_time="07:27:00"/>
     <leg mode="car"/>
@@ -3805,6 +4720,9 @@
   </plan>
 </person>
 <person id="305">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312305" y="5814985" end_time="08:43:00"/>
     <leg mode="walk"/>
@@ -3818,6 +4736,9 @@
   </plan>
 </person>
 <person id="306">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312452" y="5814742" end_time="08:41:00"/>
     <leg mode="car"/>
@@ -3839,6 +4760,9 @@
   </plan>
 </person>
 <person id="307">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312526" y="5814610" end_time="06:10:00"/>
     <leg mode="car"/>
@@ -3854,6 +4778,9 @@
   </plan>
 </person>
 <person id="308">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312678" y="5815158" end_time="11:03:00"/>
     <leg mode="car"/>
@@ -3871,6 +4798,9 @@
   </plan>
 </person>
 <person id="309">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313483" y="5815159" end_time="07:05:30"/>
     <leg mode="car"/>
@@ -3882,6 +4812,9 @@
   </plan>
 </person>
 <person id="310">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314888" y="5812520" end_time="07:37:00"/>
     <leg mode="walk"/>
@@ -3899,6 +4832,9 @@
   </plan>
 </person>
 <person id="311">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311977" y="5812208" end_time="08:05:30"/>
     <leg mode="car"/>
@@ -3912,6 +4848,9 @@
   </plan>
 </person>
 <person id="312">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313724" y="5813075" end_time="09:34:30"/>
     <leg mode="car"/>
@@ -3923,6 +4862,9 @@
   </plan>
 </person>
 <person id="313">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313528" y="5812640" end_time="13:08:30"/>
     <leg mode="car"/>
@@ -3936,6 +4878,9 @@
   </plan>
 </person>
 <person id="314">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314450" y="5811968" end_time="08:40:30"/>
     <leg mode="car"/>
@@ -3947,6 +4892,9 @@
   </plan>
 </person>
 <person id="315">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313534" y="5812688" end_time="08:43:30"/>
     <leg mode="car"/>
@@ -3962,6 +4910,9 @@
   </plan>
 </person>
 <person id="316">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314590" y="5811896" end_time="08:40:00"/>
     <leg mode="car"/>
@@ -3973,6 +4924,9 @@
   </plan>
 </person>
 <person id="317">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313830" y="5812826" end_time="05:43:00"/>
     <leg mode="car"/>
@@ -3984,6 +4938,9 @@
   </plan>
 </person>
 <person id="318">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314004" y="5812082" end_time="07:30:30"/>
     <leg mode="car"/>
@@ -4001,6 +4958,9 @@
   </plan>
 </person>
 <person id="319">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314719" y="5812912" end_time="09:06:30"/>
     <leg mode="walk"/>
@@ -4020,6 +4980,9 @@
   </plan>
 </person>
 <person id="320">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314645" y="5812336" end_time="08:15:00"/>
     <leg mode="car"/>
@@ -4033,6 +4996,9 @@
   </plan>
 </person>
 <person id="321">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314695" y="5812726" end_time="08:43:30"/>
     <leg mode="car"/>
@@ -4048,6 +5014,9 @@
   </plan>
 </person>
 <person id="322">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314083" y="5813164" end_time="08:37:00"/>
     <leg mode="car"/>
@@ -4069,6 +5038,9 @@
   </plan>
 </person>
 <person id="323">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313479" y="5811877" end_time="07:07:30"/>
     <leg mode="car"/>
@@ -4078,6 +5050,9 @@
   </plan>
 </person>
 <person id="324">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314295" y="5811931" end_time="08:07:00"/>
     <leg mode="walk"/>
@@ -4099,6 +5074,9 @@
   </plan>
 </person>
 <person id="325">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314181" y="5812670" end_time="08:38:30"/>
     <leg mode="car"/>
@@ -4112,6 +5090,9 @@
   </plan>
 </person>
 <person id="326">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314666" y="5812510" end_time="08:41:30"/>
     <leg mode="car"/>
@@ -4127,6 +5108,9 @@
   </plan>
 </person>
 <person id="327">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="315068" y="5812222" end_time="06:04:30"/>
     <leg mode="car"/>
@@ -4142,6 +5126,9 @@
   </plan>
 </person>
 <person id="328">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313058" y="5812078" end_time="09:45:30"/>
     <leg mode="walk"/>
@@ -4155,6 +5142,9 @@
   </plan>
 </person>
 <person id="329">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314464" y="5812248" end_time="08:31:30"/>
     <leg mode="car"/>
@@ -4168,6 +5158,9 @@
   </plan>
 </person>
 <person id="330">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314839" y="5812125" end_time="07:35:30"/>
     <leg mode="car"/>
@@ -4183,6 +5176,9 @@
   </plan>
 </person>
 <person id="331">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314143" y="5812291" end_time="08:50:30"/>
     <leg mode="pt"/>
@@ -4192,6 +5188,9 @@
   </plan>
 </person>
 <person id="332">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314748" y="5812263" end_time="08:43:00"/>
     <leg mode="car"/>
@@ -4207,6 +5206,9 @@
   </plan>
 </person>
 <person id="333">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313644" y="5812000" end_time="08:52:30"/>
     <leg mode="car"/>
@@ -4216,6 +5218,9 @@
   </plan>
 </person>
 <person id="334">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312831" y="5811651" end_time="08:35:30"/>
     <leg mode="car"/>
@@ -4229,6 +5234,9 @@
   </plan>
 </person>
 <person id="335">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312760" y="5812114" end_time="05:35:00"/>
     <leg mode="car"/>
@@ -4252,6 +5260,9 @@
   </plan>
 </person>
 <person id="336">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314205" y="5812816" end_time="15:18:30"/>
     <leg mode="walk"/>
@@ -4259,6 +5270,9 @@
   </plan>
 </person>
 <person id="337">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313786" y="5811992" end_time="12:13:30"/>
     <leg mode="walk"/>
@@ -4268,6 +5282,9 @@
   </plan>
 </person>
 <person id="338">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313543" y="5812012" end_time="16:18:30"/>
     <leg mode="car"/>
@@ -4277,6 +5294,9 @@
   </plan>
 </person>
 <person id="339">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314330" y="5812209" end_time="08:06:30"/>
     <leg mode="car"/>
@@ -4288,6 +5308,9 @@
   </plan>
 </person>
 <person id="340">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313136" y="5811853" end_time="08:44:00"/>
     <leg mode="car"/>
@@ -4301,6 +5324,9 @@
   </plan>
 </person>
 <person id="341">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312612" y="5812376" end_time="08:34:00"/>
     <leg mode="car"/>
@@ -4314,6 +5340,9 @@
   </plan>
 </person>
 <person id="342">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314719" y="5812912" end_time="08:48:00"/>
     <leg mode="car"/>
@@ -4323,6 +5352,9 @@
   </plan>
 </person>
 <person id="343">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312117" y="5812407" end_time="08:35:00"/>
     <leg mode="walk"/>
@@ -4334,6 +5366,9 @@
   </plan>
 </person>
 <person id="344">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312791" y="5812356" end_time="08:43:30"/>
     <leg mode="car"/>
@@ -4345,6 +5380,9 @@
   </plan>
 </person>
 <person id="345">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303635" y="5806194" end_time="15:11:00"/>
     <leg mode="car"/>
@@ -4356,6 +5394,9 @@
   </plan>
 </person>
 <person id="346">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305060" y="5806650" end_time="07:46:00"/>
     <leg mode="car"/>
@@ -4367,6 +5408,9 @@
   </plan>
 </person>
 <person id="347">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304381" y="5805588" end_time="08:36:30"/>
     <leg mode="walk"/>
@@ -4382,6 +5426,9 @@
   </plan>
 </person>
 <person id="348">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313282" y="5814599" end_time="15:26:00"/>
     <leg mode="pt"/>
@@ -4391,6 +5438,9 @@
   </plan>
 </person>
 <person id="349">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312014" y="5814564" end_time="11:57:30"/>
     <leg mode="car"/>
@@ -4406,6 +5456,9 @@
   </plan>
 </person>
 <person id="350">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313878" y="5811981" end_time="06:02:00"/>
     <leg mode="car"/>
@@ -4425,6 +5478,9 @@
   </plan>
 </person>
 <person id="351">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313858" y="5812488" end_time="08:36:00"/>
     <leg mode="walk"/>
@@ -4442,6 +5498,9 @@
   </plan>
 </person>
 <person id="352">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305233" y="5806262" end_time="14:32:30"/>
     <leg mode="car"/>
@@ -4453,6 +5512,9 @@
   </plan>
 </person>
 <person id="353">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304970" y="5804608" end_time="07:14:30"/>
     <leg mode="car"/>
@@ -4466,6 +5528,9 @@
   </plan>
 </person>
 <person id="354">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304346" y="5806368" end_time="09:30:30"/>
     <leg mode="car"/>
@@ -4477,6 +5542,9 @@
   </plan>
 </person>
 <person id="355">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304412" y="5804762" end_time="08:09:00"/>
     <leg mode="car"/>
@@ -4488,6 +5556,9 @@
   </plan>
 </person>
 <person id="356">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305479" y="5805862" end_time="11:03:00"/>
     <leg mode="car"/>
@@ -4503,6 +5574,9 @@
   </plan>
 </person>
 <person id="357">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304053" y="5805218" end_time="08:00:30"/>
     <leg mode="pt"/>
@@ -4512,6 +5586,9 @@
   </plan>
 </person>
 <person id="358">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305360" y="5806361" end_time="09:54:00"/>
     <leg mode="car"/>
@@ -4523,6 +5600,9 @@
   </plan>
 </person>
 <person id="359">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304845" y="5806403" end_time="10:45:00"/>
     <leg mode="car"/>
@@ -4534,6 +5614,9 @@
   </plan>
 </person>
 <person id="360">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304350" y="5805194" end_time="08:08:30"/>
     <leg mode="car"/>
@@ -4545,6 +5628,9 @@
   </plan>
 </person>
 <person id="361">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304426" y="5804930" end_time="10:44:30"/>
     <leg mode="car"/>
@@ -4558,6 +5644,9 @@
   </plan>
 </person>
 <person id="362">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="304437" y="5805073" end_time="07:10:30"/>
     <leg mode="bike"/>
@@ -4567,6 +5656,9 @@
   </plan>
 </person>
 <person id="363">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305700" y="5804902" end_time="08:02:30"/>
     <leg mode="car"/>
@@ -4576,6 +5668,9 @@
   </plan>
 </person>
 <person id="364">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305508" y="5806494" end_time="09:36:30"/>
     <leg mode="car"/>
@@ -4585,6 +5680,9 @@
   </plan>
 </person>
 <person id="365">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305138" y="5805126" end_time="10:31:30"/>
     <leg mode="car"/>
@@ -4594,6 +5692,9 @@
   </plan>
 </person>
 <person id="366">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305048" y="5806475" end_time="11:35:00"/>
     <leg mode="car"/>
@@ -4605,6 +5706,9 @@
   </plan>
 </person>
 <person id="367">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305121" y="5804704" end_time="08:23:00"/>
     <leg mode="car"/>
@@ -4616,6 +5720,9 @@
   </plan>
 </person>
 <person id="368">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="313170" y="5815107" end_time="12:17:00"/>
     <leg mode="car"/>
@@ -4625,6 +5732,9 @@
   </plan>
 </person>
 <person id="369">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312929" y="5814984" end_time="12:15:30"/>
     <leg mode="walk"/>
@@ -4634,6 +5744,9 @@
   </plan>
 </person>
 <person id="370">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312534" y="5814882" end_time="12:02:00"/>
     <leg mode="car"/>
@@ -4645,6 +5758,9 @@
   </plan>
 </person>
 <person id="371">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312127" y="5814781" end_time="07:54:30"/>
     <leg mode="car"/>
@@ -4654,6 +5770,9 @@
   </plan>
 </person>
 <person id="372">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311732" y="5814182" end_time="08:21:00"/>
     <leg mode="car"/>
@@ -4665,6 +5784,9 @@
   </plan>
 </person>
 <person id="373">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="311966" y="5815182" end_time="09:58:30"/>
     <leg mode="walk"/>
@@ -4674,6 +5796,9 @@
   </plan>
 </person>
 <person id="374">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312195" y="5814996" end_time="10:34:00"/>
     <leg mode="car"/>
@@ -4685,6 +5810,9 @@
   </plan>
 </person>
 <person id="375">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314049" y="5812466" end_time="11:14:30"/>
     <leg mode="pt"/>
@@ -4696,6 +5824,9 @@
   </plan>
 </person>
 <person id="376">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314592" y="5812886" end_time="12:06:30"/>
     <leg mode="car"/>
@@ -4705,6 +5836,9 @@
   </plan>
 </person>
 <person id="377">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="312027" y="5812417" end_time="11:35:00"/>
     <leg mode="car"/>
@@ -4718,6 +5852,9 @@
   </plan>
 </person>
 <person id="378">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314579" y="5812741" end_time="08:13:00"/>
     <leg mode="car"/>
@@ -4729,6 +5866,9 @@
   </plan>
 </person>
 <person id="379">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314645" y="5812336" end_time="10:38:30"/>
     <leg mode="car"/>
@@ -4742,6 +5882,9 @@
   </plan>
 </person>
 <person id="380">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="314645" y="5812336" end_time="08:12:00"/>
     <leg mode="car"/>
@@ -4755,6 +5898,9 @@
   </plan>
 </person>
 <person id="381">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305633" y="5805149" end_time="09:45:30"/>
     <leg mode="car"/>
@@ -4764,6 +5910,9 @@
   </plan>
 </person>
 <person id="382">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305332" y="5806016" end_time="11:36:30"/>
     <leg mode="car"/>
@@ -4777,6 +5926,9 @@
   </plan>
 </person>
 <person id="383">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >NonWorker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="305048" y="5806475" end_time="10:37:30"/>
     <leg mode="car"/>
@@ -4792,6 +5944,9 @@
   </plan>
 </person>
 <person id="384">
+  <attributes>
+    <attribute name="subpopulation" class="java.lang.String" >Worker</attribute>
+  </attributes>
   <plan selected="yes">
     <activity type="Home" x="303941" y="5806248" end_time="08:11:00"/>
     <leg mode="walk"/>
