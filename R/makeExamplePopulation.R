@@ -227,5 +227,5 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
 runexample<-function() {
   samplePercent<- 0.1 # use 0.1% sample of the census-like synthetic population (<5k persons)
   do.steps <- c(T,T,T,T,T,T,T,T) # which algorithm steps to run
-  makeExamplePopulation(samplePercent, numPlans, do.steps) 
+  makeExamplePopulation(samplePercent, numPlans, do.steps = do.steps) 
 }
