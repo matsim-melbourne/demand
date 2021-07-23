@@ -13,7 +13,11 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
   plans<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)
   close(gz1)
   
-  echo('Writing as MATSim XML (can take a while)\n')
+  # Change bike=>bicycle as required by baseline MATSim Melbourne scenario 
+  # Comment out the line below if keeping them "bike" is desired
+  plans<-mutate(plans,ArrivingMode=replace(ArrivingMode,ArrivingMode=="bike","bicycle"))
+
+    echo('Writing as MATSim XML (can take a while)\n')
   str=c(
     '<?xml version="1.0" encoding="utf-8"?>',
     '<!DOCTYPE population SYSTEM "http://www.matsim.org/files/dtd/population_v6.dtd">',
