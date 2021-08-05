@@ -14,8 +14,8 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
   close(gz1)
   
   # Change bike=>bicycle as required by baseline MATSim Melbourne scenario 
-  # Comment out the line below if keeping them "bike" is desired
-  plans<-mutate(plans,ArrivingMode=replace(ArrivingMode,ArrivingMode=="bike","bicycle"))
+  # uncomment  the line below if "bicycle" instead of "bike" is desired
+  # plans<-mutate(plans,ArrivingMode=replace(ArrivingMode,ArrivingMode=="bike","bicycle"))
 
     echo('Writing as MATSim XML (can take a while)\n')
   str=c(
