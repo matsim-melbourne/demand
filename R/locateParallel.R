@@ -25,9 +25,9 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
   discarded<-pp%>%group_by(AgentId)%>%filter(n()<3)%>%slice_head()%>%dplyr::select(AgentId,SA1_MAINCODE_2016)%>%as.data.frame()
   pp<-pp%>%group_by(AgentId)%>%filter(n()>=3)%>%ungroup()%>%as.data.frame()
   i<-0
-  homeSA1<-NA
+  # homeSA1<-NA
   nextHome<-NA
-  returnTripLength<-NA
+  # returnTripLength<-NA
   processed<-0
   primary_mode<-NA
   anchor_region<-FALSE
@@ -56,12 +56,13 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
       # primary_mode <- chooseMode( SA1_MAINCODE_2016_{i} )
       primary_mode<-chooseMode(pp[i,"SA1_MAINCODE_2016"]) # SA1_MAINCODE_2016_{i} choose a new mode
       
+      # ArrivingMode_{i+1} <- primary_mode
+      pp[i+1,"ArrivingMode"] <- primary_mode
+      
       # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome}, primary_mode, nextHome-i)
       validRegions<-getValidRegions(pp[nextHome,6], primary_mode, nextHome-i)
       #validProportion=sum(validRegions,na.rm=T)/length(validRegions)
 
-      # ArrivingMode_{i+1} <- primary_mode
-      pp[i+1,"ArrivingMode"] <- primary_mode
       # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
       pp[i+1,"SA1_MAINCODE_2016"] <- findLocationKnownMode(pp[i,"SA1_MAINCODE_2016"], # SA1_MAINCODE_2016_{i}
                                                            pp[i+1,"LocationType"],    # LocationType_{i+1}
@@ -87,9 +88,9 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
         anchor_region <- TRUE
       }
       # if a walker has switched to pt, then the home region's arriving mode must be pt
-      if(primary_mode=='walk' & pp[i+1,8]=='pt') {
+      if(primary_mode=='walk' & pp[i+1,"ArrivingMode"]=='pt') {
         # ArrivingMode_{nextHome} <- 'pt'
-        pp[nextHome,8] <- 'pt'
+        pp[nextHome,"ArrivingMode"] <- 'pt'
       }
       
       if(anchor_region==TRUE) {

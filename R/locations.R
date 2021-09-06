@@ -105,9 +105,9 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
   globalProb <- data.frame(interval=expectedDistances$distance,
                            expected_prop=diff_prop)
   expectedProbability <- rep(0,length(distances))
-  attractionProbability <- SA1_attributed[,match(destination_category,colnames(SA1_attributed))] %>%
+  attractionProbability <- SA1_attributed_dt[,get(destination_category)] %>%
     unlist() %>% as.vector()
-    
+  
   attractionProbability<-attractionProbability/sum(attractionProbability,na.rm=T) # normalise
   
   # calculating global destination attraction probabilities
@@ -187,7 +187,7 @@ calculateProbabilities <- function(SA1_id,destination_category,mode,allowedSA1=N
   # combinedDensity <- expectedProbability # this won't work on its own, sometimes all probs are 0.
   combinedProbability <- combinedDensity
   if(sum(combinedDensity,na.rm=T)>0) combinedProbability <- combinedDensity/sum(combinedDensity, na.rm=TRUE) # normalising here so the sum of the probabilities equals 1
-  probabilityDF <- data.frame(sa1_maincode_2016=sort(SA1_attributed$sa1_maincode_2016),
+  probabilityDF <- data.frame(sa1_maincode_2016=sort(SA1_attributed_dt$sa1_maincode_2016),
                               # distProb=distProbability,
                               # attractProb=attractionProbability,
                               combinedProb=combinedProbability) %>%
