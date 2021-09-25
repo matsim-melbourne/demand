@@ -353,30 +353,33 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     df<-aggregate(df,by=list(df$PlanId),FUN=head,1) # get the first row of each plan
     df<-df[df$Activity!="Home",] # get plans that do not start with a home activity
     # create the set of missing start-at-home activities 
-    df$Activity<-"Home"
-    df$EndBin<-df$StartBin
-    df$StartBin<-1
-    # now slot them in
-    dd<-rbind(plans,df[,colnames(plans)]) # first append them to the end of original set of activities
-    id<- c(plans$PlanId,(df$PlanId-0.5)) #give them half-rank indices ie where they should be slotted
-    dy<-dd[order(id),] # now use order to pluck the set in the correct order
-
-    plans<-dy
-    
+    if (nrow(df) > 0) {
+      df$Activity<-"Home"
+      df$EndBin<-df$StartBin
+      df$StartBin<-1
+      # now slot them in
+      dd<-rbind(plans,df[,colnames(plans)]) # first append them to the end of original set of activities
+      id<- c(plans$PlanId,(df$PlanId-0.5)) #give them half-rank indices ie where they should be slotted
+      dy<-dd[order(id),] # now use order to pluck the set in the correct order
+  
+      plans<-dy
+    }
     # Add missing Home activity at the end of plans
     df<-plans
     df<-aggregate(df,by=list(df$PlanId),FUN=tail,1) # get the last row of each plan
-    df<-df[df$Activity!="Home",] # get plans that do not start with a home activity
-    # create the set of missing start-at-home activities 
-    df$Activity<-"Home"
-    df$StartBin<-df$EndBin
-    df$EndBin<-numOfBins
-    # now slot them in
-    dd<-rbind(plans,df[,colnames(plans)]) # first append them to the end of original set of activities
-    id<- c(plans$PlanId,(df$PlanId+0.5)) #give them half-rank indices ie where they should be slotted
-    dy<-dd[order(id),] # now use order to pluck the set in the correct order
-    
-    plans<-dy
+    df<-df[df$Activity!="Home",] # get plans that do not end with a home activity
+    # create the set of missing end-at-home activities 
+    if (nrow(df) > 0) {
+      df$Activity<-"Home"
+      df$StartBin<-df$EndBin
+      df$EndBin<-numOfBins
+      # now slot them in
+      dd<-rbind(plans,df[,colnames(plans)]) # first append them to the end of original set of activities
+      id<- c(plans$PlanId,(df$PlanId+0.5)) #give them half-rank indices ie where they should be slotted
+      dy<-dd[order(id),] # now use order to pluck the set in the correct order
+      
+      plans<-dy
+    }
     
     # Finally stretch out any final Home activities that do not end in the last bin
     df<-plans

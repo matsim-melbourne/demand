@@ -34,6 +34,7 @@ make_groups<-function(vista18PersonsCsv,
                 "WDPERSWGT",
                 "WEPERSWGT")
     
+    colnames(data)[1] <- datacols[1]  # added to correct error in reading first column
     orig<-data[,datacols]
     
     # Split into weekday/weekend and set the weights (ie counts here) correctly
@@ -80,6 +81,7 @@ make_groups<-function(vista18PersonsCsv,
                 "SEX",
                 "Count")
     
+    colnames(data)[1] <- datacols[1]  # added to correct error in reading first column
     orig<-data[,datacols]
     
     infile <- filterCsv
