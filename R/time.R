@@ -94,7 +94,7 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outdir, outcsv, writ
   close(gz1)
   
   # use all but one cores
-  nrecords <- length(unique(plans$PlanId))
+  nrecords <- max(plans$PlanId,na.rm=T)
   ncores <- max(1,detectCores()-1)
   if(nrecords<=1000) ncores <- 1
   blockSize <- ceiling(nrecords/ncores)
