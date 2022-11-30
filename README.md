@@ -7,10 +7,10 @@ This script generates a sample population for Melbourne based on the [ABS 2016 c
 
 The population generation code (in the `./R` directory) is written in [R](https://www.r-project.org) and a working knowledge of R is assumed here.
 
-We use [`packrat`](https://rstudio.github.io/packrat/) to manage the R package dependencies for this project. To install the required R packages locally inside this repository, do:
+We use [`renv`](https://rstudio.github.io/renv/) to manage the R package dependencies for this project. To install the required R packages locally inside this repository, do:
 ```
-install.packages("packrat")
-packrat::restore()
+install.packages("renv")
+renv::restore()
 ```
 
 Ensure that your setup is working by running some quick tests:

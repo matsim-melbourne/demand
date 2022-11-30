@@ -35,30 +35,30 @@ jobs:
 
     - name: Cache R packages
       uses: actions/cache@v2
-      id: cache-packrat
+      id: cache-renv
       env:
-        cache-name: cache-packrat-lib
+        cache-name: cache-renv-lib
       with:
         path: |
-          ${{ github.workspace }}/demand/packrat/lib
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-1-${{ hashFiles('**/packrat.lock') }}
+          ${{ github.workspace }}/demand/renv/lib
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-1-${{ hashFiles('**/renv.lock') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-1-
 
-    - name: Install packrat and project dependencies
-      if: steps.cache-packrat.outputs.cache-hit != 'true'
+    - name: Install renv and project dependencies
+      if: steps.cache-renv.outputs.cache-hit != 'true'
       working-directory: demand
       shell: Rscript {0}
       run: |
         version
-        install.packages('packrat')
-        library(packrat)
-        packrat::restore()
+        install.packages('renv')
+        library(renv)
+        renv::restore()
 
     - name: Test demand generation
       working-directory: demand
       shell: Rscript {0}
       run: |
-        library(packrat)
-        packrat::restore()
+        library(renv)
+        renv::restore()
         testthat::test_dir("tests/testthat", stop_on_failure = TRUE)
