@@ -33,11 +33,6 @@ jobs:
         sudo chown -R $USER:$USER $GITHUB_WORKSPACE/demand
         sudo chown -R $USER:$USER $R_LIBS_USER
 
-    - name: fix for https://github.com/r-lib/actions/issues/559
-      uses: r-lib/actions/setup-r-dependencies@v2
-      with:
-        extra-packages: any::XML
-
     - name: Cache R packages
       uses: actions/cache@v2
       id: cache-packrat
