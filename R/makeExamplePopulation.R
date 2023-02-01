@@ -16,20 +16,20 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
   #   can be used to disable some plan steps such as when re-running the process 
   #   and we want to resume from where the previous run stopped/failed.
   
- 
+  
   # set any global options
   # see https://www.tidyverse.org/blog/2020/05/dplyr-1-0-0-last-minute-additions/
   options(dplyr.summarise.inform = FALSE)
-
+  
   # load general purpose utility functions
   source("util.R")
   
   
   dir.create(paste0('../',outputDir), showWarnings = FALSE, recursive=TRUE)
   sink(paste0('../',outputDir,'/makeExamplePopulation.log'), append=FALSE, split=TRUE) # sink to both console and log file
-
-  tryCatch({
   
+  tryCatch({
+    
     # Step 0: check input data and create the output dirs
     source("checksum.R", local=TRUE)
     if(!checksum()) {
@@ -95,10 +95,11 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
       sampleMelbourne2016Population(
         '../data', 
         samplePercent, 
-        paste0('../',outputDir,'/2.sample/sample.csv.gz')
+        paste0('../',outputDir,'/2.sample/sample.csv.gz'),
+        plansFile=ifelse(allDestinations,NA,sa1Subset)
       )
     }
-
+    
     # Step 3: match the census persons to VISTA groups
     if(do.steps[3]) {
       source('match.R', local=TRUE); 
@@ -108,7 +109,7 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
         paste0('../',outputDir,'/3.match/match_')
       )
     }
-
+    
     # Step 4: generate the VISTA-like trip chains
     if(do.steps[4]) {
       source('plan.R', local=TRUE);
