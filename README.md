@@ -32,3 +32,26 @@ Rscript -e 'setwd("R"); source("makeExamplePopulation.R"); runexample()'
 ```
 
 The script is quite verbose and takes a few minutes to run. If all went well you should get the MATSim population in `./output/8.xml/plan.xml`.
+
+## How to build a sample population for inner Melbourne:
+
+Here is an example of how to build a small sample population (0.1%) for inner Melbourne with census-like persons and VISTA-like activities and trips, for weekdays:
+```
+Rscript -e 'setwd("R"); source("makeExamplePopulation.R"); runexample(samplePercent=0.1,outputDir="example_inner_melbourne",sa1Subset="../data/smallRegion.csv,allDestinations=FALSE,do.steps=c(T,T,T,T,T,T,T,T))'
+```
+
+## Troubleshooting Windows installations
+
+[RTools](https://cran.csiro.au/bin/windows/Rtools/) is required in order to compile some libraries.
+
+Udunits2 may be required to get the sf library to work:
+```
+install.packages("udunits2")
+```
+
+If there are still issues with the sf package, try installing the development version:
+```
+install.packages("remotes")
+library(remotes)
+install_github("r-spatial/sf")
+```
