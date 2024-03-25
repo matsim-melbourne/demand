@@ -4,8 +4,7 @@ This directory contains all the data files required for generating the MATSim de
 
 Due to its size this data is stored outside this Git repository.
 
-1. To download the data go to [this Cloudstor location](https://cloudstor.aarnet.edu.au/plus/s/vILZLoFiqKU58Sp), select the `data` folder, and download it as shown in the image below.
-  ![How to download](./download.png)
+1. To download the data go to [this OSF location](https://osf.io/j56ux/files/osfstorage/6602001e9dc8ef001c89871d),  and download it.
 
 1. Once downloaded, extract the archive into this directory and unzip the `<file>.zip` files into subdirectories named `<files.zip>.dir`. 
 
