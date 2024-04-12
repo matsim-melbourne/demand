@@ -67,7 +67,8 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outdir, outcsv, writ
       offsets <- sample(1:60*binSizeInMins, length(secs)) # generate unique offsets of 30mins length max
       secs<-secs + offsets
       secs <- sort(secs) 
-      secs <- toHHMMSS(secs)
+      secs <- sapply(secs, toHHMMSS)
+      # secs <- toHHMMSS(secs)
       odd <-1:length(secs)%%2 != 0
       starts <- secs[odd]
       ends <- secs[!odd]
