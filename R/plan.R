@@ -6,6 +6,22 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
   # binCols <-3:50 # specifies that columns 3-50 correspond to 48 time bins, i.e., 30-mins each
   # outdir <-'../output/3.plan' 
   # writeInterval<-20 # write to file every so many plans
+
+  selectIndexFromProbabilities <- function(probs) {
+    if(is.null(probs) || sum(is.na(probs)) > 0 || length(probs) == 0) {
+      stop("probs is null, contains NAs, or is empty")
+    }
+    
+    # Normalize probabilities to ensure they sum to 1
+    probs <- probs / sum(probs)
+    
+    # Use sample() to select an index based on the weighted probabilities
+    # This approach ensures that the function will work even if probs is a vector
+    selected_index <- sample(x = 1:length(probs), size = 1, prob = probs)
+    
+    return(selected_index)
+  }
+
   
   suppressPackageStartupMessages(library(dplyr))
   # Suppress summarise info
