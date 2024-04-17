@@ -27,6 +27,9 @@ matchPersons<-function(filters, censuscsv, outcsv_prefix) {
     gender <- if(filters[row,]$sex=="M") "Male" else "Female"
     cohort <- orig %>%
       filter(Age >= filters[row,]$age_start & Age <= filters[row,]$age_end & Gender == gender)
+    # Get unique AgentIds for the group to avoid duplicates   
+    cohort <- cohort %>%
+      dplyr::distinct(AgentId, .keep_all = TRUE)
     outfile <- paste0(outcsv_prefix,filters[row,]$cluster_id_5,".csv")
     echo(paste0('Appending to ',outfile,'\n'))
     write.table(cohort, outfile, row.names=FALSE, col.names=FALSE, quote=TRUE, sep=",", append=TRUE)
