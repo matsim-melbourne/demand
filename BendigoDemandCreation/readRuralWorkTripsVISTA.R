@@ -1,6 +1,6 @@
 # Finding the rural trips based on the existing VISTA 12-16 trip dataset
 # Author: Sapan Tiwari
-# 27 May 2024
+# 28 May 2024
 
 rm(list = ls())
 
@@ -41,6 +41,10 @@ rural_trip_data <- work_related_data %>%
     str_detect(ORIGLGA, paste(victorian_regions, collapse = "|")) |
       str_detect(DESTLGA, paste(victorian_regions, collapse = "|"))
   )
+# Extract trips not originating or ending in the same LGA
+
+rural_trip_data <- rural_trip_data %>%
+  filter(ORIGLGA != DESTLGA)
 
 unique_values_ORIGLGA <- unique(rural_trip_data$ORIGLGA)
 
@@ -93,6 +97,9 @@ trip_counts <- full_join(startime_counts, arrtime_counts, by = "BIN")
 total_startime_trips <- sum(trip_counts$NUM_TRIPS_STARTIME)
 total_arrtime_trips <- sum(trip_counts$NUM_TRIPS_ARRTIME)
 
+
+# print the number of trips starting in different bins
+
 # Calculating the probabilities (Which is the number of trips in that bin over total number of trips)
 trip_counts <- trip_counts %>%
   mutate(
@@ -117,7 +124,27 @@ trip_counts_long <- trip_counts %>%
   pivot_longer(cols = c(NUM_TRIPS_STARTIME, NUM_TRIPS_ARRTIME),
                names_to = "Time_Type", values_to = "Num_Trips")
 
-# Bar plot
+#Plot the times separately -----------------------------------------------
+
+# Plot for STARTIME
+ggplot(trip_counts, aes(x = BIN, y = NUM_TRIPS_STARTIME)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  scale_x_continuous(breaks = seq(0, 1440, by = 60)) +
+  labs(title = "Number of Trips by Time Bin (STARTIME)",
+       x = "Time Bin (minutes)",
+       y = "Number of Trips") +
+  theme_minimal()
+
+# Plot for ARRTIME
+ggplot(trip_counts, aes(x = BIN, y = NUM_TRIPS_ARRTIME)) +
+  geom_bar(stat = "identity", fill = "red") +
+  scale_x_continuous(breaks = seq(0, 1440, by = 60)) +
+  labs(title = "Number of Trips by Time Bin (ARRTIME)",
+       x = "Time Bin (minutes)",
+       y = "Number of Trips") +
+  theme_minimal()
+
+# Bar plot both arritime and startime together
 ggplot(trip_counts_long, aes(x = BIN, y = Num_Trips, fill = Time_Type)) +
   geom_bar(stat = "identity", position = "dodge") +
   scale_x_continuous(breaks = seq(0, 1440, by = 60)) +
