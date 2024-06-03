@@ -1,10 +1,12 @@
 # File to create the csv plan for dummy trips
 # Author: Sapan Tiwari
-# 23 May 2024
+# 3 June 2024
 
-#  The input file here is the table downloaded from ABS, which contains the home locations for entire victoria (SA4 level), work location CoGB (SA2) and mode of travel
+#  The input file here is the table downloaded from ABS, which contains the home locations for entire victoria (SA2 level), work location CoGB (SA2) and mode of travel
 
-# IN the end it produces a dummyPlan.csv file, which can be used to get the dummy plans in csv
+# IN the end it produces a dummyPlan.csv file, which can be used to get the dummy plans in csv. It uses start time distribution from readRuralWorkTripsVISTA.R, which generates
+
+# distributions based on the work trips from VISTA, which goes to other rural areas.
 
 # Load necessary libraries
 library(dplyr)
@@ -14,7 +16,7 @@ library(tidyr)
 
 # Read the table extraced from ABS
 
-data <- read_csv("../dataJTW/SA4_home_to_SA2_work_withMode.csv")
+data <- read_csv("../dataJTW/SA2_home_to_SA2_work_withMode.csv")
 
 # Fill the empty rows with the location name apprearing just before this row
 
@@ -31,43 +33,14 @@ data$Work <- ifelse(data$Work == "", NA, data$Work)
 data$Home <- fill_down(data$Home)
 data$Work <- fill_down(data$Work)
 
-# Remove the non applicable mode
+# Remove the non applicable mode and rows with 0 trips
 
 filtered_data <- data %>%
-  filter(Mode != "Not applicable")
+  filter(Mode != "Not applicable", Trip > 0)
 
-# Merge all the Greater Melbourne locations
-
-merge_locations <- c(
-  "Melbourne - North East", 
-  "Melbourne - South East", 
-  "Melbourne - Inner South", 
-  "Melbourne - Inner East", 
-  "Melbourne - Outer East"
-)
-
-filtered_data2  <- filtered_data %>%
-  mutate(Home = ifelse(Home %in% merge_locations, "Melbourne - All South and East", Home))
 
 #Check the number of trips for each home location
-home_trips <- filtered_data2 %>%
-  group_by(Home) %>%
-  summarize(Total_Trips = sum(Trip, na.rm = TRUE))
-
-# Filter home locations with more than 100 trips
-home_locations_over_100 <- home_trips %>%
-  filter(Total_Trips > 100) %>%
-  pull(Home)
-
-filtered_data3 <- filtered_data2 %>%
-  filter(Home %in% home_locations_over_100)
-
-# Remove 'Bendigo' location to only focus on outside trips
-filtered_data3 <- filtered_data3 %>%
-  filter(Home != "Bendigo")
-
-# Check the remaining trips
-home_trips2 <- filtered_data3 %>%
+home_trips <- filtered_data %>%
   group_by(Home) %>%
   summarize(Total_Trips = sum(Trip, na.rm = TRUE))
 
@@ -91,9 +64,21 @@ simplified_data <- filtered_data3 %>%
 dummy_activities <- simplified_data %>%
   filter(Mode != "WFH") %>%
   mutate(
-    Trip_ID = row_number(),
-    Trip_Start_Time = 540
-  ) %>%
+    Trip_ID = row_number()) 
+
+
+# load the probability distribution
+
+probability_data <- read_csv("../data1216/output/probability_data.csv")
+
+start_time_with_distribution <- function(probability_data) {
+  sample(probability_data$BIN, 1, prob = probability_data$PROB_STARTIME)
+}
+
+dummy_activities <- dummy_activities %>%
+  rowwise() %>%
+  mutate(Trip_Start_Time = start_time_with_distribution(probability_data)) %>%
+  ungroup() %>%
   select(Trip_ID, Home, Work, Mode, Trip_Start_Time)
 
 #count the trips for each mode
@@ -104,4 +89,4 @@ mode_counts <- dummy_activities %>%
 
 
 # Write the dummy plans to a CSV file ---------------------------------
-write_csv(dummy_activities, "../dataJTW/Dummy_Activities2.csv")
+write_csv(dummy_activities, "../dataJTW/Dummy_Activities.csv")

@@ -1,6 +1,8 @@
 # Finding the rural trips based on the existing VISTA 12-16 trip dataset
 # Author: Sapan Tiwari
-# 28 May 2024
+# 03 June 2024
+
+# The input is the VISTA trip data, and at the end it provides the departure and arrival time distributions for rural work trips.
 
 rm(list = ls())
 
@@ -20,7 +22,7 @@ relevant_data <- data %>% select(
   DESTPURP1, DESTPURP2, DESTSA1, DESTSA3, DESTLGA, LINKMODE, Mode1
 )
 
-work_related_data <- relevant_data %>% filter(ORIGPURP1 == "Work Related" | DESTPURP1 == "Work Related")
+work_related_data <- relevant_data %>% filter(ORIGPLACE2 == "Survey Home" & DESTPURP1 == "Work Related")
 
 
 # Define the list of Victorian region names (https://www.rdv.vic.gov.au/victorias-regions#region-listing)
