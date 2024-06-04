@@ -1,6 +1,6 @@
 # File to create the csv plan for dummy trips
 # Author: Sapan Tiwari
-# 3 June 2024
+# 4 June 2024
 
 #  The input file here is the table downloaded from ABS, which contains the home locations for entire victoria (SA2 level), work location CoGB (SA2) and mode of travel
 
@@ -58,6 +58,16 @@ simplified_data <- filtered_data3 %>%
     Mode == "Other Mode" ~ "Car"
   )) %>%
   uncount(Trip)
+
+# Define the sampling function (chooses randomly)
+
+sample_trips <- function(data, sample_size) {
+  sampled_data <- data %>% sample_frac(sample_size)
+  return(sampled_data)
+}
+
+#Publish 10% population
+sampled_data <- sample_trips(simplified_data, 0.1)
 
 # making the dummies and removing WFH
 
