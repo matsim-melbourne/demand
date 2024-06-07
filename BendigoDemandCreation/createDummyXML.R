@@ -1,6 +1,6 @@
 # File to create the csv plan for dummy trips
 # Author: Sapan Tiwari
-# 23 May 2024
+# 07 June 2024
 
 
 # This script uses the dummyPlan.csv created and gives an xml file containing the plans.
@@ -10,10 +10,10 @@ library(readr)
 library(xml2)
 
 writePlanAsMATSimXML <- function(outxml, writeInterval) {
-  options(scipen=999) # disable scientific notation for more readable filenames with small sample sizes
+  options(scipen=999)
   
   # Read in the plans
-  plans <- read_csv("../dataJTW/Dummy_Activities.csv")
+  plans <- read_csv("../dataJTW/Dummy_Activities_with_Coord.csv")
   
   # Write XML header
   cat('<?xml version="1.0" encoding="utf-8"?>\n', file = outxml)
@@ -36,9 +36,9 @@ writePlanAsMATSimXML <- function(outxml, writeInterval) {
     popnWriteBuffer <- paste0(popnWriteBuffer, '  <plan selected="yes">\n')
     
     # Add the activity and leg
-    popnWriteBuffer <- paste0(popnWriteBuffer, '    <activity type="home" x="', current_plan$Home, '" y="', current_plan$Home, '" end_time="' , current_plan$Trip_Start_Time, '"/>\n')
+    popnWriteBuffer <- paste0(popnWriteBuffer, '    <activity type="home" x="', current_plan$x_orig, '" y="', current_plan$y_orig, '" end_time="' , current_plan$Trip_Start_Time, '"/>\n')
     popnWriteBuffer <- paste0(popnWriteBuffer, '    <leg mode="', current_plan$Mode, '"/>\n')
-    popnWriteBuffer <- paste0(popnWriteBuffer, '    <activity type="work" x="', current_plan$Work, '" y="', current_plan$Work, '"/>\n')
+    popnWriteBuffer <- paste0(popnWriteBuffer, '    <activity type="work" x="', current_plan$x_dest, '" y="', current_plan$y_dest, '"/>\n')
     
     # Close the person element
     popnWriteBuffer <- paste0(popnWriteBuffer, '  </plan>\n')
