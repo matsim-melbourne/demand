@@ -137,6 +137,11 @@ dummy_activities <- dummy_activities %>%
 dummy_activities <- dummy_activities %>%
   left_join(centroidSA2_work, by = "Work")
 
+# Filter out rows with NA coordinates
+
+dummy_activities <- dummy_activities %>%
+  filter(!is.na(x_orig) & !is.na(y_orig) & !is.na(x_dest) & !is.na(y_dest))
+
 
 # Write the dummy plans to a CSV file ---------------------------------
 write_csv(dummy_activities, "../dataJTW/Dummy_Activities_with_Coord.csv")
