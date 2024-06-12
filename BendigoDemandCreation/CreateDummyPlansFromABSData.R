@@ -145,3 +145,33 @@ dummy_activities <- dummy_activities %>%
 
 # Write the dummy plans to a CSV file ---------------------------------
 write_csv(dummy_activities, "../dataJTW/Dummy_Activities_with_Coord.csv")
+
+# plot the probability distribution matching for dummy activities and initial distribution--------------------------------------------------------------------------------------------------------------
+
+total_trips_dummy <- nrow(dummy_activities)
+
+# Prepare dummy activities data with fractions
+dummy_data <- dummy_activities %>%
+  group_by(Trip_Start_Time) %>%
+  summarize(Fraction = n() / total_trips_dummy) %>%
+  mutate(Source = "Dummy Trips")
+
+probability_data <- probability_data %>%
+  mutate(Source = "Probability from VISTA") %>%
+  select(Trip_Start_Time, Fraction, Source)
+
+# Combine both data
+
+combined_data <- bind_rows(dummy_data, probability_data)
+
+# Plot side-by-side histograms
+
+ggplot(combined_data, aes(x = Trip_Start_Time, y = Fraction, fill = Source)) +
+  geom_col(position = position_dodge(width = 15), color = "black", alpha = 0.7) +
+  theme_minimal() +
+  labs(title = "Fraction Distribution of Trip Start Times",
+       x = "Trip Start Time (in minutes from midnight)",
+       y = "Fraction",
+       fill = "Source") +
+  scale_fill_manual(values = c("Dummy Trips" = "blue", "Probability from VISTA" = "red")) +
+  theme(legend.position = "top")
