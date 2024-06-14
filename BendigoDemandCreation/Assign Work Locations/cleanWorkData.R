@@ -4,12 +4,14 @@ suppressPackageStartupMessages(library(data.table))
 # Suppress summarise info
 options(dplyr.summarise.inform = FALSE)
 
-# mode choice by SA3
+cleanWorkData <- function(outputDir){
+
+# mode choice by sa2
 sa2_work_mode <- read.csv("../dataWorkLocation/sa2_work_mode.csv") %>%
   select(sa2,age_group="MTWP.Method.of.Travel.to.Work",wfh=WFH,walk=WALK,bike=BIKE,pt=PT,car=CAR) %>%
   fill(sa2)
 
-# distance distribution between SA3 pairs
+# distance distribution between sa2 pairs
 sa2_work_dist <- read.csv("../dataWorkLocation/sa2_to_sa2_work_distances.csv") %>%
   fill(sa2_home)
 
@@ -135,7 +137,7 @@ write.csv(distanceMatrixIndexWork,"../dataWorkLocation/dataOutput/distanceMatrix
 
 
 
-# 1 select the number of work locations for each sa3->sa3. Make sure they're equal to the number of homes!
+# 1 select the number of work locations for each sa2->sa2. Make sure they're equal to the number of homes!
 #
 
 distanceMatrix <<- readRDS(file="../dataWorkLocation/data/distanceMatrix.rds") # note '<<' to make it global
@@ -146,8 +148,8 @@ distanceMatrixInt <- readRDS(file="../dataWorkLocation/dataOutput/distanceMatrix
 distanceMatrixWork <- distanceMatrixInt[,distanceMatrixIndexWorkIndicies]
 saveRDS(distanceMatrixWork,"../dataWorkLocation/dataOutput/distanceMatrixWork.rds")
 
-# tmp <- apply(distanceMatrixInt[1:20,1:20],MARGIN=c(1,2),FUN=as.integer)
 
+}
 
 # Some SA1s ended up snapping their centroid to the same node in the road
 # network so we need to use an index.
