@@ -1,6 +1,7 @@
-makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
+makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output01",
                                 sa1Subset=NA, allDestinations=TRUE,
-                                do.steps=c(T,T,T,T,T,T,T,T)) {
+                                do.steps=c(T,T,T,T,T,T,T,T),
+                                output_crs=7899) {
   # samplePercent:
   #   percent of the 2016 census-based Melbourne synthetic population to sample
   # numPlans:
@@ -15,7 +16,9 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
   # do.steps:
   #   can be used to disable some plan steps such as when re-running the process 
   #   and we want to resume from where the previous run stopped/failed.
-  
+  # output_crs:
+  #   [AJ]Orignially both network and demand were EPSG 28355, network is changed
+  #   to EPSG 7899. This parameter is convert original CRS to new CRS
   
   # set any global options
   # see https://www.tidyverse.org/blog/2020/05/dplyr-1-0-0-last-minute-additions/
@@ -85,7 +88,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
         '../data/addresses.csv.gz',
         '../data/expectedDistances.rds',
         '../data/vistaSummaries/destinationProbabilitiesSA3.rds',
-        plansFile=ifelse(allDestinations,NA,sa1Subset)
+        plansFile=ifelse(allDestinations,NA,sa1Subset),
+        output_crs
       )
     }
     
@@ -160,7 +164,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
       setwd(wd)
       planToSpatial(
         read.csv(paste0('../',outputDir,'/5.locate/plan.csv')),
-        paste0('../',outputDir,'/5.locate/plan.sqlite')
+        paste0('../',outputDir,'/5.locate/plan.sqlite'),
+        output_crs
       )
       source('locateVISTA.R', local=TRUE);
       analyseLocate(paste0('../',outputDir,'/5.locate'))
@@ -191,7 +196,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
       setwd(wd)
       placeToSpatial(
         read.csv(paste0('../',outputDir,'/6.place/plan.csv')),
-        paste0('../',outputDir,'/6.place/plan.sqlite')
+        paste0('../',outputDir,'/6.place/plan.sqlite'),
+        output_crs
       )
     }
     if(do.steps[7]) {
@@ -228,5 +234,5 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output",
 runexample<-function() {
   samplePercent<- 0.1 # use 0.1% sample of the census-like synthetic population (<5k persons)
   do.steps <- c(T,T,T,T,T,T,T,T) # which algorithm steps to run
-  makeExamplePopulation(samplePercent, numPlans, do.steps = do.steps) 
+  makeExamplePopulation(samplePercent, numPlans, do.steps = do.steps, output_crs=7899) 
 }

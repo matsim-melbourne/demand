@@ -17,6 +17,7 @@ test_that("Assigning SA1s to activities works", {
   outdir<-'./tests/actual/5.locate'
   outcsv<-'./tests/actual/5.locate/plan.csv'
   dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
+  outputcrs <- 7899
   # locateParallel uses doParallel which must be run from the project root 
   # to ensure packrat libraries are source correctly by the workers.
   # See https://stackoverflow.com/a/36901524.
@@ -28,7 +29,7 @@ test_that("Assigning SA1s to activities works", {
   )
   setwd(wd) 
   capture_output(
-    planToSpatial(read.csv("../actual/5.locate/plan.csv"),'../actual/5.locate/plan.sqlite')
+    planToSpatial(read.csv("../actual/5.locate/plan.csv"),'../actual/5.locate/plan.sqlite',outputcrs)
   )
   
   files<-c(

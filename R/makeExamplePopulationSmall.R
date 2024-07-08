@@ -1,4 +1,4 @@
-makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,T,T)) {
+makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,T,T), output_crs=7899) {
   # samplePercent:
   #   percent of the 2016 census-based Melbourne synthetic population to sample
   # numPlans:
@@ -75,7 +75,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
         '../data/SA1centroids.csv.gz', 
         '../data/addresses.csv.gz',
         '../data/expectedDistances.rds',
-        plansFile="../../small-region/filteredRegions.csv"
+        plansFile="../../small-region/filteredRegions.csv",
+        output_crs
       )
     }
     
@@ -138,7 +139,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       setwd(wd) 
       planToSpatial(
         read.csv("../outputSmall/5.locate/plan.csv"),
-        '../outputSmall/5.locate/plan.sqlite'
+        '../outputSmall/5.locate/plan.sqlite',
+        output_crs
       )
     }
     if(do.steps[6]) {
@@ -165,7 +167,8 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
       setwd(wd)
       placeToSpatial(
         read.csv("../outputSmall/6.place/plan.csv"),
-        '../outputSmall/6.place/plan.sqlite'
+        '../outputSmall/6.place/plan.sqlite',
+        output_crs
       )
     }
     if(do.steps[7]) {
@@ -202,5 +205,5 @@ makeExamplePopulation<-function(samplePercent, numPlans, do.steps=c(T,T,T,T,T,T,
 runexample<-function() {
   samplePercent<- 0.1 # use 0.1% sample of the census-like synthetic population (<5k persons)
   do.steps <- c(T,T,T,T,T,T,T,T) # which algorithm steps to run
-  makeExamplePopulation(samplePercent, numPlans, do.steps) 
+  makeExamplePopulation(samplePercent, numPlans, do.steps, output_crs = 7899) 
 }
