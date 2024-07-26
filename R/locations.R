@@ -374,8 +374,8 @@ toSA3 <- function(id) as.integer(substr(id,1,5))
 # lines where the non-spatial data is for the destination.
 # Need to supply a plan and an output file location. I recommend using the 
 # .sqlite extension instead of shapefiles.
-# planToSpatial(read.csv("output/5.locate/plan.csv"),'output/5.locate/plan.sqlite')
-planToSpatial <- function(pp,fileLocation) {
+# planToSpatial(read.csv("output/5.locate/plan.csv"),'output/5.locate/plan.sqlite',output_crs=7899)
+planToSpatial <- function(pp,fileLocation,output_crs) {
   
   ppp <- pp %>%
     mutate(SA1_MAINCODE_2016=as.numeric(SA1_MAINCODE_2016)) %>%
@@ -387,7 +387,7 @@ planToSpatial <- function(pp,fileLocation) {
     inner_join(sa1_centroids, by=c("SA1_MAINCODE_2016"="sa1_maincode_2016")) %>%
     # turn the two SA1 centroids into line geometry
     mutate(GEOMETRY=paste0("LINESTRING(",X.x," ",Y.x,",",X.y," ",Y.y,")")) %>%
-    st_as_sf(wkt = "GEOMETRY", crs = 28355) %>%
+    st_as_sf(wkt = "GEOMETRY", crs = output_crs) %>%
     dplyr::select(PlanId,Activity,StartBin,EndBin,AgentId,SA1_MAINCODE_2016,
                   LocationType,ArrivingMode,Distance)
   # Write the spatial dataframe to file
@@ -398,8 +398,8 @@ planToSpatial <- function(pp,fileLocation) {
 # lines where the non-spatial data is for the destination.
 # Need to supply a plan and an output file location. I recommend using the 
 # .sqlite extension instead of shapefiles.
-# placeToSpatial(read.csv("output/6.place/plan.csv"),'output/6.place/plan.sqlite')
-placeToSpatial <- function(pp,fileLocation) {
+# placeToSpatial(read.csv("output/6.place/plan.csv"),'output/6.place/plan.sqlite',output_crs)
+placeToSpatial <- function(pp,fileLocation,output_crs) {
   # pp=read.csv("../output/6.place/plan.csv")
   # fileLocation='output/6.place/plan.sqlite'
   ppp <- pp %>%
@@ -407,7 +407,7 @@ placeToSpatial <- function(pp,fileLocation) {
     # turn the two SA1 centroids into line geometry
     mutate(GEOMETRY=paste0("LINESTRING(",lag(x)," ",lag(y),",",x," ",y,")")) %>%
     filter(!is.na(ArrivingMode)) %>%
-    st_as_sf(wkt = "GEOMETRY", crs = 28355) # %>%
+    st_as_sf(wkt = "GEOMETRY", crs = output_crs) # %>%
     # some legs end up at the same address, this would remove them
     # filter(st_is_valid(.))
   # Write the spatial dataframe to file
@@ -418,7 +418,7 @@ placeToSpatial <- function(pp,fileLocation) {
     # turn the two SA1 centroids into line geometry
     mutate(GEOMETRY=paste0("POINT(",x," ",y,")")) %>%
     filter(!is.na(ArrivingMode)) %>%
-    st_as_sf(wkt = "GEOMETRY", crs = 28355)
+    st_as_sf(wkt = "GEOMETRY", crs = output_crs)
   st_write(ppp2,fileLocation,delete_layer=TRUE,layer="points",quiet=TRUE)
 }
 

@@ -21,6 +21,16 @@ jobs:
         sudo apt update
         sudo apt-get install libudunits2-dev libgdal-dev
 
+    - name: Install specific version of R
+      run: |
+        sudo apt update
+        sudo apt-get install dirmngr gnupg apt-transport-https ca-certificates software-properties-common
+        echo 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' | sudo tee /etc/apt/sources.list.d/cran.list
+        gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+        gpg -a --export E298A3A825C0D65DFD57CBB651716619E084DAB9 | sudo apt-key add -
+        sudo apt-get update
+        sudo apt-get install r-base=4.2.3-1.2004.0 r-recommended=4.2.3-1.2004.0 --allow-downgrades
+        
     - name: Clone matsim-melbourne/demand
       uses: actions/checkout@v2
       with:

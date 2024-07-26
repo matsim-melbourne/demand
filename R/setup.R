@@ -93,7 +93,8 @@ locations_setup<-function(setupDir,
                           addressesFile,
                           distancesFile,
                           destinationsFile,
-                          plansFile=NA) {
+                          plansFile=NA,
+                          output_crs) {
   
   dir.create(setupDir, showWarnings=FALSE, recursive=TRUE)
   
@@ -150,6 +151,18 @@ locations_setup<-function(setupDir,
   # These coordinates are in EPSG:28355, which is a projected coordinate system.
   echo(paste0("Reading ", addressesFile, "\n"))
   addresses <- read.csv(gzfile(addressesFile))
+  
+  # the inputs are in EPSG 28355, changing them to the output crs
+  # if the input CRS is changed, the code needs to be adjusted
+  # to do: Make input CRS to be a parameter as well
+  addresses <- addresses %>%
+    mutate(GEOMETRY = paste0("POINT(", X, " ", Y, ")")) %>%
+    st_as_sf(wkt = "GEOMETRY", crs = 28355) %>%
+    st_transform(crs = output_crs) %>%
+    dplyr::select(-X, -Y) %>% 
+    cbind(st_coordinates(.)) %>%
+    st_drop_geometry() 
+
   if (filterSa1s) addresses <- addresses%>%filter(sa1_maincode_2016%in%sa1s)
   outfile<-paste0(setupDir,"/locAddresses.rds")
   echo(paste0("Writing ", outfile, "\n"))
@@ -157,6 +170,18 @@ locations_setup<-function(setupDir,
   
   echo(paste0("Reading ", sa1CentroidsFile, "\n"))
   sa1Centroids <- read.csv(gzfile(sa1CentroidsFile))
+  
+  # the inputs are in EPSG 28355, changing them to the output crs
+  # if the input CRS is changed, the code needs to be adjusted
+  # to do: Make input CRS to be a parameter as well
+  sa1Centroids <- sa1Centroids %>%
+    mutate(GEOMETRY = paste0("POINT(", X, " ", Y, ")")) %>%
+    st_as_sf(wkt = "GEOMETRY", crs = 28355) %>%
+    st_transform(crs = output_crs) %>%
+    dplyr::select(-X, -Y) %>% 
+    cbind(st_coordinates(.)) %>%
+    st_drop_geometry() 
+  
   if (filterSa1s) sa1Centroids <- sa1Centroids%>%filter(sa1_maincode_2016%in%sa1s)
   outfile<-paste0(setupDir,"/locSa1Centroids.rds")
   echo(paste0("Writing ", outfile, "\n"))

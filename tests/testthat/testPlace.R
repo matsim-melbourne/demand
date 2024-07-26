@@ -25,7 +25,7 @@ test_that("Assigning coordinates to activities works", {
   )
   setwd(wd) 
   capture_output(
-    placeToSpatial(read.csv("../actual/6.place/plan.csv"),'../actual/6.place/plan.sqlite')
+    placeToSpatial(read.csv("../actual/6.place/plan.csv"),'../actual/6.place/plan.sqlite', output_crs)
   )
   expect_true(file.exists('../actual/6.place/plan.sqlite'))
   
