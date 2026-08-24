@@ -1,74 +1,41 @@
+name: build
+
 on:
   push:
-    branches: '*'
   pull_request:
-    branches: '*'
 
-name: build
+permissions:
+  contents: read
 
 jobs:
   build:
-
     runs-on: ubuntu-22.04
 
-    env:
-      R_LIBS_USER: ${{ github.workspace }}/RLibs
-
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-    - name: Install required packages
-      run: |
-        sudo apt update
-        sudo apt-get install libudunits2-dev libgdal-dev
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.2.3'
+          use-public-rspm: true
 
-    - name: Install specific version of R
-      run: |
-        sudo apt update
-        sudo apt-get install dirmngr gnupg apt-transport-https ca-certificates software-properties-common
-        echo 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' | sudo tee /etc/apt/sources.list.d/cran.list
-        gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-        gpg -a --export E298A3A825C0D65DFD57CBB651716619E084DAB9 | sudo apt-key add -
-        sudo apt-get update
-        sudo apt-get install r-base=4.2.3-1.2004.0 r-recommended=4.2.3-1.2004.0 --allow-downgrades
-        
-    - name: Clone matsim-melbourne/demand
-      uses: actions/checkout@v2
-      with:
-        repository: matsim-melbourne/demand
-        path: demand
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            libcurl4-openssl-dev \
+            libgdal-dev \
+            libgeos-dev \
+            libproj-dev \
+            libssl-dev \
+            libudunits2-dev \
+            libxml2-dev
 
-    - name: Setup dirs and permissions for installing R packages
-      run: |
-        mkdir -p $R_LIBS_USER
-        sudo chown -R $USER:$USER $GITHUB_WORKSPACE/demand
-        sudo chown -R $USER:$USER $R_LIBS_USER
+      - name: Restore R dependencies
+        uses: r-lib/actions/setup-renv@v2
 
-    - name: Cache R packages
-      uses: actions/cache@v2
-      id: cache-renv
-      env:
-        cache-name: cache-renv-lib
-      with:
-        path: |
-          ${{ github.workspace }}/demand/renv/lib
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-1-${{ hashFiles('**/renv.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-1-
-
-    - name: Install renv and project dependencies
-      if: steps.cache-renv.outputs.cache-hit != 'true'
-      working-directory: demand
-      shell: Rscript {0}
-      run: |
-        version
-        install.packages('renv')
-        library(renv)
-        renv::restore()
-
-    - name: Test demand generation
-      working-directory: demand
-      shell: Rscript {0}
-      run: |
-        library(renv)
-        renv::restore()
-        testthat::test_dir("tests/testthat", stop_on_failure = TRUE)
+      - name: Run tests
+        shell: Rscript {0}
+        run: testthat::test_dir("tests/testthat", stop_on_failure = TRUE)
