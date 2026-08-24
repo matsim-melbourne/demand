@@ -26,12 +26,16 @@ test_that("Converting to xml works", {
     writePlanAsMATSimXML(plancsv, outxml, writeInterval)
   )
   expect_true(file.exists('../actual/8.xml/plan.xml'))
-  xml<-xml2::read_xml('../actual/8.xml/plan.xml')
-  people<-xml2::xml_find_all(xml,'//person')
-  expect_equal(xml2::xml_attr(people,'id'),unique(plans$AgentId))
-  expect_equal(length(xml2::xml_find_all(xml,'//leg')),nrow(plans)-length(people))
+  xml<-XML::xmlParse('../actual/8.xml/plan.xml')
+  people<-XML::getNodeSet(xml,'//person')
+  expect_equal(vapply(people,XML::xmlGetAttr,character(1),name='id'),unique(plans$AgentId))
+  expect_equal(length(XML::getNodeSet(xml,'//leg')),nrow(plans)-length(people))
   expect_equal(
-    xml2::xml_text(xml2::xml_find_all(people,'./attributes/attribute[@name="householdId"]')),
+    vapply(
+      XML::getNodeSet(xml,'//person/attributes/attribute[@name="householdId"]'),
+      XML::xmlValue,
+      character(1)
+    ),
     households$HouseholdId[match(unique(plans$AgentId),households$AgentId)]
   )
 })

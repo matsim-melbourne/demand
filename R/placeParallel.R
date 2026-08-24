@@ -102,8 +102,7 @@ assignLocationsToActivities <- function(plancsv,outdir,rseed=NULL) {
                      .combine=rbind,
                      .verbose=FALSE,
                      .packages=c("doParallel", "dplyr","data.table"),
-                     .export = c("getAddressCoordinates","addresses_dt","sa1_centroids_dt",
-                                 "householdHomeLocations")
+                     .export = c("getAddressCoordinates","addresses_dt","sa1_centroids_dt")
   ) %dopar% 
     assignLocationsSubset(outdir,planGroup,plans)
   end_time = Sys.time()
