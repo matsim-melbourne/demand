@@ -1,3 +1,30 @@
+getVistaCarRoles <- function(vistaTrips) {
+  requiredColumns<-c("TRIPID","PERSID","HHID","TRIPNO","STARTIME","ARRTIME",
+                     "ORIGPURP1","DESTPURP1","LINKMODE","WDTRIPWGT")
+  missingColumns<-setdiff(requiredColumns,colnames(vistaTrips))
+  if(length(missingColumns)>0) {
+    stop(paste0("VISTA trip data is missing required columns: ",
+                paste(missingColumns,collapse=", ")))
+  }
+
+  carTrips<-vistaTrips[vistaTrips$LINKMODE%in%c("Vehicle Driver","Vehicle Passenger"),
+                       requiredColumns,drop=FALSE]
+  data.frame(
+    VistaTripId=carTrips$TRIPID,
+    VistaPersonId=carTrips$PERSID,
+    VistaHouseholdId=carTrips$HHID,
+    VistaTripNumber=carTrips$TRIPNO,
+    StartTime=carTrips$STARTIME,
+    ArrivalTime=carTrips$ARRTIME,
+    OriginPurpose=carTrips$ORIGPURP1,
+    DestinationPurpose=carTrips$DESTPURP1,
+    VistaLinkMode=carTrips$LINKMODE,
+    VistaCarRole=ifelse(carTrips$LINKMODE=="Vehicle Driver","driver","passenger"),
+    Weight=carTrips$WDTRIPWGT,
+    stringsAsFactors=FALSE
+  )
+}
+
 # Function to pre-process some data; need only be run once
 make_groups<-function(vista18PersonsCsv, 
                       vista18TripsCsv,
@@ -8,7 +35,8 @@ make_groups<-function(vista18PersonsCsv,
                       out_weekday_trips_csv_prefix,
                       out_weekend_persons_csv_gz,
                       out_weekend_groups_csv_prefix, # not implemented yet
-                      out_weekend_trips_csv_prefix # not implemented yet
+                      out_weekend_trips_csv_prefix, # not implemented yet
+                      out_weekday_car_roles_csv_prefix='vista_2012_18_extracted_car_roles_weekday_'
                       ) {
   
   suppressPackageStartupMessages(library(dplyr))
@@ -136,8 +164,9 @@ make_groups<-function(vista18PersonsCsv,
                 "STARTIME","ARRTIME",
                 "WDTRIPWGT",
                 "WETRIPWGT")
-    
-    orig<-vista_data[,datacols]
+    roleDatacols<-c("TRIPID","HHID","TRIPNO","LINKMODE")
+
+    orig<-vista_data[,unique(c(datacols,roleDatacols))]
     
     for (gid in groups) {
       infile<-paste0(setupDir,"/",weekday_groups_csv_prefix,gid,".csv")
@@ -147,7 +176,12 @@ make_groups<-function(vista18PersonsCsv,
       dd <- orig %>% filter(PERSID %in% data$PERSID)
       outfile <- paste0(setupDir,"/",out_weekday_trips_csv_prefix,gid,".csv")
       echo(paste0('Writing ',outfile,'\n'))
-      write.table(dd, outfile, row.names=FALSE, col.names=TRUE, quote=TRUE, sep=",", append=FALSE)
+      write.table(dd[,datacols], outfile, row.names=FALSE, col.names=TRUE, quote=TRUE, sep=",", append=FALSE)
+
+      rolefile <- paste0(setupDir,"/",out_weekday_car_roles_csv_prefix,gid,".csv")
+      echo(paste0('Writing ',rolefile,'\n'))
+      write.table(getVistaCarRoles(dd),rolefile,row.names=FALSE,col.names=TRUE,
+                  quote=TRUE,sep=",",append=FALSE)
     }
     
   }
@@ -159,4 +193,3 @@ make_groups<-function(vista18PersonsCsv,
   echo(paste0('Extracting VISTA trips groups based on ',filterCsv,'\n'))
   extract_trips_groups(vista18TripsCsv, getGroupIds(filterCsv), setupDir, out_weekday_groups_csv_prefix, out_weekday_trips_csv_prefix) 
 }
-
