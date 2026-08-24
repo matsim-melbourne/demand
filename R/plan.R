@@ -551,7 +551,8 @@ writePlan2Agent2GroupMap <- function(groupIds,
   plan2agent <- data.frame()
   for (gid in groupIds) {
     cohort<-read.csv(paste0(matched_persons_csv_prefix, gid, ".csv"), header=T, stringsAsFactors=F, strip.white=T)
-    cohortAgentIds <- unique(cohort$AgentId)
+    cohortPeople <- cohort[!duplicated(cohort$AgentId),]
+    cohortAgentIds <- cohortPeople$AgentId
     cohortPlans <- plans %>% filter(GroupId == gid)
     cohortPlanIds <- unique(cohortPlans$PlanId)
     if (length(cohortAgentIds) != length(cohortPlanIds)) {
@@ -561,7 +562,8 @@ writePlan2Agent2GroupMap <- function(groupIds,
                   "). Skipping this group." ))
       next
     }
-    df <- data.frame(PlanId=cohortPlanIds, AgentId=cohortAgentIds)
+    personColumns <- intersect(c("AgentId","HouseholdId","HouseholdSize"),colnames(cohortPeople))
+    df <- data.frame(PlanId=cohortPlanIds,cohortPeople[,personColumns,drop=FALSE])
     df$GroupId <- gid
     plan2agent <- rbind(plan2agent, df)
   }

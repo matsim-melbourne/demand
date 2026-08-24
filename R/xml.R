@@ -37,7 +37,7 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
       # count the persons
       processed<-processed+1
       # create a new person
-      str<-paste0('<person id="',processed-1,'">\n')
+      str<-paste0('<person id="',pp[i,]$AgentId,'">\n')
       # check if the person has work trips
       acts<-pp[which(pp$AgentId==pp[i,]$AgentId),"Activity"]
       # categorizing into worker and non-worker
@@ -46,6 +46,12 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
       # creating the sub-population attribute
       str<-paste0(str, '  <attributes>\n')
       str<-paste0(str, '    <attribute name="subpopulation" class="java.lang.String" >',subPopulation,'</attribute>\n')
+      if("HouseholdId"%in%colnames(pp) && !is.na(pp[i,]$HouseholdId)) {
+        str<-paste0(str, '    <attribute name="householdId" class="java.lang.String" >',pp[i,]$HouseholdId,'</attribute>\n')
+      }
+      if("HouseholdSize"%in%colnames(pp) && !is.na(pp[i,]$HouseholdSize)) {
+        str<-paste0(str, '    <attribute name="householdSize" class="java.lang.Integer" >',pp[i,]$HouseholdSize,'</attribute>\n')
+      }
       str<-paste0(str, '  </attributes>\n')
       # create a new plan
       str<-paste0(str, '  <plan selected="yes">\n')

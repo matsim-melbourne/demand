@@ -128,9 +128,6 @@ assignTimesToActivities <- function(plancsv, binSizeInMins, outdir, outcsv, writ
   
   combined<-lapply(filesDF$location,read.csv,header=T) %>%
     bind_rows()
-  colnames(combined)<-c("PlanId","Activity","StartBin","EndBin","AgentId",
-                             "SA1_MAINCODE_2016","LocationType","ArrivingMode",
-                             "Distance","x","y","act_start_hhmmss","act_end_hhmmss")
   write.table(combined, file=outcsv, append=FALSE, row.names=FALSE, sep = ',')
   echo(paste0('Wrote ',length(unique(combined$PlanId)),' plans to ', outcsv , '\n'))
   

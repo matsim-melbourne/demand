@@ -388,8 +388,10 @@ planToSpatial <- function(pp,fileLocation,output_crs) {
     # turn the two SA1 centroids into line geometry
     mutate(GEOMETRY=paste0("LINESTRING(",X.x," ",Y.x,",",X.y," ",Y.y,")")) %>%
     st_as_sf(wkt = "GEOMETRY", crs = output_crs) %>%
-    dplyr::select(PlanId,Activity,StartBin,EndBin,AgentId,SA1_MAINCODE_2016,
-                  LocationType,ArrivingMode,Distance)
+    dplyr::select(any_of(c("PlanId","LegId","Activity","StartBin","EndBin",
+                           "AgentId","HouseholdId","HouseholdSize",
+                           "SA1_MAINCODE_2016","LocationType","ArrivingMode",
+                           "Distance","GEOMETRY")))
   # Write the spatial dataframe to file
   st_write(ppp,fileLocation,delete_dsn=TRUE)
 }

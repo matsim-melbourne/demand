@@ -1,3 +1,13 @@
+addStableLegIds <- function(plans) {
+  legSequence<-ave(seq_len(nrow(plans)),plans$AgentId,FUN=seq_along)-1
+  plans$LegId<-ifelse(
+    legSequence==0,
+    NA_character_,
+    paste0(plans$AgentId,'_leg_',legSequence)
+  )
+  return(plans)
+}
+
 locatePlans <- function(censuscsv, vistacsv, matchcsv, outdir, outcsv, rseed = NULL) {
   # example inputs
   # censuscsv <- '../output/2.sample/sample.csv.gz'
@@ -225,8 +235,12 @@ replaceActivityWithLocationTags<-function (tc) {
 # Read in the persons
 gz1<-gzfile(censuscsv, 'rt')
 echo(paste0('Loading ABS census-like persons from ', censuscsv, '\n'))
-persons<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)%>%
-  dplyr::select(AgentId,SA1_MAINCODE_2016) %>%
+persons<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)
+personColumns<-intersect(
+  c("AgentId","HouseholdId","HouseholdSize","SA1_MAINCODE_2016"),
+  colnames(persons)
+)
+persons<-persons[,personColumns,drop=FALSE] %>%
   mutate(AgentId=as.factor(AgentId))
 close(gz1)
 
@@ -243,11 +257,12 @@ matches<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)
 close(gz1)
 
 # set.seed(20200406) # for when we want to have the same LocationType each time
+planPeople<-matches[,c("PlanId","AgentId")]
 plans<-origplans[,c("PlanId","Activity","StartBin","EndBin")] %>%
   # Remove all plans that are not matched
   filter(PlanId %in% matches$PlanId) %>% 
-  # Assign matched PersonId (very fast since we assume row number equals Id number)
-  mutate(AgentId = matches[as.numeric(PlanId),]$AgentId) %>%
+  # Assign matched PersonId by the explicit plan identifier
+  inner_join(planPeople,by="PlanId") %>%
   mutate(AgentId=as.factor(AgentId))
 
 echo('Assigning home SA1 locations\n')
@@ -261,6 +276,10 @@ plans<-plans %>%
   mutate(ArrivingMode=NA) %>%
   mutate(Distance=NA) %>%
   mutate(AgentId=as.character(AgentId))
+
+if("HouseholdId"%in%colnames(plans)) {
+  plans<-addStableLegIds(plans)
+}
 
 
 
@@ -327,9 +346,7 @@ planFilesDF <- data.frame(
 
 plansCombined<-lapply(planFilesDF$location,read.csv,header=F) %>%
   bind_rows()
-colnames(plansCombined)<-c("PlanId","Activity","StartBin","EndBin","AgentId",
-                           "SA1_MAINCODE_2016","LocationType","ArrivingMode",
-                           "Distance")
+colnames(plansCombined)<-colnames(plans)
 write.table(plansCombined, file=outcsv, append=FALSE, row.names=FALSE, sep = ',')
 
 discardedFiles<-list.files(paste0(outdir,'/discarded'),pattern="*.csv",full.names=T)

@@ -11,6 +11,7 @@ test_that("Assigning coordinates to activities works", {
   set.seed(12345)
   plancsv<-'./tests/expected/5.locate/plan.csv'
   outdir<-'./tests/actual/6.place'
+  output_crs<-7899
   dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
   # writeInterval <- 100 # write to file every so many plans
   

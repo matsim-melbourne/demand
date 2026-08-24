@@ -35,6 +35,8 @@ The script is quite verbose and takes a few minutes to run. If all went well you
 
 Population sampling is performed on complete synthetic households within each SA2. The requested percentage therefore controls the number of households, while the resulting percentage of persons may differ slightly. The sampled person file retains `HouseholdId` and `HouseholdSize` for downstream household coordination.
 
+Household identifiers are retained through the intermediate plan files and written as MATSim person attributes. MATSim person IDs use the stable synthetic `AgentId`. From the locate stage onward, `LegId` identifies the leg arriving at each non-initial activity, for example `213021342P1_leg_2`.
+
 ## How to build a sample population for inner Melbourne:
 
 Here is an example of how to build a small sample population (0.1%) for inner Melbourne with census-like persons and VISTA-like activities and trips, for weekdays:
