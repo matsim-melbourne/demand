@@ -33,6 +33,8 @@ Rscript -e 'setwd("R"); source("makeExamplePopulation.R"); runexample()'
 
 The script is quite verbose and takes a few minutes to run. If all went well you should get the MATSim population in `./output/8.xml/plan.xml`.
 
+Population sampling is performed on complete synthetic households within each SA2. The requested percentage therefore controls the number of households, while the resulting percentage of persons may differ slightly. The sampled person file retains `HouseholdId` and `HouseholdSize` for downstream household coordination.
+
 ## How to build a sample population for inner Melbourne:
 
 Here is an example of how to build a small sample population (0.1%) for inner Melbourne with census-like persons and VISTA-like activities and trips, for weekdays:
