@@ -257,7 +257,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     echo(paste0("Writing ", outfile, "\n"))
     gg<-ggplot(pp[pp$Stat=="Act.Start.Time.Prob",], aes(x=VISTA, y=Synthetic)) + 
       geom_abline(aes(colour='red', slope = 1, intercept=0)) +
-      geom_point(aes(fill=Bin), colour = 'blue', size=3, shape=21, alpha=0.9) + guides(colour=FALSE) +
+      geom_point(aes(fill=Bin), colour = 'blue', size=3, shape=21, alpha=0.9, na.rm=TRUE) + guides(colour="none") +
       #theme(legend.position="none") + 
       theme(plot.title = element_text(hjust = 0.5)) +
       ggtitle(paste0('Activity Start Time Probabilities in ',binSizeInMins,'-Min Bins')) +
@@ -268,7 +268,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     echo(paste0("Writing ", outfile, "\n"))
     gg<-ggplot(pp[pp$Stat=="Act.End.Time.Prob",], aes(x=VISTA, y=Synthetic)) + 
       geom_abline(aes(colour='red', slope = 1, intercept=0)) +
-      geom_point(aes(fill=Bin), colour='blue', size=4, shape=21, alpha=0.9) + guides(colour=FALSE) +
+      geom_point(aes(fill=Bin), colour='blue', size=4, shape=21, alpha=0.9, na.rm=TRUE) + guides(colour="none") +
       #theme(legend.position="none") + 
       theme(plot.title = element_text(hjust = 0.5)) +
       ggtitle(paste0('Activity End Time Probabilities in ',binSizeInMins,'-Min Bins')) +
@@ -279,8 +279,8 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     echo(paste0("Writing ", outfile, "\n"))
     gg<-ggplot(pp[pp$Stat=="Act.Start.Time.Prob",], aes(x=VISTA, y=Synthetic)) + 
       geom_abline(aes(colour='red', slope = 1, intercept=0)) +
-      geom_point(aes(fill=Activity, colour=Activity), size=2, shape=21, alpha=1)  +
-      guides(colour=FALSE, fill=guide_legend(title="")) +
+      geom_point(aes(fill=Activity, colour=Activity), size=2, shape=21, alpha=1, na.rm=TRUE)  +
+      guides(colour="none", fill=guide_legend(title="")) +
       theme(legend.position="bottom") + 
       theme(plot.title = element_text(hjust = 0.5), strip.background = element_blank(), strip.text.x = element_blank()) +
       ggtitle(paste0('Activity Start Time Probabilities in ',binSizeInMins,'-Min Bins')) +
@@ -291,8 +291,8 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     echo(paste0("Writing ", outfile, "\n"))
     gg<-ggplot(pp[pp$Stat=="Act.End.Time.Prob",], aes(x=VISTA, y=Synthetic)) + 
       geom_abline(aes(colour='red', slope = 1, intercept=0)) +
-      geom_point(aes(fill=Activity, colour=Activity), size=2, shape=21, alpha=1)  +
-      guides(colour=FALSE, fill=guide_legend(title="")) +
+      geom_point(aes(fill=Activity, colour=Activity), size=2, shape=21, alpha=1, na.rm=TRUE)  +
+      guides(colour="none", fill=guide_legend(title="")) +
       theme(legend.position="bottom") + 
       theme(plot.title = element_text(hjust = 0.5), strip.background = element_blank(), strip.text.x = element_blank()) +
       ggtitle(paste0('Activity End Time Probabilities in ',binSizeInMins,'-Min Bins')) +
@@ -303,10 +303,10 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     echo(paste0("Writing ", outfile, "\n"))
     dd<-melt(pp[pp$Stat=="Act.Start.Time.Prob",], id.vars = c("Activity", "Stat", "Bin"))
     gg<-ggplot(dd, aes(x=Bin, y=value, fill=variable)) + 
-      geom_bar(stat="identity", width=1, position = "dodge") + 
+      geom_bar(stat="identity", width=1, position = "dodge", na.rm=TRUE) +
       scale_color_manual(values=c('#009B95', '#FF7100')) + 
       scale_fill_manual(values=c('#009B95', '#FF7100')) + 
-      guides(colour=FALSE, fill=guide_legend(title="")) +
+      guides(colour="none", fill=guide_legend(title="")) +
       facet_wrap(~Activity, scales="free", ncol=2) +
       theme(plot.title = element_text(hjust = 0.5)) +
       xlab("30-min time bins") + ylab("Proportion of population") +
@@ -317,7 +317,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     echo(paste0("Writing ", outfile, "\n"))
     dd<-melt(pp[pp$Stat=="Act.End.Time.Prob",], id.vars = c("Activity", "Stat", "Bin"))
     gg<-ggplot(dd, aes(x=Bin, y=value, col=variable, fill=variable)) + 
-      geom_bar(stat="identity", width=1, position = "dodge") + 
+      geom_bar(stat="identity", width=1, position = "dodge", na.rm=TRUE) +
       scale_color_manual(values=c('#009B95', '#FF7100')) + 
       scale_fill_manual(values=c('#009B95', '#FF7100')) + 
       facet_wrap(~Activity, scales="free", ncol=2) +
@@ -330,10 +330,10 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     echo(paste0("Writing ", outfile, "\n"))
     dd<-melt(qq, id.vars = c("Stat", "Bin"))
     gg<-ggplot(dd, aes(x=Bin, y=value, col=variable, fill=variable)) + 
-      geom_bar(stat="identity", width=0.8, position = "dodge") + 
+      geom_bar(stat="identity", width=0.8, position = "dodge", na.rm=TRUE) +
       scale_color_manual(values=c('#009B95', '#FF7100')) + 
       scale_fill_manual(values=c('#009B95', '#FF7100')) + 
-      guides(colour=FALSE, fill=guide_legend(title="")) +
+      guides(colour="none", fill=guide_legend(title="")) +
       theme(legend.position="bottom") + 
       #theme(plot.title = element_text(hjust = 0.5), strip.background = element_blank(), strip.text.x = element_blank()) +
       xlab("30-min time bins") + ylab("Proportion of population") +
@@ -345,7 +345,7 @@ generatePlans <- function(N, csv, endcsv, binCols, outdir, writeInterval) {
     echo(paste0("Writing ", outfile, "\n"))
     dd<-melt(rr[rr$Stat=="Act.Duration.Mins.Mean",], id.vars = c("Activity", "Stat", "Bin"))
     gg<-ggplot(dd, aes(x=Bin, y=value, col=variable, fill=variable)) + 
-      geom_bar(stat="identity", width=1, position = "dodge") + 
+      geom_bar(stat="identity", width=1, position = "dodge", na.rm=TRUE) +
       scale_color_manual(values=c('#009B95', '#FF7100')) + 
       scale_fill_manual(values=c('#009B95', '#FF7100')) + 
       facet_wrap(~Activity, scales="free", ncol=2) +
