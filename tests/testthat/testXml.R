@@ -16,6 +16,20 @@ test_that("Converting to xml works", {
   )
   plans<-merge(plans,households,by='AgentId',sort=FALSE)
   plans<-plans[order(plans$PlanId,plans$StartBin,plans$EndBin),]
+  legSequence<-ave(seq_len(nrow(plans)),plans$AgentId,FUN=seq_along)-1
+  plans$LegId<-ifelse(
+    legSequence==0,
+    NA,
+    paste0(plans$AgentId,'_leg_',legSequence)
+  )
+  carRows<-which(plans$ArrivingMode=='car')
+  roleRows<-head(carRows,2)
+  plans$VistaCarRole<-NA
+  plans$VistaCarRole[roleRows]<-c('driver','passenger')
+  plans$VistaRoleSourceTripId<-NA
+  plans$VistaRoleSourceTripId[roleRows]<-c('vista_trip_1','vista_trip_2')
+  plans$VistaRoleMatchLevel<-NA
+  plans$VistaRoleMatchLevel[roleRows]<-'purpose_pair_time'
   plancsv<-'../actual/8.xml/plan.csv'
   outxml<-'../actual/8.xml/plan.xml'
   outdir<-'../actual/8.xml'
@@ -37,5 +51,21 @@ test_that("Converting to xml works", {
       character(1)
     ),
     households$HouseholdId[match(unique(plans$AgentId),households$AgentId)]
+  )
+  expect_equal(
+    vapply(
+      XML::getNodeSet(xml,'//leg/attributes/attribute[@name="vistaCarRole"]'),
+      XML::xmlValue,
+      character(1)
+    ),
+    c('driver','passenger')
+  )
+  expect_equal(
+    vapply(
+      XML::getNodeSet(xml,'//leg/attributes/attribute[@name="vistaRoleSourceTripId"]'),
+      XML::xmlValue,
+      character(1)
+    ),
+    c('vista_trip_1','vista_trip_2')
   )
 })

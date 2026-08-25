@@ -57,7 +57,31 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
       str<-paste0(str, '  <plan selected="yes">\n')
     } else {
       # if not the first activity then also add a leg
-      str<-paste0(str, '    <leg mode="',pp[i,]$ArrivingMode,'"/>\n') 
+      legAttributeColumns<-c(
+        legId="LegId",
+        vistaCarRole="VistaCarRole",
+        vistaRoleSourceTripId="VistaRoleSourceTripId",
+        vistaRoleMatchLevel="VistaRoleMatchLevel"
+      )
+      availableLegAttributes<-legAttributeColumns[legAttributeColumns%in%colnames(pp)]
+      availableLegAttributes<-availableLegAttributes[vapply(
+        availableLegAttributes,
+        function(column) !is.na(pp[i,column]) && nzchar(as.character(pp[i,column])),
+        logical(1)
+      )]
+      if(length(availableLegAttributes)==0) {
+        str<-paste0(str, '    <leg mode="',pp[i,]$ArrivingMode,'"/>\n')
+      } else {
+        str<-paste0(str, '    <leg mode="',pp[i,]$ArrivingMode,'">\n')
+        str<-paste0(str, '      <attributes>\n')
+        for(attributeName in names(availableLegAttributes)) {
+          column<-availableLegAttributes[[attributeName]]
+          str<-paste0(str, '        <attribute name="',attributeName,
+                      '" class="java.lang.String" >',pp[i,column],'</attribute>\n')
+        }
+        str<-paste0(str, '      </attributes>\n')
+        str<-paste0(str, '    </leg>\n')
+      }
     }
     
     # add this row as an activity    

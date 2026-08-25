@@ -35,7 +35,22 @@ The script is quite verbose and takes a few minutes to run. If all went well you
 
 Population sampling is performed on complete synthetic households within each SA2. The requested percentage therefore controls the number of households, while the resulting percentage of persons may differ slightly. The sampled person file retains `HouseholdId` and `HouseholdSize` for downstream household coordination.
 
-VISTA setup also writes `vista_2012_18_extracted_car_roles_weekday_*.csv` sidecar files. These retain the source trip, person and household identifiers plus timing, purpose and the leg-level `Vehicle Driver` or `Vehicle Passenger` role. They are donor-leg inputs for household joint-travel coordination; they do not classify a VISTA person as a permanent driver or passenger and do not alter generated modes.
+VISTA setup also writes `vista_2012_18_extracted_car_roles_weekday_*.csv` sidecar files. These retain the source trip, person and household identifiers plus timing, purpose and the leg-level `Vehicle Driver` or `Vehicle Passenger` role. They are source-trip inputs for household joint-travel coordination; they do not classify a VISTA person as a permanent driver or passenger and do not alter generated modes.
+
+`R/householdJointTravel.R` can assign those observed roles to generated car legs using compatible source VISTA trips from the same demographic plan group. Matching prefers the same origin/destination purpose pair and departure-time window, then progressively relaxes purpose and time while remaining within the group. The output retains the source trip and match level for auditing. This step only labels existing car legs; it does not change their mode, timing, distance, origin or destination.
+
+For the temporary household workflow, run the role assignment after the time step and use the resulting CSV as the input to the XML step:
+
+```r
+source("R/householdJointTravel.R")
+assignVistaCarRolesToPlanFile(
+  "output01/7.time/plan.csv",
+  "output01/4.plan/plan2agent2group.csv",
+  "output01/1.setup",
+  "output01/7.time/plan.roles.csv",
+  rseed=12345
+)
+```
 
 Household identifiers are retained through the intermediate plan files and written as MATSim person attributes. MATSim person IDs use the stable synthetic `AgentId`. From the locate stage onward, `LegId` identifies the leg arriving at each non-initial activity, for example `213021342P1_leg_2`.
 
