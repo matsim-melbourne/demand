@@ -1,4 +1,4 @@
-getVistaCarRoles <- function(vistaTrips) {
+getVistaCarRoles <- function(vistaTrips,vistaHouseholds=NULL,dayType=NULL) {
   requiredColumns<-c("TRIPID","PERSID","HHID","TRIPNO","STARTIME","ARRTIME",
                      "ORIGPURP1","DESTPURP1","LINKMODE","WDTRIPWGT")
   missingColumns<-setdiff(requiredColumns,colnames(vistaTrips))
@@ -7,8 +7,65 @@ getVistaCarRoles <- function(vistaTrips) {
                 paste(missingColumns,collapse=", ")))
   }
 
-  carTrips<-vistaTrips[vistaTrips$LINKMODE%in%c("Vehicle Driver","Vehicle Passenger"),
-                       requiredColumns,drop=FALSE]
+  householdContext<-NULL
+  if(!is.null(vistaHouseholds)) {
+    requiredHouseholdColumns<-c("HHID","TRAVDOW","DayType","CARS","FOURWDS")
+    missingHouseholdColumns<-
+      setdiff(requiredHouseholdColumns,colnames(vistaHouseholds))
+    if(length(missingHouseholdColumns)>0) {
+      stop(paste0("VISTA household data is missing required columns: ",
+                  paste(missingHouseholdColumns,collapse=", ")))
+    }
+    if(anyDuplicated(vistaHouseholds$HHID)>0) {
+      stop("Each VISTA household must have exactly one household record")
+    }
+    householdContext<-vistaHouseholds[,requiredHouseholdColumns,drop=FALSE]
+    householdRows<-match(vistaTrips$HHID,householdContext$HHID)
+    if(any(is.na(householdRows))) {
+      stop("Every VISTA trip must have a matching household record")
+    }
+    if(!is.null(dayType)) {
+      matchingDayType<-!is.na(householdContext$DayType[householdRows]) &
+        householdContext$DayType[householdRows]==dayType
+      vistaTrips<-vistaTrips[matchingDayType,,drop=FALSE]
+    }
+  } else if(!is.null(dayType)) {
+    stop("VISTA household data is required when filtering by day type")
+  }
+
+  carTrips<-vistaTrips[
+    vistaTrips$LINKMODE%in%c("Vehicle Driver","Vehicle Passenger"),
+    requiredColumns,drop=FALSE
+  ]
+  driverPeople<-unique(carTrips[
+    carTrips$LINKMODE=="Vehicle Driver",c("HHID","PERSID"),drop=FALSE
+  ])
+  driverPeopleByHousehold<-table(driverPeople$HHID)
+  driverPeopleInHousehold<-as.integer(driverPeopleByHousehold[carTrips$HHID])
+  driverPeopleInHousehold[is.na(driverPeopleInHousehold)]<-0L
+  samePersonIsDriver<-paste(carTrips$HHID,carTrips$PERSID,sep="\034")%in%
+    paste(driverPeople$HHID,driverPeople$PERSID,sep="\034")
+  householdHasDriverTrip<-driverPeopleInHousehold>0
+  householdHasOtherDriverTrip<-
+    driverPeopleInHousehold-as.integer(samePersonIsDriver)>0
+
+  if(is.null(householdContext)) {
+    travelDay<-rep(NA_character_,nrow(carTrips))
+    sourceDayType<-rep(NA_character_,nrow(carTrips))
+    householdCars<-rep(NA_integer_,nrow(carTrips))
+    householdFourWheelDrives<-rep(NA_integer_,nrow(carTrips))
+  } else {
+    householdRows<-match(carTrips$HHID,householdContext$HHID)
+    travelDay<-as.character(householdContext$TRAVDOW[householdRows])
+    sourceDayType<-as.character(householdContext$DayType[householdRows])
+    householdCars<-suppressWarnings(
+      as.integer(householdContext$CARS[householdRows])
+    )
+    householdFourWheelDrives<-suppressWarnings(
+      as.integer(householdContext$FOURWDS[householdRows])
+    )
+  }
+
   data.frame(
     VistaTripId=carTrips$TRIPID,
     VistaPersonId=carTrips$PERSID,
@@ -20,7 +77,15 @@ getVistaCarRoles <- function(vistaTrips) {
     DestinationPurpose=carTrips$DESTPURP1,
     VistaLinkMode=carTrips$LINKMODE,
     VistaCarRole=ifelse(carTrips$LINKMODE=="Vehicle Driver","driver","passenger"),
-    Weight=carTrips$WDTRIPWGT,
+    VistaTravelDay=travelDay,
+    VistaDayType=sourceDayType,
+    VistaHouseholdCars=householdCars,
+    VistaHouseholdFourWheelDrives=householdFourWheelDrives,
+    VistaHouseholdHasDriverTrip=householdHasDriverTrip,
+    VistaHouseholdHasOtherDriverTrip=householdHasOtherDriverTrip,
+    Weight=suppressWarnings(
+      as.numeric(gsub(",","",carTrips$WDTRIPWGT,fixed=TRUE))
+    ),
     stringsAsFactors=FALSE
   )
 }
@@ -36,7 +101,8 @@ make_groups<-function(vista18PersonsCsv,
                       out_weekend_persons_csv_gz,
                       out_weekend_groups_csv_prefix, # not implemented yet
                       out_weekend_trips_csv_prefix, # not implemented yet
-                      out_weekday_car_roles_csv_prefix='vista_2012_18_extracted_car_roles_weekday_'
+                      out_weekday_car_roles_csv_prefix='vista_2012_18_extracted_car_roles_weekday_',
+                      vista18HouseholdsCsv=NULL
                       ) {
   
   suppressPackageStartupMessages(library(dplyr))
@@ -157,6 +223,27 @@ make_groups<-function(vista18PersonsCsv,
     gz1 <- gzfile(vista18TripsCsv,'rt')
     vista_data<-read.csv(gz1,header = T,sep=',',stringsAsFactors = F,strip.white = T)
     close(gz1)
+
+    if(is.null(vista18HouseholdsCsv)) {
+      householdFile<-file.path(
+        dirname(vista18TripsCsv),
+        sub("^T_","H_",basename(vista18TripsCsv))
+      )
+      if(file.exists(householdFile)) vista18HouseholdsCsv<-householdFile
+    }
+    vistaHouseholds<-NULL
+    if(!is.null(vista18HouseholdsCsv)) {
+      gz1<-gzfile(vista18HouseholdsCsv,'rt')
+      vistaHouseholds<-read.csv(
+        gz1,header=T,sep=',',stringsAsFactors=F,strip.white=T,
+        check.names=FALSE
+      )
+      close(gz1)
+    }
+    allWeekdayCarRoles<-getVistaCarRoles(
+      vista_data,vistaHouseholds,
+      if(is.null(vistaHouseholds)) NULL else "Weekday"
+    )
     
     datacols<-c("PERSID",
                 "ORIGPURP1",
@@ -180,7 +267,10 @@ make_groups<-function(vista18PersonsCsv,
 
       rolefile <- paste0(setupDir,"/",out_weekday_car_roles_csv_prefix,gid,".csv")
       echo(paste0('Writing ',rolefile,'\n'))
-      write.table(getVistaCarRoles(dd),rolefile,row.names=FALSE,col.names=TRUE,
+      groupCarRoles<-allWeekdayCarRoles[
+        allWeekdayCarRoles$VistaPersonId%in%data$PERSID,,drop=FALSE
+      ]
+      write.table(groupCarRoles,rolefile,row.names=FALSE,col.names=TRUE,
                   quote=TRUE,sep=",",append=FALSE)
     }
     
