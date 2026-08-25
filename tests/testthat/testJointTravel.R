@@ -76,3 +76,70 @@ test_that("VISTA role assignment is reproducible and reports fallbacks", {
   expect_equal(first$VistaRoleMatchLevel[2],'group')
   expect_true(first$VistaCarRole[2]%in%c('driver','passenger'))
 })
+
+test_that("household joint-travel candidates retain all feasible options", {
+  agents<-c('driver_1','driver_2','passenger_1','passenger_2')
+  plans<-data.frame(
+    PlanId=rep(seq_along(agents),each=2),
+    AgentId=rep(agents,each=2),
+    HouseholdId='household_1',
+    LegId=rep(c(NA,'leg'),length(agents)),
+    ArrivingMode=rep(c(NA,'car'),length(agents)),
+    VistaCarRole=rep(c(NA,NA),length(agents)),
+    x=c(0,10000,0,10000,1000,5000,2000,8000),
+    y=c(0,0,500,500,100,100,200,200),
+    act_start_hhmmss=c('00:00:00','08:30:00','00:00:00','08:30:00',
+                       '00:00:00','08:15:00','00:00:00','08:24:00'),
+    act_end_hhmmss=c('08:00:00','17:00:00','08:00:00','17:00:00',
+                     '08:03:00','17:00:00','08:06:00','17:00:00'),
+    stringsAsFactors=FALSE
+  )
+  legRows<-seq(2,nrow(plans),by=2)
+  plans$LegId[legRows]<-paste0(agents,'_leg_1')
+  plans$VistaCarRole[legRows]<-c('driver','driver','passenger','passenger')
+  originalPlans<-plans
+
+  candidates<-findHouseholdJointTravelCandidates(
+    plans,maxTimeDifferenceInMins=10,routeToleranceInMeters=500
+  )
+
+  expect_equal(nrow(candidates),4)
+  expect_equal(as.integer(table(candidates$DriverLegId)),c(2L,2L))
+  expect_equal(as.integer(table(candidates$PassengerLegId)),c(2L,2L))
+  expect_true(all(candidates$PassengerSeatsRequired==1))
+  expect_true(all(candidates$VehicleCapacityRequired==2))
+  expect_true(all(candidates$SharedRouteDistanceInMeters>0))
+  expect_true(all(candidates$PickupWindowStartSeconds<=
+                    candidates$PickupWindowEndSeconds))
+  expect_true(all(candidates$DropoffWindowStartSeconds<=
+                    candidates$DropoffWindowEndSeconds))
+  expect_identical(plans,originalPlans)
+})
+
+test_that("joint-travel candidates stay within household, time and direction", {
+  plans<-data.frame(
+    PlanId=rep(1:4,each=2),
+    AgentId=rep(c('driver','late_passenger','other_household','reverse'),each=2),
+    HouseholdId=rep(c('household_1','household_1','household_2','household_1'),each=2),
+    LegId=rep(c(NA,'leg'),4),
+    ArrivingMode=rep(c(NA,'car'),4),
+    VistaCarRole=rep(c(NA,'passenger'),4),
+    x=c(0,10000,1000,5000,1000,5000,8000,2000),
+    y=0,
+    act_start_hhmmss=c('00:00:00','08:30:00','00:00:00','10:30:00',
+                       '00:00:00','08:30:00','00:00:00','08:30:00'),
+    act_end_hhmmss=c('08:00:00','17:00:00','10:00:00','17:00:00',
+                     '08:03:00','17:00:00','08:03:00','17:00:00'),
+    stringsAsFactors=FALSE
+  )
+  legRows<-seq(2,nrow(plans),by=2)
+  plans$LegId[legRows]<-paste0(plans$AgentId[legRows],'_leg_1')
+  plans$VistaCarRole[2]<-'driver'
+
+  candidates<-findHouseholdJointTravelCandidates(
+    plans,maxTimeDifferenceInMins=10,routeToleranceInMeters=100
+  )
+
+  expect_equal(nrow(candidates),0)
+  expect_equal(colnames(candidates),colnames(emptyHouseholdJointTravelCandidates()))
+})

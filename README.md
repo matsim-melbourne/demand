@@ -52,6 +52,19 @@ assignVistaCarRolesToPlanFile(
 )
 ```
 
+The role-labelled plan can then be used to write the possible household joint-travel matches:
+
+```r
+writeHouseholdJointTravelCandidates(
+  "output01/7.time/plan.roles.csv",
+  "output01/7.time/household-joint-travel-candidates.csv"
+)
+```
+
+Each candidate links one passenger leg to one compatible driver leg in the same household. The output includes both participants, their time windows, the estimated shared route section and the required passenger seat and vehicle capacity. Several rows may use the same driver leg, allowing that driver to carry multiple passengers, and a passenger leg may appear with several possible drivers. No final driver or vehicle is selected and the population plan is not modified.
+
+This temporary implementation estimates route compatibility from straight lines between the generated activity coordinates. The default tolerances are 30 minutes and 1,000 metres; both can be changed when writing the candidates. Network-route overlap, household scheduling and final vehicle allocation are intentionally left for the later coordination model.
+
 Household identifiers are retained through the intermediate plan files and written as MATSim person attributes. MATSim person IDs use the stable synthetic `AgentId`. From the locate stage onward, `LegId` identifies the leg arriving at each non-initial activity, for example `213021342P1_leg_2`.
 
 ## How to build a sample population for inner Melbourne:
