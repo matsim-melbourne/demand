@@ -22,3 +22,5 @@ SA1centroids.csv.gz
 VISTA_12_18_CSV.zip
 VISTA_12_18_CSV.zip.dir/
 ```
+
+Keep both `persons.csv.gz` and `households.csv.gz` in each extracted synthetic-population SA2 directory. Household membership is required to sample complete households.

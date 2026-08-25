@@ -1,0 +1,91 @@
+source("../../R/householdJointTravel.R")
+source("../../R/validateHouseholdJointTravel.R")
+
+test_that("joint-travel validation summary reports candidate coverage", {
+  plans<-data.frame(
+    AgentId=c('person_1','person_2','person_3','person_4'),
+    HouseholdId=c('household_1','household_1','household_1','household_2'),
+    LegId=c('driver_1','passenger_1','passenger_2','driver_2'),
+    VistaCarRole=c('driver','passenger','passenger','driver'),
+    VistaCarRoleInitial=c('passenger','passenger','passenger','driver'),
+    VistaRoleSourceHouseholdHasOtherDriverTrip=c(FALSE,TRUE,FALSE,FALSE),
+    HouseholdCarRoleAction=c('household_driver_added','unchanged','unchanged',
+                             'unchanged'),
+    stringsAsFactors=FALSE
+  )
+  candidates<-emptyHouseholdJointTravelCandidates()
+  candidates<-rbind(
+    candidates,
+    data.frame(
+      CandidateId='joint_travel_1',
+      HouseholdId='household_1',
+      DriverAgentId='person_1',
+      DriverLegId='driver_1',
+      PassengerAgentId='person_2',
+      PassengerLegId='passenger_1',
+      DriverDepartureTimeSeconds=100,
+      DriverArrivalTimeSeconds=200,
+      PassengerDepartureTimeSeconds=100,
+      PassengerArrivalTimeSeconds=200,
+      EstimatedPickupTimeSeconds=100,
+      EstimatedDropoffTimeSeconds=200,
+      PickupWindowStartSeconds=90,
+      PickupWindowEndSeconds=110,
+      DropoffWindowStartSeconds=190,
+      DropoffWindowEndSeconds=210,
+      PickupDistanceInMeters=0,
+      DropoffDistanceInMeters=0,
+      SharedRouteStartX=0,
+      SharedRouteStartY=0,
+      SharedRouteEndX=1,
+      SharedRouteEndY=1,
+      SharedRouteDistanceInMeters=1,
+      PassengerSeatsRequired=1L,
+      VehicleCapacityRequired=2L,
+      stringsAsFactors=FALSE
+    )
+  )
+
+  summary<-getHouseholdJointTravelSummary(plans,candidates)
+  values<-setNames(summary$Value,summary$Metric)
+
+  expect_equal(unname(values['households_with_car_roles']),2)
+  expect_equal(unname(values['households_with_candidates']),1)
+  expect_equal(unname(values['driver_legs']),2)
+  expect_equal(unname(values['driver_legs_with_passenger_options']),1)
+  expect_equal(unname(values['passenger_legs']),2)
+  expect_equal(unname(values['initial_passenger_household_driver_percent']),0)
+  expect_equal(unname(values['passenger_legs_with_other_household_driver']),2)
+  expect_equal(unname(values['passenger_household_driver_percent']),100)
+  expect_equal(unname(values['household_driver_expected_passenger_legs']),1)
+  expect_equal(
+    unname(values['household_driver_expected_passenger_legs_supported']),1
+  )
+  expect_equal(unname(values['household_driver_expected_support_percent']),100)
+  expect_equal(unname(values['external_driver_passenger_legs']),1)
+  expect_equal(unname(values['household_driver_added_legs']),1)
+  expect_equal(unname(values['passenger_legs_with_driver_options']),1)
+  expect_equal(unname(values['passenger_leg_coverage_percent']),50)
+  expect_equal(unname(values['candidate_pairs']),1)
+})
+
+test_that("VISTA passenger household driver targets use trip weights", {
+  sourceTrips<-data.frame(
+    GroupId=c(1,1,2,2),
+    VistaTripId=paste0('trip_',1:4),
+    VistaCarRole=c('passenger','passenger','passenger','driver'),
+    VistaHouseholdHasOtherDriverTrip=c(TRUE,FALSE,TRUE,FALSE),
+    Weight=c(9,1,5,100),
+    stringsAsFactors=FALSE
+  )
+
+  summary<-getVistaPassengerHouseholdDriverSummary(sourceTrips)
+  overall<-summary[summary$GroupId=='Overall',]
+  group1<-summary[summary$GroupId=='1',]
+
+  expect_equal(overall$PassengerTrips,3)
+  expect_equal(overall$PassengerTripWeight,15)
+  expect_equal(overall$PassengerTripWeightWithOtherHouseholdDriver,14)
+  expect_equal(overall$PassengerHouseholdDriverPercent,100*14/15)
+  expect_equal(group1$PassengerHouseholdDriverPercent,90)
+})

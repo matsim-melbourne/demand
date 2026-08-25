@@ -1,18 +1,110 @@
-library(tools) # for md5sum
-
 source("../../R/xml.R")
 
 test_that("Converting to xml works", {
   set.seed(12345)
-  plancsv<-'../expected/7.time/plan.csv'
+  plans<-read.csv('../expected/7.time/plan.csv')
+  agentIds<-unique(plans$AgentId)
+  households<-data.frame(
+    AgentId=agentIds,
+    HouseholdId=paste0('household_',ceiling(seq_along(agentIds)/2)),
+    stringsAsFactors=FALSE
+  )
+  households$HouseholdSize<-ave(
+    rep(1,nrow(households)),
+    households$HouseholdId,
+    FUN=sum
+  )
+  plans<-merge(plans,households,by='AgentId',sort=FALSE)
+  plans<-plans[order(plans$PlanId,plans$StartBin,plans$EndBin),]
+  legSequence<-ave(seq_len(nrow(plans)),plans$AgentId,FUN=seq_along)-1
+  plans$LegId<-ifelse(
+    legSequence==0,
+    NA,
+    paste0(plans$AgentId,'_leg_',legSequence)
+  )
+  carRows<-which(plans$ArrivingMode=='car')
+  roleRows<-head(carRows,2)
+  plans$VistaCarRole<-NA
+  plans$VistaCarRole[roleRows]<-c('driver','passenger')
+  plans$VistaCarRoleInitial<-NA
+  plans$VistaCarRoleInitial[roleRows]<-c('passenger','passenger')
+  plans$VistaInitialHouseholdDriverExpected<-NA
+  plans$VistaInitialHouseholdDriverExpected[roleRows]<-TRUE
+  plans$HouseholdCarRoleAction<-NA
+  plans$HouseholdCarRoleAction[roleRows]<-c('household_driver_added','unchanged')
+  plans$VistaRoleSourceTripId<-NA
+  plans$VistaRoleSourceTripId[roleRows]<-c('vista_trip_1','vista_trip_2')
+  plans$VistaRoleMatchLevel<-NA
+  plans$VistaRoleMatchLevel[roleRows]<-'purpose_pair_time'
+  plans$VistaRoleSourceHouseholdHasOtherDriverTrip<-NA
+  plans$VistaRoleSourceHouseholdHasOtherDriverTrip[roleRows]<-TRUE
+  plancsv<-'../actual/8.xml/plan.csv'
   outxml<-'../actual/8.xml/plan.xml'
   outdir<-'../actual/8.xml'
   dir.create(outdir, showWarnings = FALSE, recursive=TRUE)
+  write.csv(plans,plancsv,row.names=FALSE)
   writeInterval <- 2 # write to file every so many plans
   capture_output(
     writePlanAsMATSimXML(plancsv, outxml, writeInterval)
   )
   expect_true(file.exists('../actual/8.xml/plan.xml'))
-  expect_true(md5sum('../actual/8.xml/plan.xml') == md5sum('../expected/8.xml/plan.xml'))
+  xml<-XML::xmlParse('../actual/8.xml/plan.xml')
+  people<-XML::getNodeSet(xml,'//person')
+  expect_equal(vapply(people,XML::xmlGetAttr,character(1),name='id'),unique(plans$AgentId))
+  expect_equal(length(XML::getNodeSet(xml,'//leg')),nrow(plans)-length(people))
+  expect_equal(
+    vapply(
+      XML::getNodeSet(xml,'//person/attributes/attribute[@name="subpopulation"]'),
+      XML::xmlValue,
+      character(1)
+    ),
+    ifelse(
+      unique(plans$AgentId)%in%unique(plans$AgentId[plans$Activity=='Work']),
+      'Worker',
+      'NonWorker'
+    )
+  )
+  expect_equal(
+    vapply(
+      XML::getNodeSet(xml,'//person/attributes/attribute[@name="householdId"]'),
+      XML::xmlValue,
+      character(1)
+    ),
+    households$HouseholdId[match(unique(plans$AgentId),households$AgentId)]
+  )
+  expect_equal(
+    vapply(
+      XML::getNodeSet(xml,'//leg/attributes/attribute[@name="vistaCarRole"]'),
+      XML::xmlValue,
+      character(1)
+    ),
+    c('driver','passenger')
+  )
+  expect_equal(
+    vapply(
+      XML::getNodeSet(xml,'//leg/attributes/attribute[@name="vistaRoleSourceTripId"]'),
+      XML::xmlValue,
+      character(1)
+    ),
+    c('vista_trip_1','vista_trip_2')
+  )
+  expect_equal(
+    vapply(
+      XML::getNodeSet(xml,'//leg/attributes/attribute[@name="householdCarRoleAction"]'),
+      XML::xmlValue,
+      character(1)
+    ),
+    c('household_driver_added','unchanged')
+  )
+  expect_equal(
+    vapply(
+      XML::getNodeSet(
+        xml,
+        '//leg/attributes/attribute[@name="vistaRoleSourceHouseholdHasOtherDriverTrip"]'
+      ),
+      XML::xmlValue,
+      character(1)
+    ),
+    c('TRUE','TRUE')
+  )
 })
-  

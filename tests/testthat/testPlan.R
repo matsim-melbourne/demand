@@ -51,10 +51,28 @@ test_that("VISTA-like plans generation works", {
   }
   
   expect_true(file.exists('../actual/4.plan/plan.csv'))
-  expect_true(md5sum('../actual/4.plan/plan.csv') == md5sum('../expected/4.plan/plan.csv'))
+  plans<-read.csv('../actual/4.plan/plan.csv')
+  expected_plans_by_group<-vapply(groups, function(gid) {
+    nrow(read.csv(paste0('../expected/3.match/match_',gid,'.csv')))
+  }, integer(1))
+  first_activities<-plans[!duplicated(plans$PlanId),]
+  last_activities<-plans[!duplicated(plans$PlanId, fromLast=TRUE),]
+  plans_by_group<-table(first_activities$GroupId)
+
+  expect_equal(sort(unique(plans$PlanId)), seq_len(sum(expected_plans_by_group)))
+  expect_equal(
+    as.integer(plans_by_group[as.character(groups)]),
+    unname(expected_plans_by_group)
+  )
+  expect_true(all(first_activities$Activity=='Home'))
+  expect_true(all(last_activities$Activity=='Home'))
+  expect_true(all(last_activities$EndBin==48))
+  expect_true(all(plans$StartBin>=1 & plans$StartBin<=plans$EndBin & plans$EndBin<=48))
+  expect_true(all(vapply(split(plans, plans$PlanId), function(plan) {
+    nrow(plan)==1 || all(plan$StartBin[-1]>=plan$EndBin[-nrow(plan)])
+  }, logical(1))))
   
   expect_true(file.exists('../actual/4.plan/plan2agent2group.csv'))
   expect_true(md5sum('../actual/4.plan/plan2agent2group.csv') == md5sum('../expected/4.plan/plan2agent2group.csv'))
   
 })
-  

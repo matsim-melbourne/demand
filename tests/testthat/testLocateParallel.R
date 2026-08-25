@@ -6,6 +6,22 @@ library(tools) # for md5sum
 
 source("../../R/locateParallel.R")
 
+test_that("discarded persons retain the expected output columns", {
+  persons<-data.frame(
+    AgentId=c('person_1','person_2'),
+    HouseholdId=c('household_1','household_1'),
+    HouseholdSize=c(2,2),
+    SA1_MAINCODE_2016=c(20101100101,20101100102),
+    stringsAsFactors=FALSE
+  )
+
+  discarded<-getDiscardedPerson(persons,'person_2')
+
+  expect_equal(colnames(discarded),c('AgentId','SA1_MAINCODE_2016'))
+  expect_equal(discarded$AgentId,'person_2')
+  expect_equal(discarded$SA1_MAINCODE_2016,20101100102)
+})
+
 test_that("Assigning SA1s to activities works", {
   
   # skip("FIXME: skipping because the test run produces errors")
@@ -42,4 +58,3 @@ test_that("Assigning SA1s to activities works", {
   }
   expect_true(file.exists('../actual/5.locate/plan.sqlite'))
 })
-  

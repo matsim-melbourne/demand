@@ -1,3 +1,24 @@
+getHouseholdHomeLocations <- function(plans,coordinateFunction=getAddressCoordinates) {
+  requiredColumns<-c("HouseholdId","SA1_MAINCODE_2016","LocationType")
+  if(!all(requiredColumns%in%colnames(plans))) return(NULL)
+
+  householdHomes<-unique(
+    plans[plans$LocationType=="home" & !is.na(plans$HouseholdId),
+          c("HouseholdId","SA1_MAINCODE_2016")]
+  )
+  sa1sPerHousehold<-table(householdHomes$HouseholdId)
+  if(any(sa1sPerHousehold>1)) {
+    stop("Household members have inconsistent home SA1 locations")
+  }
+  if(nrow(householdHomes)==0) return(NULL)
+
+  coordinates<-t(vapply(seq_len(nrow(householdHomes)),function(row) {
+    coordinateFunction(householdHomes$SA1_MAINCODE_2016[row],"home")
+  },numeric(2)))
+  householdHomes$x<-coordinates[,1]
+  householdHomes$y<-coordinates[,2]
+  return(householdHomes)
+}
 
 assignLocationsToActivities <- function(plancsv,outdir,rseed=NULL) {
   # plancsv='../output/5.locate/plan.csv'
@@ -26,10 +47,17 @@ assignLocationsToActivities <- function(plancsv,outdir,rseed=NULL) {
       if(newPerson) {
         homexy<-NULL 
       }
-      if(is.null(homexy) && pp[i,]$LocationType=="home") {
-        homexy <- getAddressCoordinates(pp[i,]$SA1_MAINCODE_2016, pp[i,]$LocationType)
+      householdHomeIndex<-NA_integer_
+      if(!is.null(householdHomeLocations) && pp[i,]$LocationType=="home") {
+        householdHomeIndex<-match(pp[i,]$HouseholdId,householdHomeLocations$HouseholdId)
       }
-      if(pp[i,]$LocationType=="home") {
+      if(!is.na(householdHomeIndex)) {
+        pp[i,]$x<-householdHomeLocations$x[householdHomeIndex]
+        pp[i,]$y<-householdHomeLocations$y[householdHomeIndex]
+      } else if(pp[i,]$LocationType=="home") {
+        if(is.null(homexy)) {
+          homexy <- getAddressCoordinates(pp[i,]$SA1_MAINCODE_2016, pp[i,]$LocationType)
+        }
         pp[i,]$x <- homexy[1]
         pp[i,]$y <- homexy[2]
       } else {
@@ -51,6 +79,9 @@ assignLocationsToActivities <- function(plancsv,outdir,rseed=NULL) {
   echo(paste0('Loading VISTA-like plans from ', plancsv, '\n'))
   plans<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)
   close(gz1)
+
+  if(!is.null(rseed)) set.seed(rseed)
+  householdHomeLocations<-getHouseholdHomeLocations(plans)
   
   # processing 1000 plans before saving.
   planGroups <- 1:ceiling(max(plans$PlanId,na.rm=T)/1000)
@@ -91,10 +122,7 @@ assignLocationsToActivities <- function(plancsv,outdir,rseed=NULL) {
   
   plansCombined<-lapply(planFilesDF$location,read.csv,header=F) %>%
     bind_rows()
-  colnames(plansCombined)<-c("PlanId","Activity","StartBin","EndBin","AgentId",
-                             "SA1_MAINCODE_2016","LocationType","ArrivingMode",
-                             "Distance","x","y")
+  outputColumns<-c(colnames(plans),setdiff(c("x","y"),colnames(plans)))
+  colnames(plansCombined)<-outputColumns
   write.table(plansCombined, file=paste0(outdir,'/plan.csv'), append=FALSE, row.names=FALSE, sep = ',')
 }
-
-

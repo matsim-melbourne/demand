@@ -1,3 +1,23 @@
+addStableLegIds <- function(plans) {
+  legSequence<-ave(seq_len(nrow(plans)),plans$AgentId,FUN=seq_along)-1
+  plans$LegId<-ifelse(
+    legSequence==0,
+    NA_character_,
+    paste0(plans$AgentId,'_leg_',legSequence)
+  )
+  return(plans)
+}
+
+getDiscardedPerson <- function(persons,agentId) {
+  requiredColumns<-c("AgentId","SA1_MAINCODE_2016")
+  missingColumns<-setdiff(requiredColumns,colnames(persons))
+  if(length(missingColumns)>0) {
+    stop(paste0("Persons are missing required discard columns: ",
+                paste(missingColumns,collapse=", ")))
+  }
+  return(persons[persons$AgentId==agentId,requiredColumns,drop=FALSE])
+}
+
 locatePlans <- function(censuscsv, vistacsv, matchcsv, outdir, outcsv, rseed = NULL) {
   # example inputs
   # censuscsv <- '../output/2.sample/sample.csv.gz'
@@ -60,7 +80,8 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
       pp[i+1,"ArrivingMode"] <- primary_mode
       
       # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome}, primary_mode, nextHome-i)
-      validRegions<-getValidRegions(pp[nextHome,6], primary_mode, nextHome-i)
+      validRegions<-getValidRegions(pp[nextHome,"SA1_MAINCODE_2016"],
+                                    primary_mode,nextHome-i)
       #validProportion=sum(validRegions,na.rm=T)/length(validRegions)
 
       # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
@@ -153,7 +174,7 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
     # if SA1_MAINCODE_2016_{i+1} is null
     if(pp[i+1,"SA1_MAINCODE_2016"]==-1) {
       # failed to find a suitable SA1/mode for this activity, so will just discard this person
-      person<-persons[persons$AgentId==pp[i,]$AgentId,]
+      person<-getDiscardedPerson(persons,pp[i,]$AgentId)
       discarded<-rbind(discarded,person)
       # mark all modes for this plan with 'x' (will delete these later)
       pp[pp$PlanId==pp[i,]$PlanId,]$ArrivingMode<-'x'
@@ -225,8 +246,12 @@ replaceActivityWithLocationTags<-function (tc) {
 # Read in the persons
 gz1<-gzfile(censuscsv, 'rt')
 echo(paste0('Loading ABS census-like persons from ', censuscsv, '\n'))
-persons<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)%>%
-  dplyr::select(AgentId,SA1_MAINCODE_2016) %>%
+persons<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)
+personColumns<-intersect(
+  c("AgentId","HouseholdId","HouseholdSize","SA1_MAINCODE_2016"),
+  colnames(persons)
+)
+persons<-persons[,personColumns,drop=FALSE] %>%
   mutate(AgentId=as.factor(AgentId))
 close(gz1)
 
@@ -243,11 +268,12 @@ matches<-read.csv(gz1, header=T, stringsAsFactors=F, strip.white=T)
 close(gz1)
 
 # set.seed(20200406) # for when we want to have the same LocationType each time
+planPeople<-matches[,c("PlanId","AgentId")]
 plans<-origplans[,c("PlanId","Activity","StartBin","EndBin")] %>%
   # Remove all plans that are not matched
   filter(PlanId %in% matches$PlanId) %>% 
-  # Assign matched PersonId (very fast since we assume row number equals Id number)
-  mutate(AgentId = matches[as.numeric(PlanId),]$AgentId) %>%
+  # Assign matched PersonId by the explicit plan identifier
+  inner_join(planPeople,by="PlanId") %>%
   mutate(AgentId=as.factor(AgentId))
 
 echo('Assigning home SA1 locations\n')
@@ -261,6 +287,10 @@ plans<-plans %>%
   mutate(ArrivingMode=NA) %>%
   mutate(Distance=NA) %>%
   mutate(AgentId=as.character(AgentId))
+
+if("HouseholdId"%in%colnames(plans)) {
+  plans<-addStableLegIds(plans)
+}
 
 
 
@@ -306,7 +336,8 @@ results <- foreach(planGroup=planGroups,
                                "SA1_attributed", "SA1_attributed_dt", 
                                "distanceMatrix", "distanceMatrixIndex", "distanceMatrixIndex_dt",
                                "getValidRegions", "readDistanceDistributions", "expectedDistances",
-                               "readDestinationDistributions", "expectedDestinations_dt")
+                               "readDestinationDistributions", "expectedDestinations_dt",
+                               "getDiscardedPerson")
 ) %dopar% 
   calculatePlanSubset(outdir,planGroup,plans)
 end_time = Sys.time()
@@ -327,9 +358,7 @@ planFilesDF <- data.frame(
 
 plansCombined<-lapply(planFilesDF$location,read.csv,header=F) %>%
   bind_rows()
-colnames(plansCombined)<-c("PlanId","Activity","StartBin","EndBin","AgentId",
-                           "SA1_MAINCODE_2016","LocationType","ArrivingMode",
-                           "Distance")
+colnames(plansCombined)<-colnames(plans)
 write.table(plansCombined, file=outcsv, append=FALSE, row.names=FALSE, sep = ',')
 
 discardedFiles<-list.files(paste0(outdir,'/discarded'),pattern="*.csv",full.names=T)
