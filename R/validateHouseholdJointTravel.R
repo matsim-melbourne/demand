@@ -1,5 +1,8 @@
 getHouseholdJointTravelSummary <- function(plans,candidates) {
-  requiredPlanColumns<-c("HouseholdId","LegId","VistaCarRole")
+  requiredPlanColumns<-c("AgentId","HouseholdId","LegId","VistaCarRole",
+                         "VistaCarRoleInitial",
+                         "VistaRoleSourceHouseholdHasOtherDriverTrip",
+                         "HouseholdCarRoleAction")
   missingPlanColumns<-setdiff(requiredPlanColumns,colnames(plans))
   if(length(missingPlanColumns)>0) {
     stop(paste0("Role-labelled plans are missing required columns: ",
@@ -27,6 +30,44 @@ getHouseholdJointTravelSummary <- function(plans,candidates) {
     100*length(matchedPassengerLegs)/length(passengerLegs)
   driverCoverage<-if(length(driverLegs)==0) NA_real_ else
     100*length(matchedDriverLegs)/length(driverLegs)
+  passengerRows<-which(!is.na(plans$VistaCarRole) &
+                         plans$VistaCarRole=="passenger")
+  passengerHouseholdDriverStatus<-getPassengerHouseholdDriverStatus(plans)
+  passengerLegsWithHouseholdDriver<-
+    sum(passengerHouseholdDriverStatus[passengerRows],na.rm=TRUE)
+  passengerHouseholdDriverCoverage<-if(length(passengerRows)==0) NA_real_ else
+    100*passengerLegsWithHouseholdDriver/length(passengerRows)
+  expectedPassengerRows<-passengerRows[
+    plans$VistaRoleSourceHouseholdHasOtherDriverTrip[passengerRows]%in%TRUE
+  ]
+  supportedExpectedPassengerLegs<-
+    sum(passengerHouseholdDriverStatus[expectedPassengerRows],na.rm=TRUE)
+  expectedPassengerCoverage<-if(length(expectedPassengerRows)==0) NA_real_ else
+    100*supportedExpectedPassengerLegs/length(expectedPassengerRows)
+  externalPassengerLegs<-sum(
+    plans$VistaRoleSourceHouseholdHasOtherDriverTrip[passengerRows]%in%FALSE
+  )
+
+  initialPlans<-plans
+  initialPlans$VistaCarRole<-initialPlans$VistaCarRoleInitial
+  initialPassengerRows<-which(!is.na(initialPlans$VistaCarRole) &
+                                initialPlans$VistaCarRole=="passenger")
+  initialPassengerHouseholdDriverStatus<-
+    getPassengerHouseholdDriverStatus(initialPlans)
+  initialPassengerHouseholdDriverCoverage<-
+    if(length(initialPassengerRows)==0) NA_real_ else
+      100*sum(initialPassengerHouseholdDriverStatus[initialPassengerRows],
+              na.rm=TRUE)/length(initialPassengerRows)
+
+  householdDriverAddedLegs<-sum(
+    plans$HouseholdCarRoleAction=="household_driver_added",na.rm=TRUE
+  )
+  externalPassengerSubstitutions<-sum(
+    plans$HouseholdCarRoleAction=="external_passenger_substituted",na.rm=TRUE
+  )
+  passengerReassignedDriverLegs<-sum(
+    plans$HouseholdCarRoleAction=="passenger_reassigned_driver",na.rm=TRUE
+  )
 
   data.frame(
     Metric=c(
@@ -36,6 +77,16 @@ getHouseholdJointTravelSummary <- function(plans,candidates) {
       "driver_legs_with_passenger_options",
       "driver_leg_coverage_percent",
       "passenger_legs",
+      "initial_passenger_household_driver_percent",
+      "passenger_legs_with_other_household_driver",
+      "passenger_household_driver_percent",
+      "household_driver_expected_passenger_legs",
+      "household_driver_expected_passenger_legs_supported",
+      "household_driver_expected_support_percent",
+      "external_driver_passenger_legs",
+      "household_driver_added_legs",
+      "external_passenger_substituted_legs",
+      "passenger_reassigned_driver_legs",
       "passenger_legs_with_driver_options",
       "passenger_leg_coverage_percent",
       "candidate_pairs"
@@ -47,6 +98,16 @@ getHouseholdJointTravelSummary <- function(plans,candidates) {
       length(matchedDriverLegs),
       driverCoverage,
       length(passengerLegs),
+      initialPassengerHouseholdDriverCoverage,
+      passengerLegsWithHouseholdDriver,
+      passengerHouseholdDriverCoverage,
+      length(expectedPassengerRows),
+      supportedExpectedPassengerLegs,
+      expectedPassengerCoverage,
+      externalPassengerLegs,
+      householdDriverAddedLegs,
+      externalPassengerSubstitutions,
+      passengerReassignedDriverLegs,
       length(matchedPassengerLegs),
       passengerCoverage,
       nrow(candidates)
@@ -55,7 +116,53 @@ getHouseholdJointTravelSummary <- function(plans,candidates) {
   )
 }
 
-saveHouseholdJointTravelPlots <- function(plans,candidates,outdir) {
+getVistaPassengerHouseholdDriverSummary <- function(sourceTrips) {
+  requiredColumns<-c("GroupId","VistaTripId","VistaCarRole",
+                     "VistaHouseholdHasOtherDriverTrip","Weight")
+  missingColumns<-setdiff(requiredColumns,colnames(sourceTrips))
+  if(length(missingColumns)>0) {
+    stop(paste0("VISTA source trips are missing required columns: ",
+                paste(missingColumns,collapse=", ")))
+  }
+  passengerTrips<-sourceTrips[
+    sourceTrips$VistaCarRole=="passenger",requiredColumns,drop=FALSE
+  ]
+  if(anyDuplicated(passengerTrips$VistaTripId)>0) {
+    stop("Each VISTA passenger trip must appear in exactly one plan group")
+  }
+  passengerTrips$Weight<-suppressWarnings(as.numeric(passengerTrips$Weight))
+  passengerTrips$Weight[
+    is.na(passengerTrips$Weight) | passengerTrips$Weight<0
+  ]<-0
+
+  summariseRows<-function(rows,groupId) {
+    passengerWeight<-sum(passengerTrips$Weight[rows])
+    householdDriverWeight<-sum(
+      passengerTrips$Weight[rows]*
+        as.integer(passengerTrips$VistaHouseholdHasOtherDriverTrip[rows]%in%TRUE)
+    )
+    data.frame(
+      GroupId=as.character(groupId),
+      PassengerTrips=length(rows),
+      PassengerTripWeight=passengerWeight,
+      PassengerTripWeightWithOtherHouseholdDriver=householdDriverWeight,
+      PassengerHouseholdDriverPercent=if(passengerWeight==0) NA_real_ else
+        100*householdDriverWeight/passengerWeight,
+      stringsAsFactors=FALSE
+    )
+  }
+  groupRows<-split(seq_len(nrow(passengerTrips)),passengerTrips$GroupId)
+  groupSummary<-do.call(
+    rbind,
+    lapply(names(groupRows),function(groupId) {
+      summariseRows(groupRows[[groupId]],groupId)
+    })
+  )
+  rbind(summariseRows(seq_len(nrow(passengerTrips)),"Overall"),groupSummary)
+}
+
+saveHouseholdJointTravelPlots <- function(plans,candidates,outdir,
+                                          vistaSummary=NULL) {
   if(!requireNamespace("ggplot2",quietly=TRUE)) {
     stop("The ggplot2 package is required to create validation plots")
   }
@@ -83,6 +190,86 @@ saveHouseholdJointTravelPlots <- function(plans,candidates,outdir) {
     plotTheme
   ggplot2::ggsave(file.path(outdir,"car-role-legs.png"),rolePlot,
                   width=7,height=5,dpi=160)
+
+  structuralSummary<-getHouseholdJointTravelSummary(plans,candidates)
+  structuralValues<-setNames(
+    structuralSummary$Value,structuralSummary$Metric
+  )
+  contextData<-data.frame(
+    Stage=c("Before household constraint","After household constraint"),
+    Percent=c(
+      structuralValues[["initial_passenger_household_driver_percent"]],
+      structuralValues[["passenger_household_driver_percent"]]
+    ),
+    stringsAsFactors=FALSE
+  )
+  if(!is.null(vistaSummary)) {
+    vistaOverall<-vistaSummary[vistaSummary$GroupId=="Overall",,drop=FALSE]
+    contextData<-rbind(
+      contextData[1,,drop=FALSE],
+      data.frame(
+        Stage="VISTA weighted target",
+        Percent=vistaOverall$PassengerHouseholdDriverPercent,
+        stringsAsFactors=FALSE
+      ),
+      contextData[2,,drop=FALSE]
+    )
+  }
+  contextData$Stage<-factor(contextData$Stage,levels=contextData$Stage)
+  contextPlot<-ggplot2::ggplot(
+    contextData,ggplot2::aes(x=Stage,y=Percent,fill=Stage)
+  )+
+    ggplot2::geom_col(width=0.65,show.legend=FALSE)+
+    ggplot2::geom_text(
+      ggplot2::aes(label=paste0(round(Percent,1),"%")),vjust=-0.4
+    )+
+    ggplot2::scale_fill_manual(values=c("#7F7F7F","#59A14F","#2C7FB8"))+
+    ggplot2::scale_y_continuous(
+      limits=c(0,100),breaks=seq(0,100,20),
+      labels=function(x) paste0(x,"%"),
+      expand=ggplot2::expansion(mult=c(0,0.04))
+    )+
+    ggplot2::labs(
+      title="Passenger legs with another household member driving",
+      x=NULL,y=NULL
+    )+
+    plotTheme+
+    ggplot2::theme(axis.text.x=ggplot2::element_text(angle=15,hjust=1))
+  ggplot2::ggsave(
+    file.path(outdir,"passenger-household-driver-context.png"),
+    contextPlot,width=8,height=5,dpi=160
+  )
+
+  actionLevels<-c("household_driver_added","external_passenger_substituted",
+                  "passenger_reassigned_driver")
+  actionLabels<-c("Household driver added","External passenger retained",
+                  "Passenger reassigned as driver")
+  actionCounts<-data.frame(
+    Action=factor(actionLabels,levels=actionLabels),
+    Legs=vapply(
+      actionLevels,
+      function(action) sum(plans$HouseholdCarRoleAction==action,na.rm=TRUE),
+      integer(1)
+    )
+  )
+  actionPlot<-ggplot2::ggplot(
+    actionCounts,ggplot2::aes(x=Action,y=Legs,fill=Action)
+  )+
+    ggplot2::geom_col(width=0.65,show.legend=FALSE)+
+    ggplot2::geom_text(
+      ggplot2::aes(label=scales::comma(Legs)),vjust=-0.4
+    )+
+    ggplot2::scale_fill_manual(values=c("#2C7FB8","#F28E2B","#D73027"))+
+    ggplot2::scale_y_continuous(
+      labels=scales::comma,expand=ggplot2::expansion(mult=c(0,0.1))
+    )+
+    ggplot2::labs(title="Household role adjustments",x=NULL,y="Car legs")+
+    plotTheme+
+    ggplot2::theme(axis.text.x=ggplot2::element_text(angle=15,hjust=1))
+  ggplot2::ggsave(
+    file.path(outdir,"household-role-adjustments.png"),
+    actionPlot,width=8,height=5,dpi=160
+  )
 
   passengerLegs<-unique(plans$LegId[!is.na(plans$VistaCarRole) &
                                       plans$VistaCarRole=="passenger"])
@@ -217,7 +404,8 @@ runHouseholdJointTravelValidation <- function(
     maxTimeDifferenceInMins=30,routeToleranceInMeters=1000,
     minSharedDistanceInMeters=0) {
   requiredFunctions<-c("readVistaCarRoleTrips","assignVistaCarRoles",
-                       "findHouseholdJointTravelCandidates")
+                       "findHouseholdJointTravelCandidates",
+                       "getPassengerHouseholdDriverStatus")
   missingFunctions<-requiredFunctions[!vapply(requiredFunctions,exists,logical(1),
                                                mode="function")]
   if(length(missingFunctions)>0) {
@@ -228,6 +416,7 @@ runHouseholdJointTravelValidation <- function(
   plans<-read.csv(plancsv,stringsAsFactors=FALSE,strip.white=TRUE)
   planGroups<-read.csv(planGroupCsv,stringsAsFactors=FALSE,strip.white=TRUE)
   sourceTrips<-readVistaCarRoleTrips(setupDir)
+  vistaSummary<-getVistaPassengerHouseholdDriverSummary(sourceTrips)
   rolePlans<-assignVistaCarRoles(plans,planGroups,sourceTrips,rseed=rseed)
   if(!identical(rolePlans[,colnames(plans),drop=FALSE],plans)) {
     stop("VISTA role assignment changed existing generated plan values")
@@ -242,21 +431,34 @@ runHouseholdJointTravelValidation <- function(
   candidateCsv<-file.path(outdir,"household-joint-travel-candidates.csv")
   write.table(candidates,file=candidateCsv,row.names=FALSE,sep=',')
   summary<-getHouseholdJointTravelSummary(rolePlans,candidates)
+  vistaOverall<-vistaSummary[vistaSummary$GroupId=="Overall",,drop=FALSE]
   summary<-rbind(
     data.frame(
       Metric=c("existing_plan_values_changed",
                "role_assignment_seed",
                "max_time_difference_in_mins",
                "route_tolerance_in_metres",
-               "min_shared_distance_in_metres"),
+               "min_shared_distance_in_metres",
+               "vista_weighted_passenger_legs",
+               "vista_weighted_passenger_legs_with_other_household_driver",
+               "vista_passenger_household_driver_percent"),
       Value=c(0,rseed,maxTimeDifferenceInMins,routeToleranceInMeters,
-              minSharedDistanceInMeters),
+              minSharedDistanceInMeters,
+              vistaOverall$PassengerTripWeight,
+              vistaOverall$PassengerTripWeightWithOtherHouseholdDriver,
+              vistaOverall$PassengerHouseholdDriverPercent),
       stringsAsFactors=FALSE
     ),
     summary
   )
   write.table(summary,file=file.path(outdir,"validation-summary.csv"),
               row.names=FALSE,sep=',')
-  saveHouseholdJointTravelPlots(rolePlans,candidates,outdir)
-  return(invisible(list(plans=rolePlans,candidates=candidates,summary=summary)))
+  write.table(
+    vistaSummary,
+    file=file.path(outdir,"vista-passenger-household-driver-summary.csv"),
+    row.names=FALSE,sep=','
+  )
+  saveHouseholdJointTravelPlots(rolePlans,candidates,outdir,vistaSummary)
+  return(invisible(list(plans=rolePlans,candidates=candidates,summary=summary,
+                        vistaSummary=vistaSummary)))
 }
