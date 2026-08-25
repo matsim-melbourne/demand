@@ -65,6 +65,8 @@ Each candidate links one passenger leg to one compatible driver leg in the same 
 
 This temporary implementation estimates route compatibility from straight lines between the generated activity coordinates. The default tolerances are 30 minutes and 1,000 metres; both can be changed when writing the candidates. Network-route overlap, household scheduling and final vehicle allocation are intentionally left for the later coordination model.
 
+For an end-to-end validation with summary tables and plots, source `R/validateHouseholdJointTravel.R` and run `runHouseholdJointTravelValidation()`.
+
 Household identifiers are retained through the intermediate plan files and written as MATSim person attributes. MATSim person IDs use the stable synthetic `AgentId`. From the locate stage onward, `LegId` identifies the leg arriving at each non-initial activity, for example `213021342P1_leg_2`.
 
 ## How to build a sample population for inner Melbourne:

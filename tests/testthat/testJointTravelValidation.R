@@ -1,0 +1,55 @@
+source("../../R/householdJointTravel.R")
+source("../../R/validateHouseholdJointTravel.R")
+
+test_that("joint-travel validation summary reports candidate coverage", {
+  plans<-data.frame(
+    HouseholdId=c('household_1','household_1','household_1','household_2'),
+    LegId=c('driver_1','passenger_1','passenger_2','driver_2'),
+    VistaCarRole=c('driver','passenger','passenger','driver'),
+    stringsAsFactors=FALSE
+  )
+  candidates<-emptyHouseholdJointTravelCandidates()
+  candidates<-rbind(
+    candidates,
+    data.frame(
+      CandidateId='joint_travel_1',
+      HouseholdId='household_1',
+      DriverAgentId='person_1',
+      DriverLegId='driver_1',
+      PassengerAgentId='person_2',
+      PassengerLegId='passenger_1',
+      DriverDepartureTimeSeconds=100,
+      DriverArrivalTimeSeconds=200,
+      PassengerDepartureTimeSeconds=100,
+      PassengerArrivalTimeSeconds=200,
+      EstimatedPickupTimeSeconds=100,
+      EstimatedDropoffTimeSeconds=200,
+      PickupWindowStartSeconds=90,
+      PickupWindowEndSeconds=110,
+      DropoffWindowStartSeconds=190,
+      DropoffWindowEndSeconds=210,
+      PickupDistanceInMeters=0,
+      DropoffDistanceInMeters=0,
+      SharedRouteStartX=0,
+      SharedRouteStartY=0,
+      SharedRouteEndX=1,
+      SharedRouteEndY=1,
+      SharedRouteDistanceInMeters=1,
+      PassengerSeatsRequired=1L,
+      VehicleCapacityRequired=2L,
+      stringsAsFactors=FALSE
+    )
+  )
+
+  summary<-getHouseholdJointTravelSummary(plans,candidates)
+  values<-setNames(summary$Value,summary$Metric)
+
+  expect_equal(unname(values['households_with_car_roles']),2)
+  expect_equal(unname(values['households_with_candidates']),1)
+  expect_equal(unname(values['driver_legs']),2)
+  expect_equal(unname(values['driver_legs_with_passenger_options']),1)
+  expect_equal(unname(values['passenger_legs']),2)
+  expect_equal(unname(values['passenger_legs_with_driver_options']),1)
+  expect_equal(unname(values['passenger_leg_coverage_percent']),50)
+  expect_equal(unname(values['candidate_pairs']),1)
+})

@@ -94,6 +94,17 @@ assignVistaCarRoles <- function(plans,planGroups,sourceTrips,binSizeInMins=30,
   sourceTrips$OriginPurposeGroup<-normaliseVistaPurpose(sourceTrips$OriginPurpose)
   sourceTrips$DestinationPurposeGroup<-normaliseVistaPurpose(sourceTrips$DestinationPurpose)
   sourceTrips$DepartureBin<-floor(as.numeric(sourceTrips$StartTime)/binSizeInMins)+1
+  sourceRowsByGroup<-split(seq_len(nrow(sourceTrips)),
+                           as.character(sourceTrips$GroupId))
+  sourceRowsByDestination<-split(
+    seq_len(nrow(sourceTrips)),
+    paste(sourceTrips$GroupId,sourceTrips$DestinationPurposeGroup,sep="\034")
+  )
+  sourceRowsByPurposePair<-split(
+    seq_len(nrow(sourceTrips)),
+    paste(sourceTrips$GroupId,sourceTrips$OriginPurposeGroup,
+          sourceTrips$DestinationPurposeGroup,sep="\034")
+  )
 
   chooseSourceTrip<-function(candidateRows) {
     weights<-suppressWarnings(as.numeric(sourceTrips$Weight[candidateRows]))
@@ -102,28 +113,46 @@ assignVistaCarRoles <- function(plans,planGroups,sourceTrips,binSizeInMins=30,
     candidateRows[sample(seq_along(candidateRows),1,prob=weights)]
   }
 
+  getIndexedRows<-function(index,key) {
+    if(any(is.na(key))) return(integer())
+    rows<-index[[paste(key,collapse="\034")]]
+    if(is.null(rows)) integer() else rows
+  }
+
   carRows<-which(!is.na(plans$ArrivingMode) & plans$ArrivingMode=="car")
-  for(row in carRows) {
-    groupCandidates<-which(as.character(sourceTrips$GroupId)==as.character(planGroupId[row]))
+  selectedSourceRows<-rep(NA_integer_,length(carRows))
+  selectedMatchLevels<-rep("unmatched",length(carRows))
+  for(carIndex in seq_along(carRows)) {
+    row<-carRows[carIndex]
+    groupKey<-as.character(planGroupId[row])
+    groupCandidates<-sourceRowsByGroup[[groupKey]]
+    if(is.null(groupCandidates)) groupCandidates<-integer()
     matchLevel<-"unmatched"
     candidateRows<-integer()
 
     if(length(groupCandidates)>0) {
-      timeCompatible<-abs(sourceTrips$DepartureBin[groupCandidates]-departureBin[row])<=timeToleranceBins
-      sameOrigin<-sourceTrips$OriginPurposeGroup[groupCandidates]==originPurpose[row]
-      sameDestination<-sourceTrips$DestinationPurposeGroup[groupCandidates]==destinationPurpose[row]
+      purposePairCandidates<-getIndexedRows(
+        sourceRowsByPurposePair,
+        c(groupKey,originPurpose[row],destinationPurpose[row])
+      )
+      timeCompatible<-abs(sourceTrips$DepartureBin[purposePairCandidates]-
+                            departureBin[row])<=timeToleranceBins
       timeCompatible[is.na(timeCompatible)]<-FALSE
-      sameOrigin[is.na(sameOrigin)]<-FALSE
-      sameDestination[is.na(sameDestination)]<-FALSE
-
-      candidateRows<-groupCandidates[timeCompatible & sameOrigin & sameDestination]
+      candidateRows<-purposePairCandidates[timeCompatible]
       matchLevel<-"purpose_pair_time"
+
+      destinationCandidates<-getIndexedRows(
+        sourceRowsByDestination,c(groupKey,destinationPurpose[row])
+      )
       if(length(candidateRows)==0) {
-        candidateRows<-groupCandidates[timeCompatible & sameDestination]
+        timeCompatible<-abs(sourceTrips$DepartureBin[destinationCandidates]-
+                              departureBin[row])<=timeToleranceBins
+        timeCompatible[is.na(timeCompatible)]<-FALSE
+        candidateRows<-destinationCandidates[timeCompatible]
         matchLevel<-"destination_time"
       }
       if(length(candidateRows)==0) {
-        candidateRows<-groupCandidates[sameDestination]
+        candidateRows<-destinationCandidates
         matchLevel<-"destination"
       }
       if(length(candidateRows)==0) {
@@ -133,18 +162,22 @@ assignVistaCarRoles <- function(plans,planGroups,sourceTrips,binSizeInMins=30,
     }
 
     if(length(candidateRows)>0) {
-      sourceRow<-chooseSourceTrip(candidateRows)
-      plans$VistaCarRole[row]<-sourceTrips$VistaCarRole[sourceRow]
-      plans$VistaRoleSourceTripId[row]<-sourceTrips$VistaTripId[sourceRow]
-      plans$VistaRoleSourcePersonId[row]<-sourceTrips$VistaPersonId[sourceRow]
-      plans$VistaRoleSourceHouseholdId[row]<-sourceTrips$VistaHouseholdId[sourceRow]
-      plans$VistaRoleSourceStartTime[row]<-sourceTrips$StartTime[sourceRow]
-      plans$VistaRoleSourceArrivalTime[row]<-sourceTrips$ArrivalTime[sourceRow]
-      plans$VistaRoleMatchLevel[row]<-matchLevel
-    } else {
-      plans$VistaRoleMatchLevel[row]<-"unmatched"
+      selectedSourceRows[carIndex]<-chooseSourceTrip(candidateRows)
+      selectedMatchLevels[carIndex]<-matchLevel
     }
   }
+  matchedCarIndices<-which(!is.na(selectedSourceRows))
+  matchedPlanRows<-carRows[matchedCarIndices]
+  matchedSourceRows<-selectedSourceRows[matchedCarIndices]
+  plans$VistaCarRole[matchedPlanRows]<-sourceTrips$VistaCarRole[matchedSourceRows]
+  plans$VistaRoleSourceTripId[matchedPlanRows]<-sourceTrips$VistaTripId[matchedSourceRows]
+  plans$VistaRoleSourcePersonId[matchedPlanRows]<-sourceTrips$VistaPersonId[matchedSourceRows]
+  plans$VistaRoleSourceHouseholdId[matchedPlanRows]<-
+    sourceTrips$VistaHouseholdId[matchedSourceRows]
+  plans$VistaRoleSourceStartTime[matchedPlanRows]<-sourceTrips$StartTime[matchedSourceRows]
+  plans$VistaRoleSourceArrivalTime[matchedPlanRows]<-
+    sourceTrips$ArrivalTime[matchedSourceRows]
+  plans$VistaRoleMatchLevel[carRows]<-selectedMatchLevels
   return(plans)
 }
 
@@ -162,12 +195,22 @@ assignVistaCarRolesToPlanFile <- function(plancsv,planGroupCsv,setupDir,outcsv,
 
 planTimeToSeconds <- function(time) {
   time<-as.character(time)
-  vapply(time,function(value) {
-    if(is.na(value) || !nzchar(value)) return(NA_real_)
-    parts<-suppressWarnings(as.numeric(strsplit(value,":",fixed=TRUE)[[1]]))
-    if(length(parts)!=3 || any(is.na(parts))) return(NA_real_)
-    parts[1]*60*60+parts[2]*60+parts[3]
-  },numeric(1),USE.NAMES=FALSE)
+  seconds<-rep(NA_real_,length(time))
+  populated<-which(!is.na(time) & nzchar(time))
+  if(length(populated)==0) return(seconds)
+  parts<-strsplit(time[populated],":",fixed=TRUE)
+  valid<-lengths(parts)==3
+  if(!any(valid)) return(seconds)
+  validParts<-matrix(
+    suppressWarnings(as.numeric(unlist(parts[valid],use.names=FALSE))),
+    ncol=3,byrow=TRUE
+  )
+  complete<-complete.cases(validParts)
+  converted<-rep(NA_real_,nrow(validParts))
+  converted[complete]<-validParts[complete,1]*60*60+
+    validParts[complete,2]*60+validParts[complete,3]
+  seconds[populated[valid]]<-converted
+  return(seconds)
 }
 
 emptyHouseholdJointTravelCandidates <- function() {
@@ -287,80 +330,141 @@ findHouseholdJointTravelCandidates <- function(
   }
 
   timeTolerance<-maxTimeDifferenceInMins*60
+  driverRowsByHousehold<-split(seq_len(nrow(drivers)),drivers$HouseholdId)
   matches<-list()
   matchCount<-0
   for(passengerRow in seq_len(nrow(passengers))) {
-    passenger<-passengers[passengerRow,,drop=FALSE]
-    possibleDrivers<-which(
-      drivers$HouseholdId==passenger$HouseholdId &
-        drivers$AgentId!=passenger$AgentId
+    passengerHousehold<-passengers$HouseholdId[passengerRow]
+    passengerAgent<-passengers$AgentId[passengerRow]
+    possibleDrivers<-driverRowsByHousehold[[passengerHousehold]]
+    if(is.null(possibleDrivers)) possibleDrivers<-integer()
+    possibleDrivers<-possibleDrivers[
+      drivers$AgentId[possibleDrivers]!=passengerAgent
+    ]
+    if(length(possibleDrivers)==0) next
+
+    routeX<-drivers$DestinationX[possibleDrivers]-drivers$OriginX[possibleDrivers]
+    routeY<-drivers$DestinationY[possibleDrivers]-drivers$OriginY[possibleDrivers]
+    routeLengthSquared<-routeX^2+routeY^2
+    usableRoute<-routeLengthSquared>0
+    if(!any(usableRoute)) next
+    possibleDrivers<-possibleDrivers[usableRoute]
+    routeX<-routeX[usableRoute]
+    routeY<-routeY[usableRoute]
+    routeLengthSquared<-routeLengthSquared[usableRoute]
+
+    pickupFraction<-((passengers$OriginX[passengerRow]-
+                        drivers$OriginX[possibleDrivers])*routeX+
+                       (passengers$OriginY[passengerRow]-
+                          drivers$OriginY[possibleDrivers])*routeY)/
+      routeLengthSquared
+    dropoffFraction<-((passengers$DestinationX[passengerRow]-
+                         drivers$OriginX[possibleDrivers])*routeX+
+                        (passengers$DestinationY[passengerRow]-
+                           drivers$OriginY[possibleDrivers])*routeY)/
+      routeLengthSquared
+    correctDirection<-pickupFraction>=0 & dropoffFraction<=1 &
+      pickupFraction<=dropoffFraction
+    if(!any(correctDirection)) next
+    possibleDrivers<-possibleDrivers[correctDirection]
+    routeX<-routeX[correctDirection]
+    routeY<-routeY[correctDirection]
+    routeLengthSquared<-routeLengthSquared[correctDirection]
+    pickupFraction<-pickupFraction[correctDirection]
+    dropoffFraction<-dropoffFraction[correctDirection]
+
+    sharedStartX<-drivers$OriginX[possibleDrivers]+pickupFraction*routeX
+    sharedStartY<-drivers$OriginY[possibleDrivers]+pickupFraction*routeY
+    sharedEndX<-drivers$OriginX[possibleDrivers]+dropoffFraction*routeX
+    sharedEndY<-drivers$OriginY[possibleDrivers]+dropoffFraction*routeY
+    pickupDistance<-sqrt((passengers$OriginX[passengerRow]-sharedStartX)^2+
+                           (passengers$OriginY[passengerRow]-sharedStartY)^2)
+    dropoffDistance<-sqrt((passengers$DestinationX[passengerRow]-sharedEndX)^2+
+                            (passengers$DestinationY[passengerRow]-sharedEndY)^2)
+    sharedDistance<-(dropoffFraction-pickupFraction)*sqrt(routeLengthSquared)
+    spatiallyCompatible<-pickupDistance<=routeToleranceInMeters &
+      dropoffDistance<=routeToleranceInMeters &
+      sharedDistance>=minSharedDistanceInMeters
+    if(!any(spatiallyCompatible)) next
+    possibleDrivers<-possibleDrivers[spatiallyCompatible]
+    pickupFraction<-pickupFraction[spatiallyCompatible]
+    dropoffFraction<-dropoffFraction[spatiallyCompatible]
+    pickupDistance<-pickupDistance[spatiallyCompatible]
+    dropoffDistance<-dropoffDistance[spatiallyCompatible]
+    sharedDistance<-sharedDistance[spatiallyCompatible]
+    sharedStartX<-sharedStartX[spatiallyCompatible]
+    sharedStartY<-sharedStartY[spatiallyCompatible]
+    sharedEndX<-sharedEndX[spatiallyCompatible]
+    sharedEndY<-sharedEndY[spatiallyCompatible]
+
+    driverDuration<-drivers$ArrivalTimeSeconds[possibleDrivers]-
+      drivers$DepartureTimeSeconds[possibleDrivers]
+    estimatedPickup<-drivers$DepartureTimeSeconds[possibleDrivers]+
+      pickupFraction*driverDuration
+    estimatedDropoff<-drivers$DepartureTimeSeconds[possibleDrivers]+
+      dropoffFraction*driverDuration
+    temporallyCompatible<-
+      abs(estimatedPickup-passengers$DepartureTimeSeconds[passengerRow])<=
+        timeTolerance &
+      abs(estimatedDropoff-passengers$ArrivalTimeSeconds[passengerRow])<=
+        timeTolerance
+    if(!any(temporallyCompatible)) next
+    possibleDrivers<-possibleDrivers[temporallyCompatible]
+    estimatedPickup<-estimatedPickup[temporallyCompatible]
+    estimatedDropoff<-estimatedDropoff[temporallyCompatible]
+    pickupDistance<-pickupDistance[temporallyCompatible]
+    dropoffDistance<-dropoffDistance[temporallyCompatible]
+    sharedDistance<-sharedDistance[temporallyCompatible]
+    sharedStartX<-sharedStartX[temporallyCompatible]
+    sharedStartY<-sharedStartY[temporallyCompatible]
+    sharedEndX<-sharedEndX[temporallyCompatible]
+    sharedEndY<-sharedEndY[temporallyCompatible]
+
+    newMatchCount<-length(possibleDrivers)
+    matchIds<-matchCount+seq_len(newMatchCount)
+    matches[[length(matches)+1]]<-data.frame(
+      CandidateId=paste0("joint_travel_",matchIds),
+      HouseholdId=passengerHousehold,
+      DriverAgentId=drivers$AgentId[possibleDrivers],
+      DriverLegId=drivers$LegId[possibleDrivers],
+      PassengerAgentId=passengerAgent,
+      PassengerLegId=passengers$LegId[passengerRow],
+      DriverDepartureTimeSeconds=
+        drivers$DepartureTimeSeconds[possibleDrivers],
+      DriverArrivalTimeSeconds=drivers$ArrivalTimeSeconds[possibleDrivers],
+      PassengerDepartureTimeSeconds=
+        passengers$DepartureTimeSeconds[passengerRow],
+      PassengerArrivalTimeSeconds=passengers$ArrivalTimeSeconds[passengerRow],
+      EstimatedPickupTimeSeconds=estimatedPickup,
+      EstimatedDropoffTimeSeconds=estimatedDropoff,
+      PickupWindowStartSeconds=pmax(
+        estimatedPickup-timeTolerance,
+        passengers$DepartureTimeSeconds[passengerRow]-timeTolerance
+      ),
+      PickupWindowEndSeconds=pmin(
+        estimatedPickup+timeTolerance,
+        passengers$DepartureTimeSeconds[passengerRow]+timeTolerance
+      ),
+      DropoffWindowStartSeconds=pmax(
+        estimatedDropoff-timeTolerance,
+        passengers$ArrivalTimeSeconds[passengerRow]-timeTolerance
+      ),
+      DropoffWindowEndSeconds=pmin(
+        estimatedDropoff+timeTolerance,
+        passengers$ArrivalTimeSeconds[passengerRow]+timeTolerance
+      ),
+      PickupDistanceInMeters=pickupDistance,
+      DropoffDistanceInMeters=dropoffDistance,
+      SharedRouteStartX=sharedStartX,
+      SharedRouteStartY=sharedStartY,
+      SharedRouteEndX=sharedEndX,
+      SharedRouteEndY=sharedEndY,
+      SharedRouteDistanceInMeters=sharedDistance,
+      PassengerSeatsRequired=1L,
+      VehicleCapacityRequired=2L,
+      stringsAsFactors=FALSE
     )
-    for(driverRow in possibleDrivers) {
-      driver<-drivers[driverRow,,drop=FALSE]
-      routeX<-driver$DestinationX-driver$OriginX
-      routeY<-driver$DestinationY-driver$OriginY
-      routeLengthSquared<-routeX^2+routeY^2
-      if(routeLengthSquared==0) next
-
-      pickupFraction<-((passenger$OriginX-driver$OriginX)*routeX+
-                         (passenger$OriginY-driver$OriginY)*routeY)/routeLengthSquared
-      dropoffFraction<-((passenger$DestinationX-driver$OriginX)*routeX+
-                          (passenger$DestinationY-driver$OriginY)*routeY)/routeLengthSquared
-      if(pickupFraction<0 || dropoffFraction>1 || pickupFraction>dropoffFraction) next
-
-      sharedStartX<-driver$OriginX+pickupFraction*routeX
-      sharedStartY<-driver$OriginY+pickupFraction*routeY
-      sharedEndX<-driver$OriginX+dropoffFraction*routeX
-      sharedEndY<-driver$OriginY+dropoffFraction*routeY
-      pickupDistance<-sqrt((passenger$OriginX-sharedStartX)^2+
-                             (passenger$OriginY-sharedStartY)^2)
-      dropoffDistance<-sqrt((passenger$DestinationX-sharedEndX)^2+
-                              (passenger$DestinationY-sharedEndY)^2)
-      sharedDistance<-(dropoffFraction-pickupFraction)*sqrt(routeLengthSquared)
-      if(pickupDistance>routeToleranceInMeters ||
-         dropoffDistance>routeToleranceInMeters ||
-         sharedDistance<minSharedDistanceInMeters) next
-
-      driverDuration<-driver$ArrivalTimeSeconds-driver$DepartureTimeSeconds
-      estimatedPickup<-driver$DepartureTimeSeconds+pickupFraction*driverDuration
-      estimatedDropoff<-driver$DepartureTimeSeconds+dropoffFraction*driverDuration
-      if(abs(estimatedPickup-passenger$DepartureTimeSeconds)>timeTolerance ||
-         abs(estimatedDropoff-passenger$ArrivalTimeSeconds)>timeTolerance) next
-
-      matchCount<-matchCount+1
-      matches[[matchCount]]<-data.frame(
-        CandidateId=paste0("joint_travel_",matchCount),
-        HouseholdId=passenger$HouseholdId,
-        DriverAgentId=driver$AgentId,
-        DriverLegId=driver$LegId,
-        PassengerAgentId=passenger$AgentId,
-        PassengerLegId=passenger$LegId,
-        DriverDepartureTimeSeconds=driver$DepartureTimeSeconds,
-        DriverArrivalTimeSeconds=driver$ArrivalTimeSeconds,
-        PassengerDepartureTimeSeconds=passenger$DepartureTimeSeconds,
-        PassengerArrivalTimeSeconds=passenger$ArrivalTimeSeconds,
-        EstimatedPickupTimeSeconds=estimatedPickup,
-        EstimatedDropoffTimeSeconds=estimatedDropoff,
-        PickupWindowStartSeconds=max(estimatedPickup-timeTolerance,
-                                     passenger$DepartureTimeSeconds-timeTolerance),
-        PickupWindowEndSeconds=min(estimatedPickup+timeTolerance,
-                                   passenger$DepartureTimeSeconds+timeTolerance),
-        DropoffWindowStartSeconds=max(estimatedDropoff-timeTolerance,
-                                      passenger$ArrivalTimeSeconds-timeTolerance),
-        DropoffWindowEndSeconds=min(estimatedDropoff+timeTolerance,
-                                    passenger$ArrivalTimeSeconds+timeTolerance),
-        PickupDistanceInMeters=pickupDistance,
-        DropoffDistanceInMeters=dropoffDistance,
-        SharedRouteStartX=sharedStartX,
-        SharedRouteStartY=sharedStartY,
-        SharedRouteEndX=sharedEndX,
-        SharedRouteEndY=sharedEndY,
-        SharedRouteDistanceInMeters=sharedDistance,
-        PassengerSeatsRequired=1L,
-        VehicleCapacityRequired=2L,
-        stringsAsFactors=FALSE
-      )
-    }
+    matchCount<-matchCount+newMatchCount
   }
   if(matchCount==0) return(emptyHouseholdJointTravelCandidates())
   return(do.call(rbind,matches))
