@@ -46,6 +46,18 @@ test_that("Converting to xml works", {
   expect_equal(length(XML::getNodeSet(xml,'//leg')),nrow(plans)-length(people))
   expect_equal(
     vapply(
+      XML::getNodeSet(xml,'//person/attributes/attribute[@name="subpopulation"]'),
+      XML::xmlValue,
+      character(1)
+    ),
+    ifelse(
+      unique(plans$AgentId)%in%unique(plans$AgentId[plans$Activity=='Work']),
+      'Worker',
+      'NonWorker'
+    )
+  )
+  expect_equal(
+    vapply(
       XML::getNodeSet(xml,'//person/attributes/attribute[@name="householdId"]'),
       XML::xmlValue,
       character(1)

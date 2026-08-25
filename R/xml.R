@@ -26,6 +26,32 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
   cat(str,file=outxml, sep="\n")
   
   pp<-plans
+  agentIds<-as.character(pp$AgentId)
+  activities<-as.character(pp$Activity)
+  arrivingModes<-as.character(pp$ArrivingMode)
+  activityX<-pp$x
+  activityY<-pp$y
+  activityEndTimes<-as.character(pp$act_end_hhmmss)
+  workerRows<-agentIds%in%agentIds[activities=="Work"]
+  firstPersonRows<-c(TRUE,agentIds[-1]!=agentIds[-length(agentIds)])
+  lastPersonRows<-c(agentIds[-length(agentIds)]!=agentIds[-1],TRUE)
+  householdIds<-if("HouseholdId"%in%colnames(pp)) {
+    as.character(pp$HouseholdId)
+  } else NULL
+  householdSizes<-if("HouseholdSize"%in%colnames(pp)) pp$HouseholdSize else NULL
+  legAttributeColumns<-c(
+    legId="LegId",
+    vistaCarRole="VistaCarRole",
+    vistaRoleSourceTripId="VistaRoleSourceTripId",
+    vistaRoleMatchLevel="VistaRoleMatchLevel"
+  )
+  legAttributeColumns<-legAttributeColumns[
+    legAttributeColumns%in%colnames(pp)
+  ]
+  legAttributeValues<-lapply(
+    legAttributeColumns,function(column) as.character(pp[[column]])
+  )
+  names(legAttributeValues)<-names(legAttributeColumns)
   popnWriteBuffer<-""
   processed<-0
   i=0
@@ -33,51 +59,41 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
     i<-i+1
     
     # if this row marks the start of a new person's plan
-    if(i==1 || (pp[i,]$AgentId != pp[i-1,]$AgentId)) {
+    if(firstPersonRows[i]) {
       # count the persons
       processed<-processed+1
       # create a new person
-      str<-paste0('<person id="',pp[i,]$AgentId,'">\n')
-      # check if the person has work trips
-      acts<-pp[which(pp$AgentId==pp[i,]$AgentId),"Activity"]
+      str<-paste0('<person id="',agentIds[i],'">\n')
       # categorizing into worker and non-worker
       subPopulation <- "NonWorker"
-      if("Work"%in%acts) subPopulation <- "Worker"
+      if(workerRows[i]) subPopulation <- "Worker"
       # creating the sub-population attribute
       str<-paste0(str, '  <attributes>\n')
       str<-paste0(str, '    <attribute name="subpopulation" class="java.lang.String" >',subPopulation,'</attribute>\n')
-      if("HouseholdId"%in%colnames(pp) && !is.na(pp[i,]$HouseholdId)) {
-        str<-paste0(str, '    <attribute name="householdId" class="java.lang.String" >',pp[i,]$HouseholdId,'</attribute>\n')
+      if(!is.null(householdIds) && !is.na(householdIds[i])) {
+        str<-paste0(str, '    <attribute name="householdId" class="java.lang.String" >',householdIds[i],'</attribute>\n')
       }
-      if("HouseholdSize"%in%colnames(pp) && !is.na(pp[i,]$HouseholdSize)) {
-        str<-paste0(str, '    <attribute name="householdSize" class="java.lang.Integer" >',pp[i,]$HouseholdSize,'</attribute>\n')
+      if(!is.null(householdSizes) && !is.na(householdSizes[i])) {
+        str<-paste0(str, '    <attribute name="householdSize" class="java.lang.Integer" >',householdSizes[i],'</attribute>\n')
       }
       str<-paste0(str, '  </attributes>\n')
       # create a new plan
       str<-paste0(str, '  <plan selected="yes">\n')
     } else {
       # if not the first activity then also add a leg
-      legAttributeColumns<-c(
-        legId="LegId",
-        vistaCarRole="VistaCarRole",
-        vistaRoleSourceTripId="VistaRoleSourceTripId",
-        vistaRoleMatchLevel="VistaRoleMatchLevel"
+      legAttributes<-vapply(
+        legAttributeValues,function(values) values[i],character(1)
       )
-      availableLegAttributes<-legAttributeColumns[legAttributeColumns%in%colnames(pp)]
-      availableLegAttributes<-availableLegAttributes[vapply(
-        availableLegAttributes,
-        function(column) !is.na(pp[i,column]) && nzchar(as.character(pp[i,column])),
-        logical(1)
-      )]
-      if(length(availableLegAttributes)==0) {
-        str<-paste0(str, '    <leg mode="',pp[i,]$ArrivingMode,'"/>\n')
+      legAttributes<-legAttributes[!is.na(legAttributes) & nzchar(legAttributes)]
+      if(length(legAttributes)==0) {
+        str<-paste0(str, '    <leg mode="',arrivingModes[i],'"/>\n')
       } else {
-        str<-paste0(str, '    <leg mode="',pp[i,]$ArrivingMode,'">\n')
+        str<-paste0(str, '    <leg mode="',arrivingModes[i],'">\n')
         str<-paste0(str, '      <attributes>\n')
-        for(attributeName in names(availableLegAttributes)) {
-          column<-availableLegAttributes[[attributeName]]
+        for(attributeName in names(legAttributes)) {
           str<-paste0(str, '        <attribute name="',attributeName,
-                      '" class="java.lang.String" >',pp[i,column],'</attribute>\n')
+                      '" class="java.lang.String" >',legAttributes[[attributeName]],
+                      '</attribute>\n')
         }
         str<-paste0(str, '      </attributes>\n')
         str<-paste0(str, '    </leg>\n')
@@ -85,10 +101,11 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
     }
     
     # add this row as an activity    
-    str<-paste0(str, '    <activity type="',pp[i,]$Activity,'" x="',pp[i,]$x,'" y="',pp[i,]$y,'" end_time="',pp[i,]$act_end_hhmmss,'"/>\n') 
+    str<-paste0(str, '    <activity type="',activities[i],'" x="',activityX[i],
+                '" y="',activityY[i],'" end_time="',activityEndTimes[i],'"/>\n')
     
     # if this row marks the end of a person's plan 
-    if(i==nrow(pp) || pp[i,]$AgentId != pp[i+1,]$AgentId) {
+    if(lastPersonRows[i]) {
       # close off the tags
       str<-paste0(str, '  </plan>\n')
       str<-paste0(str, '</person>\n')

@@ -2,6 +2,6 @@ Rplots.pdf
 .Rhistory
 .RData
 .DS_Store
-/output/
+/output*/
 packrat/lib*/
 .Rproj.user

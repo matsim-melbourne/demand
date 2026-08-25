@@ -8,6 +8,16 @@ addStableLegIds <- function(plans) {
   return(plans)
 }
 
+getDiscardedPerson <- function(persons,agentId) {
+  requiredColumns<-c("AgentId","SA1_MAINCODE_2016")
+  missingColumns<-setdiff(requiredColumns,colnames(persons))
+  if(length(missingColumns)>0) {
+    stop(paste0("Persons are missing required discard columns: ",
+                paste(missingColumns,collapse=", ")))
+  }
+  return(persons[persons$AgentId==agentId,requiredColumns,drop=FALSE])
+}
+
 locatePlans <- function(censuscsv, vistacsv, matchcsv, outdir, outcsv, rseed = NULL) {
   # example inputs
   # censuscsv <- '../output/2.sample/sample.csv.gz'
@@ -70,7 +80,8 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
       pp[i+1,"ArrivingMode"] <- primary_mode
       
       # validRegions<-getValidRegions(SA1_MAINCODE_2016_{nextHome}, primary_mode, nextHome-i)
-      validRegions<-getValidRegions(pp[nextHome,6], primary_mode, nextHome-i)
+      validRegions<-getValidRegions(pp[nextHome,"SA1_MAINCODE_2016"],
+                                    primary_mode,nextHome-i)
       #validProportion=sum(validRegions,na.rm=T)/length(validRegions)
 
       # SA1_MAINCODE_2016_{i+1} <- findLocationKnownMode( SA1_MAINCODE_2016_{i}, LocationType_{i+1}, primary_mode, allowedSA1 )
@@ -163,7 +174,7 @@ calculatePlanSubset <- function(outdir,planGroup,plans) {
     # if SA1_MAINCODE_2016_{i+1} is null
     if(pp[i+1,"SA1_MAINCODE_2016"]==-1) {
       # failed to find a suitable SA1/mode for this activity, so will just discard this person
-      person<-persons[persons$AgentId==pp[i,]$AgentId,]
+      person<-getDiscardedPerson(persons,pp[i,]$AgentId)
       discarded<-rbind(discarded,person)
       # mark all modes for this plan with 'x' (will delete these later)
       pp[pp$PlanId==pp[i,]$PlanId,]$ArrivingMode<-'x'
@@ -325,7 +336,8 @@ results <- foreach(planGroup=planGroups,
                                "SA1_attributed", "SA1_attributed_dt", 
                                "distanceMatrix", "distanceMatrixIndex", "distanceMatrixIndex_dt",
                                "getValidRegions", "readDistanceDistributions", "expectedDistances",
-                               "readDestinationDistributions", "expectedDestinations_dt")
+                               "readDestinationDistributions", "expectedDestinations_dt",
+                               "getDiscardedPerson")
 ) %dopar% 
   calculatePlanSubset(outdir,planGroup,plans)
 end_time = Sys.time()
