@@ -26,10 +26,18 @@ test_that("Converting to xml works", {
   roleRows<-head(carRows,2)
   plans$VistaCarRole<-NA
   plans$VistaCarRole[roleRows]<-c('driver','passenger')
+  plans$VistaCarRoleInitial<-NA
+  plans$VistaCarRoleInitial[roleRows]<-c('passenger','passenger')
+  plans$VistaInitialHouseholdDriverExpected<-NA
+  plans$VistaInitialHouseholdDriverExpected[roleRows]<-TRUE
+  plans$HouseholdCarRoleAction<-NA
+  plans$HouseholdCarRoleAction[roleRows]<-c('household_driver_added','unchanged')
   plans$VistaRoleSourceTripId<-NA
   plans$VistaRoleSourceTripId[roleRows]<-c('vista_trip_1','vista_trip_2')
   plans$VistaRoleMatchLevel<-NA
   plans$VistaRoleMatchLevel[roleRows]<-'purpose_pair_time'
+  plans$VistaRoleSourceHouseholdHasOtherDriverTrip<-NA
+  plans$VistaRoleSourceHouseholdHasOtherDriverTrip[roleRows]<-TRUE
   plancsv<-'../actual/8.xml/plan.csv'
   outxml<-'../actual/8.xml/plan.xml'
   outdir<-'../actual/8.xml'
@@ -79,5 +87,24 @@ test_that("Converting to xml works", {
       character(1)
     ),
     c('vista_trip_1','vista_trip_2')
+  )
+  expect_equal(
+    vapply(
+      XML::getNodeSet(xml,'//leg/attributes/attribute[@name="householdCarRoleAction"]'),
+      XML::xmlValue,
+      character(1)
+    ),
+    c('household_driver_added','unchanged')
+  )
+  expect_equal(
+    vapply(
+      XML::getNodeSet(
+        xml,
+        '//leg/attributes/attribute[@name="vistaRoleSourceHouseholdHasOtherDriverTrip"]'
+      ),
+      XML::xmlValue,
+      character(1)
+    ),
+    c('TRUE','TRUE')
   )
 })

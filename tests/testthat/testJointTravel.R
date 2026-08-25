@@ -8,6 +8,7 @@ test_that("VISTA roles are assigned to compatible generated car legs", {
     StartBin=c(1,17,35,1,18),
     EndBin=c(17,35,48,18,30),
     ArrivingMode=c(NA,'car','car',NA,'walk'),
+    HouseholdId='household_1',
     Distance=c(NA,10000,10000,NA,2000),
     stringsAsFactors=FALSE
   )
@@ -22,6 +23,8 @@ test_that("VISTA roles are assigned to compatible generated car legs", {
     OriginPurpose=c('At Home','Work Related'),
     DestinationPurpose=c('Work Related','Go Home'),
     VistaCarRole=c('driver','passenger'),
+    VistaHouseholdHasDriverTrip=c(TRUE,TRUE),
+    VistaHouseholdHasOtherDriverTrip=c(FALSE,FALSE),
     Weight=c(1,1),
     stringsAsFactors=FALSE
   )
@@ -52,6 +55,7 @@ test_that("VISTA role assignment is reproducible and reports fallbacks", {
     StartBin=c(1,20),
     EndBin=c(20,30),
     ArrivingMode=c(NA,'car'),
+    HouseholdId='household_1',
     stringsAsFactors=FALSE
   )
   planGroups<-data.frame(PlanId=1,GroupId=2)
@@ -65,6 +69,8 @@ test_that("VISTA role assignment is reproducible and reports fallbacks", {
     OriginPurpose=c('At Home','At Home'),
     DestinationPurpose=c('Education','Education'),
     VistaCarRole=c('driver','passenger'),
+    VistaHouseholdHasDriverTrip=c(TRUE,FALSE),
+    VistaHouseholdHasOtherDriverTrip=c(FALSE,FALSE),
     Weight=c(1,1),
     stringsAsFactors=FALSE
   )
@@ -75,6 +81,88 @@ test_that("VISTA role assignment is reproducible and reports fallbacks", {
   expect_equal(first,second)
   expect_equal(first$VistaRoleMatchLevel[2],'group')
   expect_true(first$VistaCarRole[2]%in%c('driver','passenger'))
+})
+
+test_that("household driver context is satisfied by another household member", {
+  plans<-data.frame(
+    PlanId=rep(1:2,each=2),
+    AgentId=rep(c('person_1','person_2'),each=2),
+    HouseholdId='household_1',
+    Activity=rep(c('Home','Work'),2),
+    StartBin=rep(c(1,17),2),
+    EndBin=rep(c(17,35),2),
+    ArrivingMode=rep(c(NA,'car'),2),
+    stringsAsFactors=FALSE
+  )
+  planGroups<-data.frame(PlanId=1:2,GroupId=3)
+  sourceTrips<-data.frame(
+    GroupId=c(3,3),
+    VistaTripId=c('internal_passenger','available_driver'),
+    VistaPersonId=c('vista_passenger','vista_driver'),
+    VistaHouseholdId=c('vista_household_1','vista_household_1'),
+    StartTime=c(490,490),
+    ArrivalTime=c(510,510),
+    OriginPurpose=c('At Home','At Home'),
+    DestinationPurpose=c('Work Related','Buy Something'),
+    VistaCarRole=c('passenger','driver'),
+    VistaHouseholdHasDriverTrip=c(TRUE,TRUE),
+    VistaHouseholdHasOtherDriverTrip=c(TRUE,FALSE),
+    Weight=c(1,1),
+    stringsAsFactors=FALSE
+  )
+
+  assigned<-assignVistaCarRoles(plans,planGroups,sourceTrips,rseed=12345)
+  passengerRows<-which(assigned$VistaCarRole=='passenger')
+
+  expect_equal(assigned$VistaCarRoleInitial[c(2,4)],c('passenger','passenger'))
+  expect_equal(assigned$VistaCarRole[c(2,4)],c('passenger','driver'))
+  expect_equal(
+    assigned$HouseholdCarRoleAction[c(2,4)],
+    c('unchanged','household_driver_added')
+  )
+  expect_true(all(getPassengerHouseholdDriverStatus(assigned)[passengerRows]))
+  expect_equal(assigned[,colnames(plans)],plans)
+})
+
+test_that("passenger roles can retain travel with a non-household driver", {
+  plans<-data.frame(
+    PlanId=rep(1,2),
+    AgentId=rep('person_1',2),
+    HouseholdId='household_1',
+    Activity=c('Home','Work'),
+    StartBin=c(1,17),
+    EndBin=c(17,35),
+    ArrivingMode=c(NA,'car'),
+    stringsAsFactors=FALSE
+  )
+  planGroups<-data.frame(PlanId=1,GroupId=3)
+  sourceTrips<-data.frame(
+    GroupId=c(3,3),
+    VistaTripId=c('internal_passenger','external_passenger'),
+    VistaPersonId=c('vista_person_1','vista_person_2'),
+    VistaHouseholdId=c('vista_household_1','vista_household_2'),
+    StartTime=c(490,490),
+    ArrivalTime=c(510,510),
+    OriginPurpose=c('At Home','At Home'),
+    DestinationPurpose=c('Work Related','Buy Something'),
+    VistaCarRole=c('passenger','passenger'),
+    VistaHouseholdHasDriverTrip=c(TRUE,FALSE),
+    VistaHouseholdHasOtherDriverTrip=c(TRUE,FALSE),
+    Weight=c(1,1),
+    stringsAsFactors=FALSE
+  )
+
+  assigned<-assignVistaCarRoles(plans,planGroups,sourceTrips,rseed=12345)
+
+  expect_equal(assigned$VistaCarRoleInitial[2],'passenger')
+  expect_true(assigned$VistaInitialHouseholdDriverExpected[2])
+  expect_equal(assigned$VistaCarRole[2],'passenger')
+  expect_false(assigned$VistaRoleSourceHouseholdHasOtherDriverTrip[2])
+  expect_equal(
+    assigned$HouseholdCarRoleAction[2],
+    'external_passenger_substituted'
+  )
+  expect_false(getPassengerHouseholdDriverStatus(assigned)[2])
 })
 
 test_that("household joint-travel candidates retain all feasible options", {

@@ -15,6 +15,35 @@ normaliseVistaPurpose <- function(purpose) {
   return(purpose)
 }
 
+getPassengerHouseholdDriverStatus <- function(plans) {
+  requiredColumns<-c("AgentId","HouseholdId","VistaCarRole")
+  missingColumns<-setdiff(requiredColumns,colnames(plans))
+  if(length(missingColumns)>0) {
+    stop(paste0("Role-labelled plans are missing required household columns: ",
+                paste(missingColumns,collapse=", ")))
+  }
+  status<-rep(NA,nrow(plans))
+  passengerRows<-which(!is.na(plans$VistaCarRole) &
+                         plans$VistaCarRole=="passenger")
+  if(length(passengerRows)==0) return(status)
+  driverRows<-which(!is.na(plans$VistaCarRole) & plans$VistaCarRole=="driver")
+  driverPairs<-unique(data.frame(
+    HouseholdId=as.character(plans$HouseholdId[driverRows]),
+    AgentId=as.character(plans$AgentId[driverRows]),
+    stringsAsFactors=FALSE
+  ))
+  driverPeopleByHousehold<-table(driverPairs$HouseholdId)
+  passengerHouseholds<-as.character(plans$HouseholdId[passengerRows])
+  passengerAgents<-as.character(plans$AgentId[passengerRows])
+  driverPeople<-as.integer(driverPeopleByHousehold[passengerHouseholds])
+  driverPeople[is.na(driverPeople)]<-0L
+  passengerIsAlsoDriver<-paste(passengerHouseholds,passengerAgents,sep="\034")%in%
+    paste(driverPairs$HouseholdId,driverPairs$AgentId,sep="\034")
+  status[passengerRows]<-
+    driverPeople-as.integer(passengerIsAlsoDriver)>0
+  return(status)
+}
+
 readVistaCarRoleTrips <- function(setupDir,
                                   prefix="vista_2012_18_extracted_car_roles_weekday_") {
   files<-list.files(setupDir,paste0("^",prefix,"[0-9]+\\.csv$"),full.names=TRUE)
@@ -34,12 +63,13 @@ readVistaCarRoleTrips <- function(setupDir,
 assignVistaCarRoles <- function(plans,planGroups,sourceTrips,binSizeInMins=30,
                                 timeToleranceBins=2,rseed=NULL) {
   requiredPlanColumns<-c("PlanId","AgentId","Activity","StartBin","EndBin",
-                         "ArrivingMode")
+                         "ArrivingMode","HouseholdId")
   requiredGroupColumns<-c("PlanId","GroupId")
   requiredSourceColumns<-c("GroupId","VistaTripId","VistaPersonId",
                             "VistaHouseholdId","StartTime","ArrivalTime",
                             "OriginPurpose","DestinationPurpose","VistaCarRole",
-                            "Weight")
+                            "VistaHouseholdHasDriverTrip",
+                            "VistaHouseholdHasOtherDriverTrip","Weight")
   missingPlanColumns<-setdiff(requiredPlanColumns,colnames(plans))
   missingGroupColumns<-setdiff(requiredGroupColumns,colnames(planGroups))
   missingSourceColumns<-setdiff(requiredSourceColumns,colnames(sourceTrips))
@@ -66,6 +96,10 @@ assignVistaCarRoles <- function(plans,planGroups,sourceTrips,binSizeInMins=30,
   if(!all(sourceTrips$VistaCarRole%in%c("driver","passenger"))) {
     stop("VISTA source trips must be labelled driver or passenger")
   }
+  passengerSourceRows<-sourceTrips$VistaCarRole=="passenger"
+  if(any(is.na(sourceTrips$VistaHouseholdHasOtherDriverTrip[passengerSourceRows]))) {
+    stop("VISTA passenger trips must record household driver context")
+  }
 
   if(!is.null(rseed)) set.seed(rseed)
 
@@ -76,6 +110,14 @@ assignVistaCarRoles <- function(plans,planGroups,sourceTrips,binSizeInMins=30,
   plans$VistaRoleSourceStartTime<-NA_real_
   plans$VistaRoleSourceArrivalTime<-NA_real_
   plans$VistaRoleMatchLevel<-NA_character_
+  plans$VistaCarRoleInitial<-NA_character_
+  plans$VistaInitialHouseholdDriverExpected<-NA
+  plans$HouseholdCarRoleAction<-NA_character_
+  plans$VistaRoleSourceHouseholdHasDriverTrip<-NA
+  plans$VistaRoleSourceHouseholdHasOtherDriverTrip<-NA
+  plans$VistaRoleSourceTravelDay<-NA_character_
+  plans$VistaRoleSourceHouseholdCars<-NA_integer_
+  plans$VistaRoleSourceHouseholdFourWheelDrives<-NA_integer_
 
   planGroupId<-planGroups$GroupId[match(plans$PlanId,planGroups$PlanId)]
   originPurpose<-rep(NA_character_,nrow(plans))
@@ -94,18 +136,6 @@ assignVistaCarRoles <- function(plans,planGroups,sourceTrips,binSizeInMins=30,
   sourceTrips$OriginPurposeGroup<-normaliseVistaPurpose(sourceTrips$OriginPurpose)
   sourceTrips$DestinationPurposeGroup<-normaliseVistaPurpose(sourceTrips$DestinationPurpose)
   sourceTrips$DepartureBin<-floor(as.numeric(sourceTrips$StartTime)/binSizeInMins)+1
-  sourceRowsByGroup<-split(seq_len(nrow(sourceTrips)),
-                           as.character(sourceTrips$GroupId))
-  sourceRowsByDestination<-split(
-    seq_len(nrow(sourceTrips)),
-    paste(sourceTrips$GroupId,sourceTrips$DestinationPurposeGroup,sep="\034")
-  )
-  sourceRowsByPurposePair<-split(
-    seq_len(nrow(sourceTrips)),
-    paste(sourceTrips$GroupId,sourceTrips$OriginPurposeGroup,
-          sourceTrips$DestinationPurposeGroup,sep="\034")
-  )
-
   chooseSourceTrip<-function(candidateRows) {
     weights<-suppressWarnings(as.numeric(sourceTrips$Weight[candidateRows]))
     weights[is.na(weights) | weights<0]<-0
@@ -119,53 +149,176 @@ assignVistaCarRoles <- function(plans,planGroups,sourceTrips,binSizeInMins=30,
     if(is.null(rows)) integer() else rows
   }
 
+  buildSourceIndexes<-function(sourceRows) {
+    list(
+      group=split(sourceRows,as.character(sourceTrips$GroupId[sourceRows])),
+      destination=split(
+        sourceRows,
+        paste(sourceTrips$GroupId[sourceRows],
+              sourceTrips$DestinationPurposeGroup[sourceRows],sep="\034")
+      ),
+      purposePair=split(
+        sourceRows,
+        paste(sourceTrips$GroupId[sourceRows],
+              sourceTrips$OriginPurposeGroup[sourceRows],
+              sourceTrips$DestinationPurposeGroup[sourceRows],sep="\034")
+      )
+    )
+  }
+
+  selectSourceTrip<-function(planRow,indexes) {
+    groupKey<-as.character(planGroupId[planRow])
+    groupCandidates<-indexes$group[[groupKey]]
+    if(is.null(groupCandidates)) groupCandidates<-integer()
+    if(length(groupCandidates)==0) {
+      return(list(sourceRow=NA_integer_,matchLevel="unmatched"))
+    }
+
+    purposePairCandidates<-getIndexedRows(
+      indexes$purposePair,
+      c(groupKey,originPurpose[planRow],destinationPurpose[planRow])
+    )
+    timeCompatible<-abs(sourceTrips$DepartureBin[purposePairCandidates]-
+                          departureBin[planRow])<=timeToleranceBins
+    timeCompatible[is.na(timeCompatible)]<-FALSE
+    candidateRows<-purposePairCandidates[timeCompatible]
+    matchLevel<-"purpose_pair_time"
+
+    destinationCandidates<-getIndexedRows(
+      indexes$destination,c(groupKey,destinationPurpose[planRow])
+    )
+    if(length(candidateRows)==0) {
+      timeCompatible<-abs(sourceTrips$DepartureBin[destinationCandidates]-
+                            departureBin[planRow])<=timeToleranceBins
+      timeCompatible[is.na(timeCompatible)]<-FALSE
+      candidateRows<-destinationCandidates[timeCompatible]
+      matchLevel<-"destination_time"
+    }
+    if(length(candidateRows)==0) {
+      candidateRows<-destinationCandidates
+      matchLevel<-"destination"
+    }
+    if(length(candidateRows)==0) {
+      candidateRows<-groupCandidates
+      matchLevel<-"group"
+    }
+    list(
+      sourceRow=chooseSourceTrip(candidateRows),
+      matchLevel=matchLevel
+    )
+  }
+
+  allSourceIndexes<-buildSourceIndexes(seq_len(nrow(sourceTrips)))
+  driverSourceIndexes<-buildSourceIndexes(
+    which(sourceTrips$VistaCarRole=="driver")
+  )
+  externalPassengerSourceIndexes<-buildSourceIndexes(
+    which(sourceTrips$VistaCarRole=="passenger" &
+            !as.logical(sourceTrips$VistaHouseholdHasOtherDriverTrip))
+  )
+
   carRows<-which(!is.na(plans$ArrivingMode) & plans$ArrivingMode=="car")
   selectedSourceRows<-rep(NA_integer_,length(carRows))
   selectedMatchLevels<-rep("unmatched",length(carRows))
   for(carIndex in seq_along(carRows)) {
-    row<-carRows[carIndex]
-    groupKey<-as.character(planGroupId[row])
-    groupCandidates<-sourceRowsByGroup[[groupKey]]
-    if(is.null(groupCandidates)) groupCandidates<-integer()
-    matchLevel<-"unmatched"
-    candidateRows<-integer()
-
-    if(length(groupCandidates)>0) {
-      purposePairCandidates<-getIndexedRows(
-        sourceRowsByPurposePair,
-        c(groupKey,originPurpose[row],destinationPurpose[row])
-      )
-      timeCompatible<-abs(sourceTrips$DepartureBin[purposePairCandidates]-
-                            departureBin[row])<=timeToleranceBins
-      timeCompatible[is.na(timeCompatible)]<-FALSE
-      candidateRows<-purposePairCandidates[timeCompatible]
-      matchLevel<-"purpose_pair_time"
-
-      destinationCandidates<-getIndexedRows(
-        sourceRowsByDestination,c(groupKey,destinationPurpose[row])
-      )
-      if(length(candidateRows)==0) {
-        timeCompatible<-abs(sourceTrips$DepartureBin[destinationCandidates]-
-                              departureBin[row])<=timeToleranceBins
-        timeCompatible[is.na(timeCompatible)]<-FALSE
-        candidateRows<-destinationCandidates[timeCompatible]
-        matchLevel<-"destination_time"
-      }
-      if(length(candidateRows)==0) {
-        candidateRows<-destinationCandidates
-        matchLevel<-"destination"
-      }
-      if(length(candidateRows)==0) {
-        candidateRows<-groupCandidates
-        matchLevel<-"group"
-      }
-    }
-
-    if(length(candidateRows)>0) {
-      selectedSourceRows[carIndex]<-chooseSourceTrip(candidateRows)
-      selectedMatchLevels[carIndex]<-matchLevel
+    selection<-selectSourceTrip(carRows[carIndex],allSourceIndexes)
+    if(!is.na(selection$sourceRow)) {
+      selectedSourceRows[carIndex]<-selection$sourceRow
+      selectedMatchLevels[carIndex]<-selection$matchLevel
     }
   }
+
+  selectedRoles<-rep(NA_character_,length(carRows))
+  matchedCarIndices<-which(!is.na(selectedSourceRows))
+  selectedRoles[matchedCarIndices]<-
+    sourceTrips$VistaCarRole[selectedSourceRows[matchedCarIndices]]
+  initialRoles<-selectedRoles
+  initialHouseholdDriverExpected<-rep(NA,length(carRows))
+  initialPassengerIndices<-which(selectedRoles=="passenger")
+  initialHouseholdDriverExpected[initialPassengerIndices]<-as.logical(
+    sourceTrips$VistaHouseholdHasOtherDriverTrip[
+      selectedSourceRows[initialPassengerIndices]
+    ]
+  )
+  householdActions<-ifelse(is.na(selectedSourceRows),"unmatched","unchanged")
+
+  matchedHouseholdIndices<-split(
+    matchedCarIndices,
+    as.character(plans$HouseholdId[carRows[matchedCarIndices]])
+  )
+  for(householdIndices in matchedHouseholdIndices) {
+    repeat {
+      householdRoles<-selectedRoles[householdIndices]
+      passengerIndices<-householdIndices[householdRoles=="passenger"]
+      if(length(passengerIndices)==0) break
+      householdDriverExpected<-as.logical(
+        sourceTrips$VistaHouseholdHasOtherDriverTrip[
+          selectedSourceRows[passengerIndices]
+        ]
+      )
+      passengerIndices<-passengerIndices[householdDriverExpected]
+      if(length(passengerIndices)==0) break
+
+      householdDriverIndices<-householdIndices[householdRoles=="driver"]
+      driverAgents<-unique(as.character(
+        plans$AgentId[carRows[householdDriverIndices]]
+      ))
+      passengerAgents<-as.character(plans$AgentId[carRows[passengerIndices]])
+      hasOtherDriver<-vapply(
+        passengerAgents,
+        function(agent) any(driverAgents!=agent),
+        logical(1)
+      )
+      unsupportedPassengerIndices<-passengerIndices[!hasOtherDriver]
+      if(length(unsupportedPassengerIndices)==0) break
+
+      passengerIndex<-unsupportedPassengerIndices[1]
+      passengerAgent<-as.character(plans$AgentId[carRows[passengerIndex]])
+      otherMemberIndices<-householdIndices[
+        as.character(plans$AgentId[carRows[householdIndices]])!=passengerAgent
+      ]
+      driverAdded<-FALSE
+      for(otherMemberIndex in otherMemberIndices) {
+        selection<-selectSourceTrip(
+          carRows[otherMemberIndex],driverSourceIndexes
+        )
+        if(!is.na(selection$sourceRow)) {
+          selectedSourceRows[otherMemberIndex]<-selection$sourceRow
+          selectedMatchLevels[otherMemberIndex]<-selection$matchLevel
+          selectedRoles[otherMemberIndex]<-"driver"
+          householdActions[otherMemberIndex]<-"household_driver_added"
+          driverAdded<-TRUE
+          break
+        }
+      }
+      if(driverAdded) next
+
+      selection<-selectSourceTrip(
+        carRows[passengerIndex],externalPassengerSourceIndexes
+      )
+      if(!is.na(selection$sourceRow)) {
+        selectedSourceRows[passengerIndex]<-selection$sourceRow
+        selectedMatchLevels[passengerIndex]<-selection$matchLevel
+        selectedRoles[passengerIndex]<-"passenger"
+        householdActions[passengerIndex]<-"external_passenger_substituted"
+        next
+      }
+
+      selection<-selectSourceTrip(carRows[passengerIndex],driverSourceIndexes)
+      if(!is.na(selection$sourceRow)) {
+        selectedSourceRows[passengerIndex]<-selection$sourceRow
+        selectedMatchLevels[passengerIndex]<-selection$matchLevel
+        selectedRoles[passengerIndex]<-"driver"
+        householdActions[passengerIndex]<-"passenger_reassigned_driver"
+        next
+      }
+      stop(paste0(
+        "Could not satisfy VISTA household driver context for generated plan ",
+        plans$PlanId[carRows[passengerIndex]]
+      ))
+    }
+  }
+
   matchedCarIndices<-which(!is.na(selectedSourceRows))
   matchedPlanRows<-carRows[matchedCarIndices]
   matchedSourceRows<-selectedSourceRows[matchedCarIndices]
@@ -178,6 +331,36 @@ assignVistaCarRoles <- function(plans,planGroups,sourceTrips,binSizeInMins=30,
   plans$VistaRoleSourceArrivalTime[matchedPlanRows]<-
     sourceTrips$ArrivalTime[matchedSourceRows]
   plans$VistaRoleMatchLevel[carRows]<-selectedMatchLevels
+  plans$VistaCarRoleInitial[carRows]<-initialRoles
+  plans$VistaInitialHouseholdDriverExpected[carRows]<-
+    initialHouseholdDriverExpected
+  plans$HouseholdCarRoleAction[carRows]<-householdActions
+  plans$VistaRoleSourceHouseholdHasDriverTrip[matchedPlanRows]<-as.logical(
+    sourceTrips$VistaHouseholdHasDriverTrip[matchedSourceRows]
+  )
+  plans$VistaRoleSourceHouseholdHasOtherDriverTrip[matchedPlanRows]<-as.logical(
+    sourceTrips$VistaHouseholdHasOtherDriverTrip[matchedSourceRows]
+  )
+  optionalSourceColumns<-c(
+    VistaRoleSourceTravelDay="VistaTravelDay",
+    VistaRoleSourceHouseholdCars="VistaHouseholdCars",
+    VistaRoleSourceHouseholdFourWheelDrives="VistaHouseholdFourWheelDrives"
+  )
+  for(planColumn in names(optionalSourceColumns)) {
+    sourceColumn<-optionalSourceColumns[[planColumn]]
+    if(sourceColumn%in%colnames(sourceTrips)) {
+      plans[[planColumn]][matchedPlanRows]<-sourceTrips[[sourceColumn]][matchedSourceRows]
+    }
+  }
+
+  passengerDriverStatus<-getPassengerHouseholdDriverStatus(plans)
+  internalPassengerRows<-which(
+    plans$VistaCarRole=="passenger" &
+      plans$VistaRoleSourceHouseholdHasOtherDriverTrip%in%TRUE
+  )
+  if(any(!passengerDriverStatus[internalPassengerRows])) {
+    stop("Household driver constraint was not satisfied for all passenger legs")
+  }
   return(plans)
 }
 

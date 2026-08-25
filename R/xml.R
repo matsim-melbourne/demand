@@ -42,8 +42,13 @@ writePlanAsMATSimXML <- function(plancsv, outxml, writeInterval) {
   legAttributeColumns<-c(
     legId="LegId",
     vistaCarRole="VistaCarRole",
+    vistaCarRoleInitial="VistaCarRoleInitial",
+    vistaInitialHouseholdDriverExpected="VistaInitialHouseholdDriverExpected",
+    householdCarRoleAction="HouseholdCarRoleAction",
     vistaRoleSourceTripId="VistaRoleSourceTripId",
-    vistaRoleMatchLevel="VistaRoleMatchLevel"
+    vistaRoleMatchLevel="VistaRoleMatchLevel",
+    vistaRoleSourceHouseholdHasOtherDriverTrip=
+      "VistaRoleSourceHouseholdHasOtherDriverTrip"
   )
   legAttributeColumns<-legAttributeColumns[
     legAttributeColumns%in%colnames(pp)
