@@ -1,5 +1,5 @@
 # MATSim population for Melbourne
-`master`![passing?](https://github.com/matsim-melbourne/demand/workflows/build/badge.svg?branch=master) `dev`![passing?](https://github.com/matsim-melbourne/demand/workflows/build/badge.svg?branch=dev)
+`master` [![master build](https://github.com/matsim-melbourne/demand/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/matsim-melbourne/demand/actions/workflows/ci.yml?query=branch%3Amaster) `dev` [![dev build](https://github.com/matsim-melbourne/demand/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/matsim-melbourne/demand/actions/workflows/ci.yml?query=branch%3Adev)
 
 This script generates a sample population for Melbourne based on the [ABS 2016 census](https://www.abs.gov.au/websitedbs/censushome.nsf/home/2016) and using [VISTA-like](https://transport.vic.gov.au/about/data-and-research/vista) activities and trips.
 
