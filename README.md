@@ -41,7 +41,9 @@ VISTA setup also writes `vista_2012_18_extracted_car_roles_weekday_*.csv` sideca
 
 This temporary constraint can change a generated car leg between driver and passenger, but it does not change the existing car mode, trip frequency, purpose, timing, distance, origin or destination. It does not claim that the paired driver leg is feasible for that particular passenger leg; feasible timing and route combinations are provided separately as candidates.
 
-For the temporary household workflow, run the role assignment after the time step and use the resulting CSV as the input to the XML step:
+`makeExamplePopulation` runs this temporary household workflow after the time step. It writes `7.time/plan.roles.csv` and `7.time/household-joint-travel-candidates.csv`, and the XML step then uses the role-labelled plans so the car roles reach the MATSim legs as leg attributes. Pass `householdJointTravel=FALSE` to skip it, or `householdJointTravelSeed` to change the role assignment seed. It is skipped with a message when the plans have no household columns or the VISTA car role files are missing, so older output directories still run through unchanged.
+
+To re-run the coordination on an existing output directory without regenerating the population:
 
 ```r
 source("R/householdJointTravel.R")
@@ -63,7 +65,7 @@ writeHouseholdJointTravelCandidates(
 )
 ```
 
-Each candidate links one passenger leg to one compatible driver leg in the same household. The output includes both participants, their time windows, the estimated shared route section and the required passenger seat and vehicle capacity. Several rows may use the same driver leg, allowing that driver to carry multiple passengers, and a passenger leg may appear with several possible drivers. No final driver or vehicle is selected and the population plan is not modified.
+Each candidate links one passenger leg to one compatible driver leg in the same household. The output includes both participants, their time windows and the estimated shared route section. Several rows may use the same driver leg, allowing that driver to carry multiple passengers, and a passenger leg may appear with several possible drivers. `PassengerSeatsRequired` is the single seat needed by that passenger leg, while `DriverLegPassengerOptions` and `VehicleCapacityRequired` are counted once per driver leg and report how many passenger legs could join it and the capacity that driver would need to carry all of them. No final driver or vehicle is selected and the population plan is not modified.
 
 This temporary implementation estimates route compatibility from straight lines between the generated activity coordinates. The default tolerances are 30 minutes and 1,000 metres; both can be changed when writing the candidates. Network-route overlap, household scheduling and final vehicle allocation are intentionally left for the later coordination model.
 

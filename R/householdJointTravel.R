@@ -421,6 +421,7 @@ emptyHouseholdJointTravelCandidates <- function() {
     SharedRouteEndX=numeric(),
     SharedRouteEndY=numeric(),
     SharedRouteDistanceInMeters=numeric(),
+    DriverLegPassengerOptions=integer(),
     PassengerSeatsRequired=integer(),
     VehicleCapacityRequired=integer(),
     stringsAsFactors=FALSE
@@ -643,14 +644,26 @@ findHouseholdJointTravelCandidates <- function(
       SharedRouteEndX=sharedEndX,
       SharedRouteEndY=sharedEndY,
       SharedRouteDistanceInMeters=sharedDistance,
+      DriverLegPassengerOptions=NA_integer_,
       PassengerSeatsRequired=1L,
-      VehicleCapacityRequired=2L,
+      VehicleCapacityRequired=NA_integer_,
       stringsAsFactors=FALSE
     )
     matchCount<-matchCount+newMatchCount
   }
   if(matchCount==0) return(emptyHouseholdJointTravelCandidates())
-  return(do.call(rbind,matches))
+  candidates<-do.call(rbind,matches)
+  # A driver leg can appear against several passenger legs, so the capacity it
+  # would need is counted once per driver leg rather than once per pairing.
+  passengerOptions<-tapply(
+    candidates$PassengerLegId,candidates$DriverLegId,
+    function(passengerLegIds) length(unique(passengerLegIds))
+  )
+  candidates$DriverLegPassengerOptions<-
+    as.integer(passengerOptions[candidates$DriverLegId])
+  candidates$VehicleCapacityRequired<-
+    candidates$DriverLegPassengerOptions+1L
+  return(candidates)
 }
 
 writeHouseholdJointTravelCandidates <- function(

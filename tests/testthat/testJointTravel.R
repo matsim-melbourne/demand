@@ -195,7 +195,8 @@ test_that("household joint-travel candidates retain all feasible options", {
   expect_equal(as.integer(table(candidates$DriverLegId)),c(2L,2L))
   expect_equal(as.integer(table(candidates$PassengerLegId)),c(2L,2L))
   expect_true(all(candidates$PassengerSeatsRequired==1))
-  expect_true(all(candidates$VehicleCapacityRequired==2))
+  expect_true(all(candidates$DriverLegPassengerOptions==2))
+  expect_true(all(candidates$VehicleCapacityRequired==3))
   expect_true(all(candidates$SharedRouteDistanceInMeters>0))
   expect_true(all(candidates$PickupWindowStartSeconds<=
                     candidates$PickupWindowEndSeconds))
@@ -230,4 +231,32 @@ test_that("joint-travel candidates stay within household, time and direction", {
 
   expect_equal(nrow(candidates),0)
   expect_equal(colnames(candidates),colnames(emptyHouseholdJointTravelCandidates()))
+})
+
+test_that("required vehicle capacity counts every passenger on a driver leg", {
+  plans<-data.frame(
+    PlanId=rep(1:3,each=2),
+    AgentId=rep(c('driver','first_passenger','second_passenger'),each=2),
+    HouseholdId='household_1',
+    LegId=rep(c(NA,'leg'),3),
+    ArrivingMode=rep(c(NA,'car'),3),
+    VistaCarRole=rep(c(NA,'passenger'),3),
+    x=c(0,10000,0,10000,0,10000),
+    y=0,
+    act_start_hhmmss=rep(c('00:00:00','08:30:00'),3),
+    act_end_hhmmss=rep(c('08:00:00','17:00:00'),3),
+    stringsAsFactors=FALSE
+  )
+  legRows<-seq(2,nrow(plans),by=2)
+  plans$LegId[legRows]<-paste0(plans$AgentId[legRows],'_leg_1')
+  plans$VistaCarRole[2]<-'driver'
+
+  candidates<-findHouseholdJointTravelCandidates(plans)
+
+  expect_equal(nrow(candidates),2)
+  expect_equal(unique(candidates$DriverLegId),'driver_leg_1')
+  expect_true(all(candidates$PassengerSeatsRequired==1))
+  # one driver plus both candidate passengers
+  expect_true(all(candidates$DriverLegPassengerOptions==2))
+  expect_true(all(candidates$VehicleCapacityRequired==3))
 })
