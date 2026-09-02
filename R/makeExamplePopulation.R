@@ -1,7 +1,9 @@
 makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output01",
                                 sa1Subset=NA, allDestinations=TRUE,
                                 do.steps=c(T,T,T,T,T,T,T,T),
-                                output_crs=7899) {
+                                output_crs=7899,
+                                householdJointTravel=TRUE,
+                                householdJointTravelSeed=12345) {
   # samplePercent:
   #   percent of the 2016 census-based Melbourne synthetic population to sample
   # numPlans:
@@ -19,6 +21,12 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output01",
   # output_crs:
   #   [AJ]Orignially both network and demand were EPSG 28355, network is changed
   #   to EPSG 7899. This parameter is convert original CRS to new CRS
+  # householdJointTravel:
+  #   should the temporary household car role and joint-travel coordination be
+  #   run after the time step. It is skipped with a message when the plans have
+  #   no household columns or the VISTA car role files are missing.
+  # householdJointTravelSeed:
+  #   random seed used when assigning VISTA car roles to generated car legs
   
   # set any global options
   # see https://www.tidyverse.org/blog/2020/05/dplyr-1-0-0-last-minute-additions/
@@ -215,13 +223,53 @@ makeExamplePopulation<-function(samplePercent, numPlans, outputDir="output01",
         500 # write to file every so many plans
       )
       setwd(wd)
-      
+
     }
+
+    # Temporary household car role and joint-travel coordination. This runs
+    # after the time step and leaves the generated plans unchanged, so it is
+    # not one of the numbered steps. It will be folded into the larger
+    # household coordination rework later on.
+    timePlanCsv <- paste0('../',outputDir,'/7.time/plan.csv')
+    rolePlanCsv <- paste0('../',outputDir,'/7.time/plan.roles.csv')
+    if(householdJointTravel && do.steps[7]) {
+      planColumns <- colnames(read.csv(timePlanCsv, nrows=1, check.names=FALSE))
+      missingPlanColumns <- setdiff(c("HouseholdId","LegId"), planColumns)
+      roleSourceFiles <- list.files(
+        paste0('../',outputDir,'/1.setup'),
+        '^vista_2012_18_extracted_car_roles_weekday_[0-9]+\\.csv$'
+      )
+      if(length(missingPlanColumns)>0) {
+        echo(paste0('Skipping household joint-travel coordination, plans have no ',
+                    paste(missingPlanColumns,collapse=', '),'\n'))
+      } else if(length(roleSourceFiles)==0) {
+        echo('Skipping household joint-travel coordination, no VISTA car role files in 1.setup\n')
+      } else {
+        source('householdJointTravel.R', local=TRUE)
+        echo('Assigning VISTA car roles to generated car legs\n')
+        assignVistaCarRolesToPlanFile(
+          timePlanCsv,
+          paste0('../',outputDir,'/4.plan/plan2agent2group.csv'),
+          paste0('../',outputDir,'/1.setup'),
+          rolePlanCsv,
+          rseed=householdJointTravelSeed
+        )
+        echo(paste0('Wrote ',rolePlanCsv,'\n'))
+        echo('Finding household joint-travel candidates\n')
+        candidatesCsv <- paste0('../',outputDir,'/7.time/household-joint-travel-candidates.csv')
+        writeHouseholdJointTravelCandidates(rolePlanCsv, candidatesCsv)
+        echo(paste0('Wrote ',candidatesCsv,'\n'))
+      }
+    }
+
     if(do.steps[8]) {
       source('xml.R', local=TRUE)
+      # prefer the role-labelled plans so the car roles reach the MATSim legs
+      xmlPlanCsv <- timePlanCsv
+      if(file.exists(rolePlanCsv)) xmlPlanCsv <- rolePlanCsv
       writePlanAsMATSimXML(
-        paste0('../',outputDir,'/7.time/plan.csv'), 
-        paste0('../',outputDir,'/8.xml/plan.xml'), 
+        xmlPlanCsv,
+        paste0('../',outputDir,'/8.xml/plan.xml'),
         500 # write to file in blocks of this size
       )
     }
